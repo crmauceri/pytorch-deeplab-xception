@@ -156,7 +156,7 @@ def ResNet101(output_stride, BatchNorm, pretrained=True, channels=3):
 
 if __name__ == "__main__":
     import torch
-    model = ResNet101(BatchNorm=nn.BatchNorm2d, pretrained=True, output_stride=8, channels=4)
+    model = ResNet101(BatchNorm=nn.BatchNorm2d, pretrained=False, output_stride=8, channels=4)
     input = torch.rand(1, 4, 512, 512)
     output, low_level_feat = model(input)
     print(output.size())

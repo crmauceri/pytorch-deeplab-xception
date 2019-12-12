@@ -147,7 +147,7 @@ class MobileNetV2(nn.Module):
 
 if __name__ == "__main__":
     input = torch.rand(1, 4, 512, 512)
-    model = MobileNetV2(output_stride=16, BatchNorm=nn.BatchNorm2d, channels=4)
+    model = MobileNetV2(output_stride=16, BatchNorm=nn.BatchNorm2d, pretrained=False, channels=4)
     output, low_level_feat = model(input)
     print(output.size())
     print(low_level_feat.size())

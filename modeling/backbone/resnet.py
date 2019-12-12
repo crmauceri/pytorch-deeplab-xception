@@ -44,7 +44,8 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, output_stride, BatchNorm, pretrained=True):
+    def __init__(self, block, layers, output_stride, BatchNorm, pretrained=True, channels=3):
+        self.channels = channels
         self.inplanes = 64
         super(ResNet, self).__init__()
         blocks = [1, 2, 4]
@@ -58,7 +59,7 @@ class ResNet(nn.Module):
             raise NotImplementedError
 
         # Modules
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
+        self.conv1 = nn.Conv2d(self.channels, 64, kernel_size=7, stride=2, padding=3,
                                 bias=False)
         self.bn1 = BatchNorm(64)
         self.relu = nn.ReLU(inplace=True)
@@ -155,8 +156,8 @@ def ResNet101(output_stride, BatchNorm, pretrained=True):
 
 if __name__ == "__main__":
     import torch
-    model = ResNet101(BatchNorm=nn.BatchNorm2d, pretrained=True, output_stride=8)
-    input = torch.rand(1, 3, 512, 512)
+    model = ResNet101(BatchNorm=nn.BatchNorm2d, pretrained=True, output_stride=8, channels=4)
+    input = torch.rand(1, 4, 512, 512)
     output, low_level_feat = model(input)
     print(output.size())
     print(low_level_feat.size())

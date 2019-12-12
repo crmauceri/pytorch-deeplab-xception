@@ -68,8 +68,10 @@ class InvertedResidual(nn.Module):
 
 
 class MobileNetV2(nn.Module):
-    def __init__(self, output_stride=8, BatchNorm=None, width_mult=1., pretrained=True):
+    def __init__(self, output_stride=8, BatchNorm=None, width_mult=1., pretrained=True, channels=3):
         super(MobileNetV2, self).__init__()
+
+        self.channels = channels
         block = InvertedResidual
         input_channel = 32
         current_stride = 1
@@ -87,7 +89,7 @@ class MobileNetV2(nn.Module):
 
         # building first layer
         input_channel = int(input_channel * width_mult)
-        self.features = [conv_bn(3, input_channel, 2, BatchNorm)]
+        self.features = [conv_bn(self.channels, input_channel, 2, BatchNorm)]
         current_stride *= 2
         # building inverted residual blocks
         for t, c, n, s in interverted_residual_setting:
@@ -144,8 +146,8 @@ class MobileNetV2(nn.Module):
                 m.bias.data.zero_()
 
 if __name__ == "__main__":
-    input = torch.rand(1, 3, 512, 512)
-    model = MobileNetV2(output_stride=16, BatchNorm=nn.BatchNorm2d)
+    input = torch.rand(1, 4, 512, 512)
+    model = MobileNetV2(output_stride=16, BatchNorm=nn.BatchNorm2d, channels=4)
     output, low_level_feat = model(input)
     print(output.size())
     print(low_level_feat.size())

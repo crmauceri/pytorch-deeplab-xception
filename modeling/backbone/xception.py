@@ -96,8 +96,10 @@ class AlignedXception(nn.Module):
     Modified Alighed Xception
     """
     def __init__(self, output_stride, BatchNorm,
-                 pretrained=True):
+                 pretrained=True, channels = 3):
         super(AlignedXception, self).__init__()
+
+        self.channels = channels
 
         if output_stride == 16:
             entry_block3_stride = 2
@@ -112,7 +114,7 @@ class AlignedXception(nn.Module):
 
 
         # Entry flow
-        self.conv1 = nn.Conv2d(3, 32, 3, stride=2, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(self.channels, 32, 3, stride=2, padding=1, bias=False)
         self.bn1 = BatchNorm(32)
         self.relu = nn.ReLU(inplace=True)
 
@@ -281,8 +283,8 @@ class AlignedXception(nn.Module):
 
 if __name__ == "__main__":
     import torch
-    model = AlignedXception(BatchNorm=nn.BatchNorm2d, pretrained=True, output_stride=16)
-    input = torch.rand(1, 3, 512, 512)
+    model = AlignedXception(BatchNorm=nn.BatchNorm2d, pretrained=True, output_stride=16, channels=4)
+    input = torch.rand(1, 4, 512, 512)
     output, low_level_feat = model(input)
     print(output.size())
     print(low_level_feat.size())

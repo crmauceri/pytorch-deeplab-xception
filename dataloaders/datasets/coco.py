@@ -21,14 +21,23 @@ class COCOSegmentation(Dataset):
                  args,
                  base_dir=Path.db_root_dir('coco'),
                  split='train',
-                 year='2017'):
+                 year='2017',
+                 use_depth=True):
         super().__init__()
         ann_file = os.path.join(base_dir, 'annotations/instances_{}{}.json'.format(split, year))
         ids_file = os.path.join(base_dir, 'annotations/{}_ids_{}.pth'.format(split, year))
         self.img_dir = os.path.join(base_dir, 'images/{}{}'.format(split, year))
+        self.depth_dir = os.path.join(base_dir, 'VNL_Monocular/'.format(split, year))
         self.split = split
         self.coco = COCO(ann_file)
         self.coco_mask = mask
+        self.use_depth = use_depth
+        if self.use_depth:
+            self.data_mean = (0.485, 0.456, 0.406, 0.213)
+            self.data_std = (0.229, 0.224, 0.225, 0.111) #TODO get real metrics for depth mean and std
+        else:
+            self.data_mean = (0.485, 0.456, 0.406)
+            self.data_std = (0.229, 0.224, 0.225)
         if os.path.exists(ids_file):
             self.ids = torch.load(ids_file)
         else:
@@ -51,6 +60,9 @@ class COCOSegmentation(Dataset):
         img_metadata = coco.loadImgs(img_id)[0]
         path = img_metadata['file_name']
         _img = Image.open(os.path.join(self.img_dir, path)).convert('RGB')
+        if self.use_depth:
+            _depth = Image.open(os.path.join(self.depth_dir, path)).convert('L')
+            _img.putalpha(_depth)
         cocotarget = coco.loadAnns(coco.getAnnIds(imgIds=img_id))
         _target = Image.fromarray(self._gen_seg_mask(
             cocotarget, img_metadata['height'], img_metadata['width']))
@@ -99,7 +111,7 @@ class COCOSegmentation(Dataset):
             tr.RandomHorizontalFlip(),
             tr.RandomScaleCrop(base_size=self.args.base_size, crop_size=self.args.crop_size),
             tr.RandomGaussianBlur(),
-            tr.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+            tr.Normalize(mean=self.data_mean, std=self.data_std),
             tr.ToTensor()])
 
         return composed_transforms(sample)
@@ -108,7 +120,7 @@ class COCOSegmentation(Dataset):
 
         composed_transforms = transforms.Compose([
             tr.FixScaleCrop(crop_size=self.args.crop_size),
-            tr.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+            tr.Normalize(mean=self.data_mean, std=self.data_std),
             tr.ToTensor()])
 
         return composed_transforms(sample)
@@ -132,7 +144,7 @@ if __name__ == "__main__":
     args.base_size = 513
     args.crop_size = 513
 
-    coco_val = COCOSegmentation(args, split='val', year='2017')
+    coco_val = COCOSegmentation(args, split='val', year='2014', use_depth=True)
 
     dataloader = DataLoader(coco_val, batch_size=4, shuffle=True, num_workers=0)
 
@@ -143,16 +155,18 @@ if __name__ == "__main__":
             tmp = np.array(gt[jj]).astype(np.uint8)
             segmap = decode_segmap(tmp, dataset='coco')
             img_tmp = np.transpose(img[jj], axes=[1, 2, 0])
-            img_tmp *= (0.229, 0.224, 0.225)
-            img_tmp += (0.485, 0.456, 0.406)
+            img_tmp *= coco_val.data_std
+            img_tmp += coco_val.data_mean
             img_tmp *= 255.0
             img_tmp = img_tmp.astype(np.uint8)
             plt.figure()
             plt.title('display')
-            plt.subplot(211)
-            plt.imshow(img_tmp)
-            plt.subplot(212)
+            plt.subplot(311)
+            plt.imshow(img_tmp[:,:,:3])
+            plt.subplot(312)
             plt.imshow(segmap)
+            plt.subplot(313)
+            plt.imshow(img_tmp[:,:,4])
 
         if ii == 1:
             break

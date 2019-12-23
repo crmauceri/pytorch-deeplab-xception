@@ -27,15 +27,17 @@ class COCOSegmentation(Dataset):
         ann_file = os.path.join(base_dir, 'annotations/instances_{}{}.json'.format(split, year))
         ids_file = os.path.join(base_dir, 'annotations/{}_ids_{}.pth'.format(split, year))
         self.img_dir = os.path.join(base_dir, 'images/{}{}'.format(split, year))
-        self.depth_dir = os.path.join(base_dir, 'VNL_Monocular/'.format(split, year))
+        self.depth_dir = os.path.join(base_dir, 'VNL_Monocular/{}{}'.format(split, year))
         self.split = split
         self.coco = COCO(ann_file)
         self.coco_mask = mask
         self.use_depth = use_depth
         if self.use_depth:
+            print('Using RGB-D input')
             self.data_mean = (0.485, 0.456, 0.406, 0.213)
-            self.data_std = (0.229, 0.224, 0.225, 0.111) #TODO get real metrics for depth mean and std
+            self.data_std = (0.229, 0.224, 0.225, 0.111)
         else:
+            print('Using RGB input')
             self.data_mean = (0.485, 0.456, 0.406)
             self.data_std = (0.229, 0.224, 0.225)
         if os.path.exists(ids_file):
@@ -144,7 +146,7 @@ if __name__ == "__main__":
     args.base_size = 513
     args.crop_size = 513
 
-    coco_val = COCOSegmentation(args, split='val', year='2014', use_depth=True)
+    coco_val = COCOSegmentation(args, split='val', year='2017', use_depth=True)
 
     dataloader = DataLoader(coco_val, batch_size=4, shuffle=True, num_workers=0)
 
@@ -166,7 +168,7 @@ if __name__ == "__main__":
             plt.subplot(312)
             plt.imshow(segmap)
             plt.subplot(313)
-            plt.imshow(img_tmp[:,:,4])
+            plt.imshow(img_tmp[:,:,3])
 
         if ii == 1:
             break

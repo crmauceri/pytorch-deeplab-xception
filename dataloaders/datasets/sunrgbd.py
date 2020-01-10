@@ -6,6 +6,8 @@ from tqdm import trange
 import os
 from pycocotools.coco import COCO
 from pycocotools import mask
+from torchvision import transforms
+from dataloaders import custom_transforms as tr
 from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -17,12 +19,11 @@ class RGBDSegmentation(Dataset):
     def __init__(self,
                  args,
                  split='train',
-                 year='2017',
                  use_depth=True):
         super().__init__()
         base_dir = Path.db_root_dir(args.dataset)
-        ann_file = os.path.join(base_dir, 'SUNRGBD/annotations/instances_{}{}.json'.format(split, year))
-        ids_file = os.path.join(base_dir, 'SUNRGBD/annotations/{}_ids_{}.pth'.format(split, year))
+        ann_file = os.path.join(base_dir, 'annotations/instances_{}.json'.format(split))
+        ids_file = os.path.join(base_dir, 'annotations/{}_ids.pth'.format(split))
         self.img_dir = os.path.join(base_dir, 'images')
         self.depth_dir = self.img_dir
         self.split = split

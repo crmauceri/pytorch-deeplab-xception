@@ -23,8 +23,8 @@ class RGBDSegmentation(Dataset):
         base_dir = Path.db_root_dir(args.dataset)
         ann_file = os.path.join(base_dir, 'SUNRGBD/annotations/instances_{}{}.json'.format(split, year))
         ids_file = os.path.join(base_dir, 'SUNRGBD/annotations/{}_ids_{}.pth'.format(split, year))
-        self.img_dir = os.path.join(base_dir)
-        self.depth_dir = os.path.join(base_dir)
+        self.img_dir = os.path.join(base_dir, 'images')
+        self.depth_dir = self.img_dir
         self.split = split
         self.coco = COCO(ann_file)
         self.coco_mask = mask
@@ -56,7 +56,6 @@ class RGBDSegmentation(Dataset):
     def _make_img_gt_point_pair(self, index):
         coco = self.coco
         img_id = self.ids[index]
-        print(img_id)
         img_metadata = coco.loadImgs(img_id)[0]
         path = img_metadata['file_name']
         _img = Image.open(os.path.join(self.img_dir, path)).convert('RGB')

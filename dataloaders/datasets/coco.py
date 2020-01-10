@@ -27,7 +27,7 @@ class COCOSegmentation(Dataset):
         ann_file = os.path.join(base_dir, 'annotations/instances_{}{}.json'.format(split, year))
         ids_file = os.path.join(base_dir, 'annotations/{}_ids_{}.pth'.format(split, year))
         self.img_dir = os.path.join(base_dir, 'images/{}{}'.format(split, year))
-        self.depth_dir = os.path.join(base_dir, 'VNL_Monocular/{}{}'.format(split, year))
+        self.depth_dir = os.path.join(base_dir, 'VNL_Monocular/') #{}{}'.format(split, year))
         self.split = split
         self.coco = COCO(ann_file)
         self.coco_mask = mask

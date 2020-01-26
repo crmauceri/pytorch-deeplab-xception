@@ -3,16 +3,16 @@ import os
 import numpy as np
 from tqdm import tqdm
 
-from mypath import Path
-from dataloaders import make_data_loader
-from modeling.sync_batchnorm.replicate import patch_replication_callback
-from modeling.deeplab import *
-from utils.loss import SegmentationLosses
-from utils.calculate_weights import calculate_weigths_labels
-from utils.lr_scheduler import LR_Scheduler
-from utils.saver import Saver
-from utils.summaries import TensorboardSummary
-from utils.metrics import Evaluator
+from deeplab3.mypath import Path
+from deeplab3.dataloaders import make_data_loader
+from deeplab3.modeling.sync_batchnorm.replicate import patch_replication_callback
+from deeplab3.modeling.deeplab import *
+from deeplab3.utils.loss import SegmentationLosses
+from deeplab3.utils.calculate_weights import calculate_weigths_labels
+from deeplab3.utils.lr_scheduler import LR_Scheduler
+from deeplab3.utils.saver import Saver
+from deeplab3.utils.summaries import TensorboardSummary
+from deeplab3.utils.metrics import Evaluator
 
 class Trainer(object):
     def __init__(self, args):

@@ -25,7 +25,7 @@ _C.TRAIN.USE_BALANCED_WEIGHTS = False
 # Resume training from checkpoint file
 _C.TRAIN.RESUME = ""
 # Checkpoint file name
-_C.TRAIN.CHECKNAME = 'deeplab-resnet'
+_C.TRAIN.CHECKNAME = 'deeplab-defaults'
 # Finetuning on a different dataset
 _C.TRAIN.FINETUNE = False
 # Evaluation interval

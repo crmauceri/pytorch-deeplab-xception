@@ -2,3 +2,6 @@ DATASET:
   NAME: 'sunrgbd'
   ROOT: '/Users/Mauceri/Workspace/SUNRGBD'
   USE_DEPTH: True
+
+TRAIN:
+  CHECKNAME: 'sunrgbd_rgbd_resnet_deeplab'

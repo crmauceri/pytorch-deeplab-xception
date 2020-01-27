@@ -6,9 +6,9 @@ import glob
 
 class Saver(object):
 
-    def __init__(self, args):
-        self.args = args
-        self.directory = os.path.join('run', args.dataset, args.checkname)
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self.directory = os.path.join('run', cfg.DATASET.NAME, cfg.TRAIN.CHECKNAME)
         self.runs = sorted(glob.glob(os.path.join(self.directory, 'experiment_*')))
         run_id = int(self.runs[-1].split('_')[-1]) + 1 if self.runs else 0
 
@@ -44,17 +44,5 @@ class Saver(object):
     def save_experiment_config(self):
         logfile = os.path.join(self.experiment_dir, 'parameters.txt')
         log_file = open(logfile, 'w')
-        p = OrderedDict()
-        p['datset'] = self.args.dataset
-        p['backbone'] = self.args.backbone
-        p['out_stride'] = self.args.out_stride
-        p['lr'] = self.args.lr
-        p['lr_scheduler'] = self.args.lr_scheduler
-        p['loss_type'] = self.args.loss_type
-        p['epoch'] = self.args.epochs
-        p['base_size'] = self.args.base_size
-        p['crop_size'] = self.args.crop_size
-
-        for key, val in p.items():
-            log_file.write(key + ':' + str(val) + '\n')
+        log_file.write(self.cfg.dump())
         log_file.close()

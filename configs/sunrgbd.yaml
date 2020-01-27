@@ -1,0 +1,4 @@
+DATASET:
+  NAME: 'sunrgbd'
+  ROOT: '/Users/Mauceri/Workspace/SUNRGBD'
+  USE_DEPTH: True

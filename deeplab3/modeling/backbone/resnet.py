@@ -1,4 +1,5 @@
 import math
+import numpy as np
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 from deeplab3.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
@@ -44,7 +45,7 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, output_stride, BatchNorm, pretrained=False, channels=3):
+    def __init__(self, block, layers, output_stride, BatchNorm, pretrained=False, channels=3, out_features=None, use_deeplab_format=True):
         self.channels = channels
         self.inplanes = 64
         super(ResNet, self).__init__()
@@ -71,6 +72,28 @@ class ResNet(nn.Module):
         self.layer4 = self._make_MG_unit(block, 512, blocks=blocks, stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         # self.layer4 = self._make_layer(block, 512, layers[3], stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         self._init_weight()
+
+        current_stride = 4 #self.conv1.stride * self.maxpool.stride
+        self._out_feature_strides = {"stem": current_stride}
+        for i, layer in enumerate([self.layer1, self.layer2, self.layer3, self.layer4]):
+            self._out_feature_strides["res{}".format(i+2)] = current_stride = int(
+                current_stride * np.prod([k.stride for k in layer])
+            )
+
+        self._out_feature_channels = {"stem": 64,
+                                      "res2": 64 * block.expansion,
+                                      "res3": 128 * block.expansion,
+                                      "res4": 256 * block.expansion,
+                                      "res5": 512 * block.expansion}
+
+
+        self.use_deeplab_out = use_deeplab_format
+        if use_deeplab_format:
+            out_features = ['res5' , 'stem']
+        elif out_features is None:
+            out_features = ['res5']
+
+        self._out_features = out_features
 
         if pretrained:
             self._load_pretrained_model()
@@ -112,17 +135,35 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, input):
+        outputs = {}
+
         x = self.conv1(input)
         x = self.bn1(x)
         x = self.relu(x)
         x = self.maxpool(x)
 
+        if "stem" in self._out_features:
+            outputs['stem'] = x
+
         x = self.layer1(x)
-        low_level_feat = x
+        if 'res2' in self._out_features:
+            outputs['res2'] = x
+
         x = self.layer2(x)
+        if 'res3' in self._out_features:
+            outputs['res3'] = x
+
         x = self.layer3(x)
+        if 'res4' in self._out_features:
+            outputs['res4'] = x
+
         x = self.layer4(x)
-        return x, low_level_feat
+        if 'res5' in self._out_features:
+            outputs['res5'] = x
+
+        if self.use_deeplab_out:
+            return outputs['res5'], outputs['stem']
+        return outputs
 
     def _init_weight(self):
         for m in self.modules():
@@ -146,12 +187,12 @@ class ResNet(nn.Module):
         state_dict.update(model_dict)
         self.load_state_dict(state_dict)
 
-def ResNet101(output_stride, BatchNorm, pretrained=True, channels=3):
+def ResNet101(output_stride, BatchNorm, pretrained=True, channels=3, use_deeplab_format=True):
     """Constructs a ResNet-101 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 4, 23, 3], output_stride, BatchNorm, pretrained=pretrained, channels=channels)
+    model = ResNet(Bottleneck, [3, 4, 23, 3], output_stride, BatchNorm, pretrained=pretrained, channels=channels, use_deeplab_format=use_deeplab_format)
     return model
 
 if __name__ == "__main__":

@@ -65,15 +65,14 @@ Fellow steps below to train your model:
                 [--no-val]
 
     ```
-
-2. To train deeplabv3+ using Pascal VOC dataset and ResNet as backbone:
-    ```Shell
-    bash train_voc.sh
-    ```
-3. To train deeplabv3+ using COCO dataset and ResNet as backbone:
-    ```Shell
-    bash train_coco.sh
+2. To train deeplabv3+ using COCO dataset and ResNet as backbone:
+    ```bash
+    CUDA_VISIBLE_DEVICES=0 python deeplab3/train.py configs/coco_rgbd.yaml
     ```    
+3. To train deeplabv3+ using SUNRGBD dataset and ResNet as backbone:
+    ```bash
+    CUDA_VISIBLE_DEVICES=0 python deeplab3/train.py configs/sunrgbd.yaml
+    ```
 
 ### Acknowledgement
 [PyTorch-Encoding](https://github.com/zhanghang1989/PyTorch-Encoding)

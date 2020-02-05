@@ -27,7 +27,7 @@ from types import SimpleNamespace
 
 from deeplab3.config.defaults import get_cfg_defaults
 cfg = get_cfg_defaults()
-
+cfg.merge_from_file("configs/coco_rgbd.yaml")
 
 # In[6]:
 
@@ -96,7 +96,13 @@ def load_model(cfg):
 
     if not os.path.isfile(cfg.TRAIN.RESUME):
         raise RuntimeError("=> no checkpoint found at '{}'" .format(cfg.TRAIN.RESUME))
-    checkpoint = torch.load(cfg.TRAIN.RESUME)
+
+
+    if cfg.SYSTEM.CUDA:
+        checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('gpu'))
+    else:
+        checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('cpu'))
+
     cfg.TRAIN.START_EPOCH = checkpoint['epoch']
     if cfg.SYSTEM.CUDA:
         model.module.load_state_dict(checkpoint['state_dict'])
@@ -113,12 +119,12 @@ def load_model(cfg):
 
 from deeplab3.config.defaults import get_cfg_defaults
 cfg_rgbd = get_cfg_defaults()
-#cfg_rgbd.merge_from_file("")
+cfg_rgbd.merge_from_file("configs/coco_rgbd.yaml")
 cfg_rgbd.merge_from_list(['TRAIN.RESUME', 'run/coco/deeplab-resnet/experiment_10/checkpoint.pth.tar',
                          'DATASET.USE_DEPTH', True])
 
 cfg_rgb = get_cfg_defaults()
-#cfg_rgb.merge_from_file("")
+cfg_rgb.merge_from_file("configs/coco_rgbd.yaml")
 cfg_rgb.merge_from_list(['TRAIN.RESUME', 'pretrained/deeplab-resnet.pth',
                         'DATASET.USE_DEPTH', False])
 
@@ -148,7 +154,7 @@ def display_results(image, target):
         image, target = image.cuda(), target.cuda()
     with torch.no_grad():
         output_rgbd = rgbd_model(image)
-        #output_rgb = rgb_model(image[:, 0:3, :, :])
+        output_rgb = rgb_model(image[:, 0:3, :, :])
     #loss = criterion(output, target)
     
     image = image.cpu().numpy()
@@ -157,8 +163,8 @@ def display_results(image, target):
     pred_rgbd = output_rgbd.data.cpu().numpy()
     pred_rgbd = np.argmax(pred_rgbd, axis=1)
     
-    #pred_rgb = output_rgb.data.cpu().numpy()
-    #pred_rgb = np.argmax(pred_rgb, axis=1)
+    pred_rgb = output_rgb.data.cpu().numpy()
+    pred_rgb = np.argmax(pred_rgb, axis=1)
     
     for jj in range(sample["image"].size()[0]):
         img_tmp = np.transpose(image[jj], axes=[1, 2, 0])
@@ -166,7 +172,7 @@ def display_results(image, target):
         
         segmap = decode_segmap(target[jj], dataset='coco')
         segmap_rgbd = decode_segmap(pred_rgbd[jj], dataset='coco')
-        #segmap_rgb = decode_segmap(pred_rgb[jj], dataset='coco')
+        segmap_rgb = decode_segmap(pred_rgb[jj], dataset='coco')
         
         plt.figure(figsize=(16, 16))
         plt.subplot(151)
@@ -190,7 +196,7 @@ def display_results(image, target):
         plt.axis('off')
         
         plt.subplot(155)
-        #plt.imshow(segmap_rgb) #, cmap='tab20b', vmin=0, vmax=dataloader.dataset.NUM_CLASSES)
+        plt.imshow(segmap_rgb) #, cmap='tab20b', vmin=0, vmax=dataloader.dataset.NUM_CLASSES)
         plt.title('RGB')
         plt.axis('off')
 

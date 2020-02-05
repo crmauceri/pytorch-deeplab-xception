@@ -89,7 +89,7 @@ class ResNet(nn.Module):
 
         self.use_deeplab_out = use_deeplab_format
         if use_deeplab_format:
-            out_features = ['res5' , 'stem']
+            out_features = ['res5' , 'res2']
         elif out_features is None:
             out_features = ['res5']
 
@@ -97,6 +97,8 @@ class ResNet(nn.Module):
 
         if pretrained:
             self._load_pretrained_model()
+        else:
+            print("Training backbone from scratch")
 
     def _make_layer(self, block, planes, blocks, stride=1, dilation=1, BatchNorm=None):
         downsample = None
@@ -162,7 +164,7 @@ class ResNet(nn.Module):
             outputs['res5'] = x
 
         if self.use_deeplab_out:
-            return outputs['res5'], outputs['stem']
+            return outputs['res5'], outputs['res2']
         return outputs
 
     def _init_weight(self):
@@ -178,6 +180,7 @@ class ResNet(nn.Module):
                 m.bias.data.zero_()
 
     def _load_pretrained_model(self):
+        print("Loading pretrained model: {}".format('https://download.pytorch.org/models/resnet101-5d3b4d8f.pth'))
         pretrain_dict = model_zoo.load_url('https://download.pytorch.org/models/resnet101-5d3b4d8f.pth')
         model_dict = {}
         state_dict = self.state_dict()

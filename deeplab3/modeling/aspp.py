@@ -32,17 +32,17 @@ class _ASPPModule(nn.Module):
                 m.bias.data.zero_()
 
 class ASPP(nn.Module):
-    def __init__(self, backbone, output_stride, BatchNorm):
+    def __init__(self, cfg, BatchNorm):
         super(ASPP, self).__init__()
-        if backbone == 'drn':
+        if cfg.MODEL.BACKBONE == 'drn':
             inplanes = 512
-        elif backbone == 'mobilenet':
+        elif cfg.MODEL.BACKBONE == 'mobilenet':
             inplanes = 320
         else:
             inplanes = 2048
-        if output_stride == 16:
+        if cfg.MODEL.OUT_STRIDE == 16:
             dilations = [1, 6, 12, 18]
-        elif output_stride == 8:
+        elif cfg.MODEL.OUT_STRIDE == 8:
             dilations = [1, 12, 24, 36]
         else:
             raise NotImplementedError
@@ -91,5 +91,5 @@ class ASPP(nn.Module):
                 m.bias.data.zero_()
 
 
-def build_aspp(backbone, output_stride, BatchNorm):
-    return ASPP(backbone, output_stride, BatchNorm)
+def build_aspp(cfg, BatchNorm):
+    return ASPP(cfg, BatchNorm)

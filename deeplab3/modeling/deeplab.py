@@ -7,22 +7,20 @@ from deeplab3.modeling.decoder import build_decoder
 from deeplab3.modeling.backbone import build_backbone
 
 class DeepLab(nn.Module):
-    def __init__(self, backbone='resnet', output_stride=16, num_classes=21,
-                 sync_bn=True, freeze_bn=False, use_depth=True):
-        super(DeepLab, self).__init__()
-        if backbone == 'drn':
-            output_stride = 8
 
-        if sync_bn == True:
+    def __init__(self, cfg):
+        super(DeepLab, self).__init__()
+
+        if cfg.MODEL.SYNC_BN == True:
             BatchNorm = SynchronizedBatchNorm2d
         else:
             BatchNorm = nn.BatchNorm2d
 
-        self.backbone = build_backbone(backbone, output_stride, BatchNorm, use_depth)
-        self.aspp = build_aspp(backbone, output_stride, BatchNorm)
-        self.decoder = build_decoder(num_classes, backbone, BatchNorm)
+        self.backbone = build_backbone(cfg, BatchNorm)
+        self.aspp = build_aspp(cfg, BatchNorm)
+        self.decoder = build_decoder(cfg, BatchNorm)
 
-        if freeze_bn:
+        if cfg.MODEL.FREEZE_BN:
             self.freeze_bn()
 
     def forward(self, input):

@@ -1,0 +1,11 @@
+DATASET:
+  NAME: 'coco'
+  ROOT: '/Users/Mauceri/Workspace/cocoapi/coco/'
+  USE_DEPTH: True
+
+TRAIN:
+  CHECKNAME: 'coco_rgbd_resnet_finetune'
+  EPOCHS: 100
+
+MODEL:
+  PRETRAINED: 'pretrained/deeplab-resnet.pth'

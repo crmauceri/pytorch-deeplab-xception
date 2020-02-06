@@ -29,13 +29,10 @@ class Trainer(object):
         kwargs = {'num_workers': self.cfg.SYSTEM.NUM_WORKERS, 'pin_memory': True}
         self.train_loader, self.val_loader, self.test_loader, self.nclass = make_data_loader(cfg, **kwargs)
 
+        assert(self.nclass == cfg.DATASET.N_CLASSES)
+
         # Define network
-        model = DeepLab(num_classes=self.nclass,
-                        backbone=self.cfg.MODEL.BACKBONE,
-                        output_stride=self.cfg.MODEL.OUT_STRIDE,
-                        sync_bn=self.cfg.MODEL.SYNC_BN,
-                        freeze_bn=self.cfg.MODEL.FREEZE_BN,
-                        use_depth = self.cfg.DATASET.USE_DEPTH)
+        model = DeepLab(cfg)
 
         train_params = [{'params': model.get_1x_lr_params(), 'lr': self.cfg.TRAIN.LR},
                         {'params': model.get_10x_lr_params(), 'lr': self.cfg.TRAIN.LR * 10}]

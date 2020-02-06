@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import torch
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 from deeplab3.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
@@ -45,15 +46,16 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, output_stride, BatchNorm, pretrained=False, channels=3, out_features=None, use_deeplab_format=True):
-        self.channels = channels
+    def __init__(self, cfg, block, layers, BatchNorm=nn.BatchNorm2d):
+
+        self.channels = cfg.DATASET.CHANNELS
         self.inplanes = 64
         super(ResNet, self).__init__()
         blocks = [1, 2, 4]
-        if output_stride == 16:
+        if cfg.MODEL.OUT_STRIDE == 16:
             strides = [1, 2, 2, 1]
             dilations = [1, 1, 1, 2]
-        elif output_stride == 8:
+        elif cfg.MODEL.OUT_STRIDE == 8:
             strides = [1, 2, 1, 1]
             dilations = [1, 1, 2, 4]
         else:
@@ -86,17 +88,13 @@ class ResNet(nn.Module):
                                       "res4": 256 * block.expansion,
                                       "res5": 512 * block.expansion}
 
+        self.use_deeplab_out = cfg.MODEL.RESNET.DEEPLAB_OUTPUT
+        self._out_features = cfg.MODEL.RESNET.OUT_FEATURES
 
-        self.use_deeplab_out = use_deeplab_format
-        if use_deeplab_format:
-            out_features = ['res5' , 'res2']
-        elif out_features is None:
-            out_features = ['res5']
-
-        self._out_features = out_features
-
-        if pretrained:
-            self._load_pretrained_model()
+        if cfg.MODEL.BACKBONE_ZOO:
+            self._load_pretrained_model(use_cuda=cfg.SYSTEM.CUDA)
+        elif len(cfg.MODEL.PRETRAINED) > 0:
+            self._load_pretrained_model(model_file=cfg.MODEL.PRETRAINED, use_cuda=cfg.SYSTEM.CUDA)
         else:
             print("Training backbone from scratch")
 
@@ -179,9 +177,16 @@ class ResNet(nn.Module):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
 
-    def _load_pretrained_model(self):
-        print("Loading pretrained model: {}".format('https://download.pytorch.org/models/resnet101-5d3b4d8f.pth'))
-        pretrain_dict = model_zoo.load_url('https://download.pytorch.org/models/resnet101-5d3b4d8f.pth')
+    def _load_pretrained_model(self, model_file=None, zoo_url='https://download.pytorch.org/models/resnet101-5d3b4d8f.pth', use_cuda=True):
+        if model_file:
+            print("Loading pretrained ResNet model: {}".format(model_file))
+            if use_cuda:
+                pretrain_dict = torch.load(model_file, map_location=torch.device('gpu'))
+            else:
+                pretrain_dict = torch.load(model_file, map_location=torch.device('cpu'))
+        else:
+            print("Loading pretrained ResNet model: {}".format(zoo_url))
+            pretrain_dict = model_zoo.load_url(zoo_url)
         model_dict = {}
         state_dict = self.state_dict()
         for k, v in pretrain_dict.items():
@@ -190,17 +195,21 @@ class ResNet(nn.Module):
         state_dict.update(model_dict)
         self.load_state_dict(state_dict)
 
-def ResNet101(output_stride, BatchNorm, pretrained=True, channels=3, use_deeplab_format=True):
+def ResNet101(cfg, BatchNorm=nn.BatchNorm2d):
     """Constructs a ResNet-101 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 4, 23, 3], output_stride, BatchNorm, pretrained=pretrained, channels=channels, use_deeplab_format=use_deeplab_format)
+    model = ResNet(cfg, Bottleneck, [3, 4, 23, 3], BatchNorm=BatchNorm)
     return model
 
 if __name__ == "__main__":
     import torch
-    model = ResNet101(BatchNorm=nn.BatchNorm2d, pretrained=False, output_stride=8, channels=4)
+    from deeplab3.config.defaults import get_cfg_defaults
+    cfg = get_cfg_defaults()
+    cfg.merge_from_file('configs/coco_rgbd_finetune.yaml')
+
+    model = ResNet101(cfg, BatchNorm=nn.BatchNorm2d)
     input = torch.rand(1, 4, 512, 512)
     output, low_level_feat = model(input)
     print(output.size())

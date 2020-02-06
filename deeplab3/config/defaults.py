@@ -53,6 +53,10 @@ _C.TEST.BATCH_SIZE = -1
 _C.MODEL = CN()
 # Backbone name : ['resnet', 'xception', 'drn', 'mobilenet']
 _C.MODEL.BACKBONE = "resnet"
+# Use backbone weights from model zoo
+_C.MODEL.BACKBONE_ZOO = False
+# Location of pretrained model for bootstraping backbone
+_C.MODEL.PRETRAINED = ""
 # Network output stride
 _C.MODEL.OUT_STRIDE = 16
 # Batch normalization sync (default: auto)
@@ -61,6 +65,16 @@ _C.MODEL.SYNC_BN = False
 _C.MODEL.FREEZE_BN = False
 # Loss function type : ['ce', 'focal']
 _C.MODEL.LOSS_TYPE = 'ce'
+
+# Resnet specific variables
+_C.MODEL.RESNET = CN()
+# Output format, true is deeplab native, false is detectron2 compatible
+_C.MODEL.RESNET.DEEPLAB_OUTPUT = True
+# Which layer features to return from forward function
+_C.MODEL.RESNET.OUT_FEATURES = ['res5']
+
+_C.MODEL.MOBILENET = CN()
+_C.MODEL.MOBILENET.WIDTH_MULT = 1.
 
 
 _C.DATASET = CN()
@@ -77,6 +91,10 @@ _C.DATASET.CROP_SIZE = 513
 # Use RGB-D input
 _C.DATASET.USE_DEPTH = True
 
+_C.DATASET.CHANNELS = 4
+
+_C.DATASET.N_CLASSES = 81
+
 def get_cfg_defaults():
   """Get a yacs CfgNode object with default values for my_project."""
   # Return a clone so that the defaults will not be altered
@@ -85,11 +103,10 @@ def get_cfg_defaults():
 
   C.SYSTEM.CUDA = not C.SYSTEM.NO_CUDA and torch.cuda.is_available()
 
-  # if C.MODEL.SYNC_BN is None:
-  #     if C.SYSTEM.CUDA and len(C.SYSTEM.GPU_IDS) > 1:
-  #         C.MODEL.SYNC_BN = True
-  #     else:
-  #         C.MODEL.SYNC_BN = False
+  if C.SYSTEM.CUDA and len(C.SYSTEM.GPU_IDS) > 1:
+      C.MODEL.SYNC_BN = True
+  else:
+      C.MODEL.SYNC_BN = False
 
   # default settings for epochs, batch_size and lr
   if C.TRAIN.EPOCHS == -1:
@@ -113,6 +130,12 @@ def get_cfg_defaults():
           'pascal': 0.007,
       }
       C.TRAIN.LR = lrs[C.DATASET.NAME.lower()] / (4 * len(C.SYSTEM.GPU_IDS)) * C.TRAIN.BATCH_SIZE
+
+  if C.MODEL.BACKBONE == 'drn':
+      C.MODEL.OUT_STRIDE = 8
+
+  if C.MODEL.RESNET.DEEPLAB_OUTPUT:
+      C.MODEL.RESNET.OUT_FEATURES = ['res5', 'res2']
 
   return C
 

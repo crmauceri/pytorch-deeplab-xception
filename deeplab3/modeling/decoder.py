@@ -5,13 +5,13 @@ import torch.nn.functional as F
 from deeplab3.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 
 class Decoder(nn.Module):
-    def __init__(self, num_classes, backbone, BatchNorm):
+    def __init__(self, cfg, BatchNorm):
         super(Decoder, self).__init__()
-        if backbone == 'resnet' or backbone == 'drn':
+        if cfg.MODEL.BACKBONE == 'resnet' or cfg.MODEL.BACKBONE == 'drn':
             low_level_inplanes = 256
-        elif backbone == 'xception':
+        elif cfg.MODEL.BACKBONE == 'xception':
             low_level_inplanes = 128
-        elif backbone == 'mobilenet':
+        elif cfg.MODEL.BACKBONE == 'mobilenet':
             low_level_inplanes = 24
         else:
             raise NotImplementedError
@@ -27,7 +27,7 @@ class Decoder(nn.Module):
                                        BatchNorm(256),
                                        nn.ReLU(),
                                        nn.Dropout(0.1),
-                                       nn.Conv2d(256, num_classes, kernel_size=1, stride=1))
+                                       nn.Conv2d(256, cfg.DATASET.N_CLASSES, kernel_size=1, stride=1))
         self._init_weight()
 
 
@@ -53,5 +53,5 @@ class Decoder(nn.Module):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
 
-def build_decoder(num_classes, backbone, BatchNorm):
-    return Decoder(num_classes, backbone, BatchNorm)
+def build_decoder(cfg, BatchNorm):
+    return Decoder(cfg, BatchNorm)

@@ -68,10 +68,10 @@ class InvertedResidual(nn.Module):
 
 
 class MobileNetV2(nn.Module):
-    def __init__(self, output_stride=8, BatchNorm=None, width_mult=1., pretrained=True, channels=3):
+    def __init__(self, cfg, BatchNorm=None):
         super(MobileNetV2, self).__init__()
 
-        self.channels = channels
+        self.channels = cfg.DATASET.CHANNELS
         block = InvertedResidual
         input_channel = 32
         current_stride = 1
@@ -88,12 +88,12 @@ class MobileNetV2(nn.Module):
         ]
 
         # building first layer
-        input_channel = int(input_channel * width_mult)
+        input_channel = int(input_channel * cfg.MODEL.MOBILENET.WIDTH_MULT)
         self.features = [conv_bn(self.channels, input_channel, 2, BatchNorm)]
         current_stride *= 2
         # building inverted residual blocks
         for t, c, n, s in interverted_residual_setting:
-            if current_stride == output_stride:
+            if current_stride == cfg.MODEL.OUT_STRIDE:
                 stride = 1
                 dilation = rate
                 rate *= s
@@ -101,7 +101,7 @@ class MobileNetV2(nn.Module):
                 stride = s
                 dilation = 1
                 current_stride *= s
-            output_channel = int(c * width_mult)
+            output_channel = int(c * cfg.MODEL.MOBILENET.WIDTH_MULT)
             for i in range(n):
                 if i == 0:
                     self.features.append(block(input_channel, output_channel, stride, dilation, t, BatchNorm))
@@ -111,8 +111,12 @@ class MobileNetV2(nn.Module):
         self.features = nn.Sequential(*self.features)
         self._initialize_weights()
 
-        if pretrained:
-            self._load_pretrained_model()
+        if cfg.MODEL.BACKBONE_ZOO:
+            self._load_pretrained_model(use_cuda=cfg.SYSTEM.CUDA)
+        elif len(cfg.MODEL.PRETRAINED) > 0:
+            self._load_pretrained_model(model_file=cfg.MODEL.PRETRAINED, use_cuda=cfg.SYSTEM.CUDA)
+        else:
+            print("Training backbone from scratch")
 
         self.low_level_features = self.features[0:4]
         self.high_level_features = self.features[4:]
@@ -122,8 +126,16 @@ class MobileNetV2(nn.Module):
         x = self.high_level_features(low_level_feat)
         return x, low_level_feat
 
-    def _load_pretrained_model(self):
-        pretrain_dict = model_zoo.load_url('http://jeff95.me/models/mobilenet_v2-6a65762b.pth')
+    def _load_pretrained_model(self, model_file=None, zoo_url='http://jeff95.me/models/mobilenet_v2-6a65762b.pth', use_cuda=True):
+        if model_file:
+            print("Loading pretrained MobileNet model: {}".format(model_file))
+            if use_cuda:
+                pretrain_dict = torch.load(model_file, map_location=torch.device('gpu'))
+            else:
+                pretrain_dict = torch.load(model_file, map_location=torch.device('cpu'))
+        else:
+            print("Loading pretrained MobileNet model: {}".format(zoo_url))
+            pretrain_dict = model_zoo.load_url(zoo_url)
         model_dict = {}
         state_dict = self.state_dict()
         for k, v in pretrain_dict.items():
@@ -146,8 +158,12 @@ class MobileNetV2(nn.Module):
                 m.bias.data.zero_()
 
 if __name__ == "__main__":
-    input = torch.rand(1, 4, 512, 512)
-    model = MobileNetV2(output_stride=16, BatchNorm=nn.BatchNorm2d, pretrained=False, channels=4)
+    from deeplab3.config.defaults import get_cfg_defaults
+    cfg = get_cfg_defaults()
+    cfg.merge_from_list(['MODEL.BACKBONE_ZOO', True, 'DATASET.CHANNELS', 3])
+
+    input = torch.rand(1, 3, 512, 512)
+    model = MobileNetV2(cfg, BatchNorm=nn.BatchNorm2d)
     output, low_level_feat = model(input)
     print(output.size())
     print(low_level_feat.size())

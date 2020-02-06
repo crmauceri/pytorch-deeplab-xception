@@ -1,18 +1,14 @@
 from deeplab3.modeling.backbone import resnet, xception, drn, mobilenet
 
-def build_backbone(backbone, output_stride, BatchNorm, use_depth, use_deeplab_format=True):
-    if use_depth:
-        channels = 4
-    else:
-        channels = 3
+def build_backbone(cfg, BatchNorm): #backbone, output_stride, BatchNorm, use_depth, use_deeplab_format=True):
 
-    if backbone == 'resnet':
-        return resnet.ResNet101(output_stride, BatchNorm, pretrained=False, channels=channels, use_deeplab_format=use_deeplab_format)
-    elif backbone == 'xception':
-        return xception.AlignedXception(output_stride, BatchNorm, pretrained=False, channels=channels)
-    elif backbone == 'drn':
+    if cfg.MODEL.BACKBONE == 'resnet':
+        return resnet.ResNet101(cfg, BatchNorm)
+    elif cfg.MODEL.BACKBONE == 'xception':
+        return xception.AlignedXception(cfg, BatchNorm)
+    elif cfg.MODEL.BACKBONE == 'drn':
         return drn.drn_d_54(BatchNorm)
-    elif backbone == 'mobilenet':
-        return mobilenet.MobileNetV2(output_stride, BatchNorm, pretrained=False, channels=channels)
+    elif cfg.MODEL.BACKBONE == 'mobilenet':
+        return mobilenet.MobileNetV2(cfg, BatchNorm)
     else:
         raise NotImplementedError

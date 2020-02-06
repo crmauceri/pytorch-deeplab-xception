@@ -95,17 +95,16 @@ class AlignedXception(nn.Module):
     """
     Modified Alighed Xception
     """
-    def __init__(self, output_stride, BatchNorm,
-                 pretrained=True, channels = 3):
+    def __init__(self, cfg, BatchNorm):
         super(AlignedXception, self).__init__()
 
-        self.channels = channels
+        self.channels = cfg.DATASET.CHANNELS
 
-        if output_stride == 16:
+        if cfg.MODEL.OUT_STRIDE == 16:
             entry_block3_stride = 2
             middle_block_dilation = 1
             exit_block_dilations = (1, 2)
-        elif output_stride == 8:
+        elif cfg.MODEL.OUT_STRIDE == 8:
             entry_block3_stride = 1
             middle_block_dilation = 2
             exit_block_dilations = (2, 4)
@@ -178,8 +177,12 @@ class AlignedXception(nn.Module):
         self._init_weight()
 
         # Load pretrained model
-        if pretrained:
-            self._load_pretrained_model()
+        if cfg.MODEL.BACKBONE_ZOO:
+            self._load_pretrained_model(use_cuda=cfg.SYSTEM.CUDA)
+        elif len(cfg.MODEL.PRETRAINED) > 0:
+            self._load_pretrained_model(model_file=cfg.MODEL.PRETRAINED, use_cuda=cfg.SYSTEM.CUDA)
+        else:
+            print("Training backbone from scratch")
 
     def forward(self, x):
         # Entry flow
@@ -246,8 +249,16 @@ class AlignedXception(nn.Module):
                 m.bias.data.zero_()
 
 
-    def _load_pretrained_model(self):
-        pretrain_dict = model_zoo.load_url('http://data.lip6.fr/cadene/pretrainedmodels/xception-b5690688.pth')
+    def _load_pretrained_model(self, model_file=None, zoo_url='http://data.lip6.fr/cadene/pretrainedmodels/xception-b5690688.pth', use_cuda=True):
+        if model_file:
+            print("Loading pretrained Xception model: {}".format(model_file))
+            if use_cuda:
+                pretrain_dict = torch.load(model_file, map_location=torch.device('gpu'))
+            else:
+                pretrain_dict = torch.load(model_file, map_location=torch.device('cpu'))
+        else:
+            print("Loading pretrained Xception model: {}".format(zoo_url))
+            pretrain_dict = model_zoo.load_url(zoo_url)
         model_dict = {}
         state_dict = self.state_dict()
 
@@ -283,7 +294,11 @@ class AlignedXception(nn.Module):
 
 if __name__ == "__main__":
     import torch
-    model = AlignedXception(BatchNorm=nn.BatchNorm2d, pretrained=False, output_stride=16, channels=4)
+    from deeplab3.config.defaults import get_cfg_defaults
+    cfg = get_cfg_defaults()
+    cfg.merge_from_list(['MODEL.BACKBONE_ZOO', True])
+
+    model = AlignedXception(cfg, BatchNorm=nn.BatchNorm2d)
     input = torch.rand(1, 4, 512, 512)
     output, low_level_feat = model(input)
     print(output.size())

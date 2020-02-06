@@ -1,6 +1,6 @@
 DATASET:
   NAME: 'coco'
-  ROOT: '/Users/Mauceri/Workspace/cocoapi/coco/'
+  ROOT: '../datasets/coco/'
   USE_DEPTH: True
 
 TRAIN:

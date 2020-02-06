@@ -5,3 +5,4 @@ DATASET:
 
 TRAIN:
   CHECKNAME: 'sunrgbd_rgbd_resnet_deeplab'
+  EPOCHS: 100

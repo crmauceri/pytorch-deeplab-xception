@@ -43,7 +43,7 @@ _C.TRAIN.MOMENTUM = 0.9
 # Weight Decay
 _C.TRAIN.WEIGHT_DECAY = 5e-4
 # Whether to use nesterov
-_C.TRAIN.NESTEROV = False
+_C.TRAIN.NESTROV = False
 
 
 _C.TEST = CN()

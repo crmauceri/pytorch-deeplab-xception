@@ -116,7 +116,7 @@ class Trainer(object):
         print('[Epoch: %d, numImages: %5d]' % (epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0]))
         print('Loss: %.3f' % train_loss)
 
-        if self.cfg.TRAIN.NO_VAK:
+        if self.cfg.TRAIN.NO_VAL:
             # save checkpoint every epoch
             is_best = False
             self.saver.save_checkpoint({

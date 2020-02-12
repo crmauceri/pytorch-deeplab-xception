@@ -32,14 +32,17 @@ class Trainer(object):
         assert(self.nclass == cfg.DATASET.N_CLASSES)
 
         # Define network
-        model = DeepLab(cfg)
+        self.model = DeepLab(cfg)
 
-        train_params = [{'params': model.get_1x_lr_params(), 'lr': self.cfg.TRAIN.LR},
-                        {'params': model.get_10x_lr_params(), 'lr': self.cfg.TRAIN.LR * 10}]
+        if self.cfg.TRAIN.FINETUNE:
+            #Trains backbone less aggressively than final layers
+            train_params = [{'params': self.model.get_1x_lr_params(), 'lr': self.cfg.TRAIN.LR},
+                            {'params': self.model.get_10x_lr_params(), 'lr': self.cfg.TRAIN.LR * 10}]
+        else:
+            train_params = self.model.parameters()
 
         # Define Optimizer
-        optimizer = torch.optim.SGD(train_params, momentum=self.cfg.TRAIN.MOMENTUM,
-                                    weight_decay=self.cfg.TRAIN.WEIGHT_DECAY, nesterov=self.cfg.TRAIN.NESTROV)
+        self.optimizer = torch.optim.AdamW(train_params)
 
         # Define Criterion
         # whether to use class balanced weights
@@ -53,13 +56,12 @@ class Trainer(object):
         else:
             weight = None
         self.criterion = SegmentationLosses(weight=weight, cuda=self.cfg.SYSTEM.CUDA).build_loss(mode=self.cfg.MODEL.LOSS_TYPE)
-        self.model, self.optimizer = model, optimizer
-        
+
         # Define Evaluator
         self.evaluator = Evaluator(self.nclass)
         # Define lr scheduler
-        self.scheduler = LR_Scheduler(self.cfg.TRAIN.LR_SCHEDULER, self.cfg.TRAIN.LR,
-                                            self.cfg.TRAIN.EPOCHS, len(self.train_loader))
+        # self.scheduler = LR_Scheduler(self.cfg.TRAIN.LR_SCHEDULER, self.cfg.TRAIN.LR,
+        #                                     self.cfg.TRAIN.EPOCHS, len(self.train_loader))
 
         # Using cuda
         if self.cfg.SYSTEM.CUDA:
@@ -72,7 +74,10 @@ class Trainer(object):
         if self.cfg.TRAIN.RESUME!="":
             if not os.path.isfile(self.cfg.TRAIN.RESUME):
                 raise RuntimeError("=> no checkpoint found at '{}'" .format(self.cfg.TRAIN.RESUME))
-            checkpoint = torch.load(self.cfg.TRAIN.RESUME)
+            if cfg.SYSTEM.CUDA:
+                checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('gpu'))
+            else:
+                checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('cpu'))
             self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']
             if self.cfg.SYSTEM.CUDA:
                 self.model.module.load_state_dict(checkpoint['state_dict'])
@@ -97,7 +102,7 @@ class Trainer(object):
             image, target = sample['image'], sample['label']
             if self.cfg.SYSTEM.CUDA:
                 image, target = image.cuda(), target.cuda()
-            self.scheduler(self.optimizer, i, epoch, self.best_pred)
+            # self.scheduler(self.optimizer, i, epoch, self.best_pred)
             self.optimizer.zero_grad()
             output = self.model(image)
             loss = self.criterion(output, target)
@@ -188,7 +193,6 @@ def main():
     cfg = get_cfg_defaults()
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
-    cfg.freeze()
     print(cfg)
 
     torch.manual_seed(cfg.SYSTEM.SEED)

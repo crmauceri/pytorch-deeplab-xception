@@ -35,7 +35,7 @@ _C.TRAIN.NO_VAL = False
 
 ## Learning Optimizer Parameters
 # Learning rate (default: auto)
-_C.TRAIN.LR = -1
+_C.TRAIN.LR = 0.001
 # Learnign rate scheduler mode : ['poly', 'step', 'cos']
 _C.TRAIN.LR_SCHEDULER = 'poly'
 # Momentum
@@ -123,13 +123,13 @@ def get_cfg_defaults():
   if C.TEST.BATCH_SIZE == -1:
       C.TEST.BATCH_SIZE = C.TRAIN.BATCH_SIZE
 
-  if C.TRAIN.LR == -1:
-      lrs = {
-          'coco': 0.1,
-          'cityscapes': 0.01,
-          'pascal': 0.007,
-      }
-      C.TRAIN.LR = lrs[C.DATASET.NAME.lower()] / (4 * len(C.SYSTEM.GPU_IDS)) * C.TRAIN.BATCH_SIZE
+  # if C.TRAIN.LR == -1:
+  #     lrs = {
+  #         'coco': 0.1,
+  #         'cityscapes': 0.01,
+  #         'pascal': 0.007,
+  #     }
+  #     C.TRAIN.LR = lrs[C.DATASET.NAME.lower()] / (4 * len(C.SYSTEM.GPU_IDS)) * C.TRAIN.BATCH_SIZE
 
   if C.MODEL.BACKBONE == 'drn':
       C.MODEL.OUT_STRIDE = 8

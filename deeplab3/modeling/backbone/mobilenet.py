@@ -71,8 +71,7 @@ class MobileNetV2(nn.Module):
     def __init__(self, cfg, BatchNorm=None):
         super(MobileNetV2, self).__init__()
 
-        self.channels = cfg.DATASET.CHANNELS
-        block = InvertedResidual
+        self.channels = cfg.MODEL.INPUT_CHANNELS
         input_channel = 32
         current_stride = 1
         rate = 1
@@ -160,7 +159,7 @@ class MobileNetV2(nn.Module):
 if __name__ == "__main__":
     from deeplab3.config.defaults import get_cfg_defaults
     cfg = get_cfg_defaults()
-    cfg.merge_from_list(['MODEL.BACKBONE_ZOO', True, 'DATASET.CHANNELS', 3])
+    cfg.merge_from_list(['MODEL.BACKBONE_ZOO', True, 'MODEL.INPUT_CHANNELS', 3])
 
     input = torch.rand(1, 3, 512, 512)
     model = MobileNetV2(cfg, BatchNorm=nn.BatchNorm2d)

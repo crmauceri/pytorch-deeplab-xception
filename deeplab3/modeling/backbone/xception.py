@@ -98,7 +98,7 @@ class AlignedXception(nn.Module):
     def __init__(self, cfg, BatchNorm):
         super(AlignedXception, self).__init__()
 
-        self.channels = cfg.DATASET.CHANNELS
+        self.channels = cfg.MODEL.INPUT_CHANNELS
 
         if cfg.MODEL.OUT_STRIDE == 16:
             entry_block3_stride = 2

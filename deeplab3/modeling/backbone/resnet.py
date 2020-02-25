@@ -48,7 +48,7 @@ class ResNet(nn.Module):
 
     def __init__(self, cfg, block, layers, BatchNorm=nn.BatchNorm2d):
 
-        self.channels = cfg.DATASET.CHANNELS
+        self.channels = cfg.MODEL.INPUT_CHANNELS
         self.inplanes = 64
         super(ResNet, self).__init__()
         blocks = [1, 2, 4]

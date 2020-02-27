@@ -75,7 +75,7 @@ class Trainer(object):
             if not os.path.isfile(self.cfg.TRAIN.RESUME):
                 raise RuntimeError("=> no checkpoint found at '{}'" .format(self.cfg.TRAIN.RESUME))
             if cfg.SYSTEM.CUDA:
-                checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('gpu'))
+                checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('cuda'))
             else:
                 checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('cpu'))
             self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']

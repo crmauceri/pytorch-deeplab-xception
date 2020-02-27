@@ -181,7 +181,7 @@ class ResNet(nn.Module):
         if model_file:
             print("Loading pretrained ResNet model: {}".format(model_file))
             if use_cuda:
-                pretrain_dict = torch.load(model_file, map_location=torch.device('gpu'))
+                pretrain_dict = torch.load(model_file, map_location=torch.device('cuda'))
             else:
                 pretrain_dict = torch.load(model_file, map_location=torch.device('cpu'))
         else:

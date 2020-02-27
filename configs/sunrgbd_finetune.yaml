@@ -9,4 +9,4 @@ TRAIN:
   EPOCHS: 100
 
 MODEL:
-  PRETRAINED: 'pretrained/deeplab-resnet.pth'
+  PRETRAINED: 'pretrained/deeplab-resnet-rgbd.pth'

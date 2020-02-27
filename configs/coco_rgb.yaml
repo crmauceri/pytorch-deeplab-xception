@@ -1,0 +1,12 @@
+DATASET:
+  NAME: 'coco'
+  ROOT: '/Users/Mauceri/Workspace/cocoapi/coco/'
+  USE_DEPTH: False
+
+MODEL:
+  INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+
+TRAIN:
+  CHECKNAME: 'coco_rgb_resnet_deeplab'
+  EPOCHS: 100

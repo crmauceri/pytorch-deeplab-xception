@@ -1,0 +1,8 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: '/home/cc/datasets/cityscapes/'
+  USE_DEPTH: True
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgbd_resnet_deeplab'
+  EPOCHS: 100

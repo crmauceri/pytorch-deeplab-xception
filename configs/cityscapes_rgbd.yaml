@@ -1,7 +1,8 @@
 DATASET:
   NAME: 'cityscapes'
-  ROOT: '/home/cc/datasets/cityscapes/'
+  ROOT: '/Users/Mauceri/Workspace/cityscapes/'
   USE_DEPTH: True
+  N_CLASSES: 19
 
 TRAIN:
   CHECKNAME: 'cityscapes_rgbd_resnet_deeplab'

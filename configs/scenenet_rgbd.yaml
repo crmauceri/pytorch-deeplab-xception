@@ -1,0 +1,9 @@
+DATASET:
+  NAME: 'scenenet'
+  ROOT: '/Users/Mauceri/Workspace/scenenet/data'
+  USE_DEPTH: True
+  N_CLASSES: 13
+
+TRAIN:
+  CHECKNAME: 'scenenet_rgbd_resnet_deeplab'
+  EPOCHS: 100

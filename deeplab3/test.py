@@ -106,7 +106,7 @@ class Tester:
         breakdown = {"Class": dataloader.dataset.class_names,
                  "Accuracy": acc_class_tensor[1:],
                  "mIoU": mIOU_class_tensor[1:]}
-        print(tabulate(breakdown), headers="keys")
+        print(tabulate(breakdown, headers="keys"))
 
         plt.figure()
         plt.imshow(self.evaluator.confusion_matrix)

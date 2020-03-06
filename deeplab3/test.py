@@ -101,8 +101,6 @@ class Tester:
             total_pix += np.bincount(labels, minlength=num_classes)
             total_photos[np.unique(labels)] += 1
 
-            break
-
 
         # Fast test during the training
         Acc = self.evaluator.Pixel_Accuracy()

@@ -1,8 +1,0 @@
-DATASET:
-  NAME: 'coco'
-  ROOT: '../datasets/coco/'
-  USE_DEPTH: True
-
-TRAIN:
-  CHECKNAME: 'coco_rgbd_resnet_deeplab'
-  EPOCHS: 100

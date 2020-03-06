@@ -1,6 +1,6 @@
 DATASET:
   NAME: 'sunrgbd'
-  ROOT: '/Users/Mauceri/Workspace/SUNRGBD'
+  ROOT: 'datasets/SUNRGBD'
   USE_DEPTH: True
   N_CLASSES: 38
 

@@ -1,6 +1,6 @@
 DATASET:
   NAME: 'cityscapes'
-  ROOT: '/Users/Mauceri/Workspace/cityscapes/'
+  ROOT: 'datasets/cityscapes/'
   USE_DEPTH: True
   N_CLASSES: 19
 

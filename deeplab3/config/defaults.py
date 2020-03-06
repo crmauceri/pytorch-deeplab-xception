@@ -93,6 +93,9 @@ _C.DATASET.CROP_SIZE = 513
 # Use RGB-D input
 _C.DATASET.USE_DEPTH = True
 
+# Variables specific to coco loader
+_C.DATASET.COCO = CN()
+_C.DATASET.COCO.CATEGORIES = 'coco' #['pascal', 'sunrgbd']
 
 
 _C.DATASET.N_CLASSES = 81

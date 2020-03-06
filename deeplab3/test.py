@@ -75,7 +75,11 @@ class Tester:
         self.evaluator.reset()
         tbar = tqdm(dataloader, desc='\r')
 
+        num_classes = dataloader.dataset.NUM_CLASSES
+
         test_loss = 0.0
+        total_pix = np.zeros((num_classes,))
+        total_photos = np.zeros((num_classes,))
         for i, sample in enumerate(tbar):
             image, target = sample['image'], sample['label']
             if self.cfg.SYSTEM.CUDA:
@@ -91,6 +95,15 @@ class Tester:
             # Add batch sample into evaluator
             self.evaluator.add_batch(target, pred)
 
+            # Calculate class frequency
+            mask = (target>=0) & (target < num_classes)
+            labels = target[mask].astype(np.uint8)
+            total_pix += np.bincount(labels, minlength=num_classes)
+            total_photos[np.unique(labels)] += 1
+
+            break
+
+
         # Fast test during the training
         Acc = self.evaluator.Pixel_Accuracy()
         Acc_class, acc_class_tensor = self.evaluator.Pixel_Accuracy_Class()
@@ -103,9 +116,12 @@ class Tester:
         print('Loss: %.3f' % test_loss)
 
         print('Class breakdown:')
-        breakdown = {"Class": dataloader.dataset.class_names,
-                 "Accuracy": acc_class_tensor[1:],
-                 "mIoU": mIOU_class_tensor[1:]}
+        breakdown = {"Class": ['unknown'] + dataloader.dataset.class_names,
+                 "N_Photos": total_photos,
+                 "% Pixels": total_pix / total_pix.sum(),
+                 "Accuracy": acc_class_tensor,
+                 "mIoU": mIOU_class_tensor}
+
         print(tabulate(breakdown, headers="keys"))
 
         plt.figure()

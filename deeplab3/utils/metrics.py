@@ -10,17 +10,21 @@ class Evaluator(object):
         Acc = np.diag(self.confusion_matrix).sum() / self.confusion_matrix.sum()
         return Acc
 
+    # Return
+    #   mean class accuracy,
+    #   tensor of each class
     def Pixel_Accuracy_Class(self):
         Acc = np.diag(self.confusion_matrix) / self.confusion_matrix.sum(axis=1)
-        Acc = np.nanmean(Acc)
-        return Acc
+        return np.nanmean(Acc), Acc
 
+    # Return
+    #   mean class iou,
+    #   tensor of each class
     def Mean_Intersection_over_Union(self):
         MIoU = np.diag(self.confusion_matrix) / (
                     np.sum(self.confusion_matrix, axis=1) + np.sum(self.confusion_matrix, axis=0) -
                     np.diag(self.confusion_matrix))
-        MIoU = np.nanmean(MIoU)
-        return MIoU
+        return np.nanmean(MIoU), MIoU
 
     def Frequency_Weighted_Intersection_over_Union(self):
         freq = np.sum(self.confusion_matrix, axis=1) / np.sum(self.confusion_matrix)

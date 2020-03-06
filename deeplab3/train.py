@@ -154,8 +154,8 @@ class Trainer(object):
 
         # Fast test during the training
         Acc = self.evaluator.Pixel_Accuracy()
-        Acc_class = self.evaluator.Pixel_Accuracy_Class()
-        mIoU = self.evaluator.Mean_Intersection_over_Union()
+        Acc_class = self.evaluator.Pixel_Accuracy_Class()[0]
+        mIoU = self.evaluator.Mean_Intersection_over_Union()[0]
         FWIoU = self.evaluator.Frequency_Weighted_Intersection_over_Union()
         self.writer.add_scalar('val/total_loss_epoch', test_loss, epoch)
         self.writer.add_scalar('val/mIoU', mIoU, epoch)

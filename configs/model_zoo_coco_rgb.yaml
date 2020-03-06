@@ -4,6 +4,7 @@ DATASET:
   USE_DEPTH: False
   COCO:
     CATEGORIES: 'pascal'
+  N_CLASSES: 21
 
 MODEL:
   INPUT_CHANNELS: 3

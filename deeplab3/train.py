@@ -75,7 +75,7 @@ class Trainer(object):
             if not os.path.isfile(self.cfg.TRAIN.RESUME):
                 raise RuntimeError("=> no checkpoint found at '{}'" .format(self.cfg.TRAIN.RESUME))
             if cfg.SYSTEM.CUDA:
-                checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('gpu'))
+                checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('cuda'))
             else:
                 checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('cpu'))
             self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']
@@ -154,8 +154,8 @@ class Trainer(object):
 
         # Fast test during the training
         Acc = self.evaluator.Pixel_Accuracy()
-        Acc_class = self.evaluator.Pixel_Accuracy_Class()
-        mIoU = self.evaluator.Mean_Intersection_over_Union()
+        Acc_class = self.evaluator.Pixel_Accuracy_Class()[0]
+        mIoU = self.evaluator.Mean_Intersection_over_Union()[0]
         FWIoU = self.evaluator.Frequency_Weighted_Intersection_over_Union()
         self.writer.add_scalar('val/total_loss_epoch', test_loss, epoch)
         self.writer.add_scalar('val/mIoU', mIoU, epoch)

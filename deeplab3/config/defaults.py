@@ -76,6 +76,8 @@ _C.MODEL.RESNET.OUT_FEATURES = ['res5']
 _C.MODEL.MOBILENET = CN()
 _C.MODEL.MOBILENET.WIDTH_MULT = 1.
 
+_C.MODEL.INPUT_CHANNELS = 4
+
 
 _C.DATASET = CN()
 # ['pascal', 'coco', 'cityscapes', 'sunrgbd']
@@ -91,7 +93,7 @@ _C.DATASET.CROP_SIZE = 513
 # Use RGB-D input
 _C.DATASET.USE_DEPTH = True
 
-_C.DATASET.CHANNELS = 4
+
 
 _C.DATASET.N_CLASSES = 81
 

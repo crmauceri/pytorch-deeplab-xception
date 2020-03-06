@@ -48,7 +48,7 @@ class ResNet(nn.Module):
 
     def __init__(self, cfg, block, layers, BatchNorm=nn.BatchNorm2d):
 
-        self.channels = cfg.DATASET.CHANNELS
+        self.channels = cfg.MODEL.INPUT_CHANNELS
         self.inplanes = 64
         super(ResNet, self).__init__()
         blocks = [1, 2, 4]
@@ -181,7 +181,7 @@ class ResNet(nn.Module):
         if model_file:
             print("Loading pretrained ResNet model: {}".format(model_file))
             if use_cuda:
-                pretrain_dict = torch.load(model_file, map_location=torch.device('gpu'))
+                pretrain_dict = torch.load(model_file, map_location=torch.device('cuda'))
             else:
                 pretrain_dict = torch.load(model_file, map_location=torch.device('cpu'))
         else:

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from tqdm import tqdm
 
 def decode_seg_map_sequence(label_masks, dataset='pascal'):
     rgb_masks = []
@@ -30,6 +31,9 @@ def decode_segmap(label_mask, dataset, plot=False):
     elif dataset == 'sunrgbd':
         n_classes = 38
         label_colours = get_sunrgbd_labels()
+    elif dataset == 'scenenet':
+        n_classes = 13
+        label_colours = get_nyu13_labels()
     else:
         raise NotImplementedError
 
@@ -66,6 +70,34 @@ def encode_segmap(mask):
         label_mask[np.where(np.all(mask == label, axis=-1))[:2]] = ii
     label_mask = label_mask.astype(int)
     return label_mask
+
+
+def sample_distribution(dataset):
+    n = min(1000, len(dataset))
+    m = 100
+    channels = 4 if dataset.use_depth else 3
+    samples = np.zeros((m*n,channels))
+    for it, i in tqdm(enumerate(np.random.choice(len(dataset), n))):
+        sample = dataset.__getitem__(i, no_transforms=True)
+        img = np.asarray(sample['image'])
+
+        #Flatten image
+        img = np.reshape(img, (img.shape[0]*img.shape[1], img.shape[2]))
+        if img.shape[0]>m:
+            pixel_i = np.random.choice(img.shape[0], m)
+            samples[it*m:(it+1)*m,:] = img[pixel_i, :]
+
+    mean = np.mean(samples, axis=0)
+    std = np.std(samples, axis=0)
+    m_max = np.max(samples, axis=0)
+
+    if dataset.use_depth:
+        import matplotlib.pyplot as plt
+        plt.hist(samples[:, -1], bins='auto')
+        plt.title("Depth histogram")
+        plt.show()
+
+    return {'mean': mean, 'std': std, 'max': m_max}
 
 
 def get_cityscapes_labels():
@@ -115,3 +147,19 @@ def get_pascal_labels():
                        [64, 0, 128], [192, 0, 128], [64, 128, 128], [192, 128, 128],
                        [0, 64, 0], [128, 64, 0], [0, 192, 0], [128, 192, 0],
                        [0, 64, 128]])
+
+def get_nyu13_labels():
+    return np.array([[  0,   0,   0],
+       [  0,   0, 255], #BED
+       [232,  88,  47], #BOOKS
+       [  0, 217,   0], #CEILING
+       [148,   0, 240], #CHAIR
+       [222, 241,  23], #FLOOR
+       [255, 205, 205], #FURNITURE
+       [  0, 223, 228], #OBJECTS
+       [106, 135, 204], #PAINTING
+       [116,  28,  41], #SOFA
+       [240,  35, 235], #TABLE
+       [  0, 166, 156], #TV
+       [249, 139,   0], #WALL
+       [225, 228, 194]])  #WINDOWS

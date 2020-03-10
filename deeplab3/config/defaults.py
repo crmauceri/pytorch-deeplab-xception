@@ -95,11 +95,12 @@ _C.DATASET.USE_DEPTH = True
 
 # Variables specific to coco loader
 _C.DATASET.COCO = CN()
-_C.DATASET.COCO.CATEGORIES = 'coco' #['pascal', 'sunrgbd']
+_C.DATASET.COCO.CATEGORIES = 'coco' #['coco', 'pascal', 'sunrgbd']
 
 # Variables specific to cityscapes loader
 _C.DATASET.CITYSCAPES = CN()
 _C.DATASET.CITYSCAPES.GT_MODE = 'gtCoarse' #['gtCoarse', 'gtFine']
+_C.DATASET.CITYSCAPES.TRAIN_SET = 'train_extra' #['train_extra', 'train']
 
 
 _C.DATASET.N_CLASSES = 81

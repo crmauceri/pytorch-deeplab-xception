@@ -18,6 +18,8 @@ class Saver(object):
         else:
             self.experiment_dir = self.cfg.RESUME.DIRECTORY
 
+        print("Saver configured to save checkpoints to: " + self.experiment_dir)
+
     def save_checkpoint(self, state, is_best):
         """Saves checkpoint to disk"""
         filename = self.cfg.RESUME.MODEL

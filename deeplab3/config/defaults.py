@@ -98,6 +98,7 @@ _C.DATASET.COCO = CN()
 _C.DATASET.COCO.CATEGORIES = 'coco' #['pascal', 'sunrgbd']
 
 # Variables specific to cityscapes loader
+_C.DATASET.CITYSCAPES = CN()
 _C.DATASET.CITYSCAPES.GT_MODE = 'gtCoarse' #['gtCoarse', 'gtFine']
 
 

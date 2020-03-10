@@ -10,14 +10,17 @@ class Saver(object):
         self.cfg = cfg
         self.directory = os.path.join('run', cfg.DATASET.NAME, cfg.TRAIN.CHECKNAME)
         self.runs = sorted(glob.glob(os.path.join(self.directory, 'experiment_*')))
-        run_id = int(self.runs[-1].split('_')[-1]) + 1 if self.runs else 0
+        if self.cfg.RESUME.DIRECTORY == "":
+            run_id = int(self.runs[-1].split('_')[-1]) + 1 if self.runs else 0
+            self.experiment_dir = os.path.join(self.directory, 'experiment_{}'.format(str(run_id)))
+            if not os.path.exists(self.experiment_dir):
+                os.makedirs(self.experiment_dir)
+        else:
+            self.experiment_dir = self.cfg.RESUME.DIRECTORY
 
-        self.experiment_dir = os.path.join(self.directory, 'experiment_{}'.format(str(run_id)))
-        if not os.path.exists(self.experiment_dir):
-            os.makedirs(self.experiment_dir)
-
-    def save_checkpoint(self, state, is_best, filename='checkpoint.pth.tar'):
+    def save_checkpoint(self, state, is_best):
         """Saves checkpoint to disk"""
+        filename = self.cfg.RESUME.MODEL
         filename = os.path.join(self.experiment_dir, filename)
         torch.save(state, filename)
         if is_best:

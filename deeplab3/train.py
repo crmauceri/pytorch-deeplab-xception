@@ -71,13 +71,14 @@ class Trainer(object):
 
         # Resuming checkpoint
         self.best_pred = 0.0
-        if self.cfg.TRAIN.RESUME!="":
-            if not os.path.isfile(self.cfg.TRAIN.RESUME):
-                raise RuntimeError("=> no checkpoint found at '{}'" .format(self.cfg.TRAIN.RESUME))
+        if self.cfg.TRAIN.RESUME:
+            model_filepath = os.path.join(self.cfg.RESUME.DIRECTORY, self.cfg.RESUME.MODEL)
+            if not os.path.isfile(model_filepath):
+                raise RuntimeError("=> no checkpoint found at '{}'" .format(model_filepath))
             if cfg.SYSTEM.CUDA:
-                checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('cuda'))
+                checkpoint = torch.load(model_filepath, map_location=torch.device('cuda'))
             else:
-                checkpoint = torch.load(cfg.TRAIN.RESUME, map_location=torch.device('cpu'))
+                checkpoint = torch.load(model_filepath, map_location=torch.device('cpu'))
             self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']
             if self.cfg.SYSTEM.CUDA:
                 self.model.module.load_state_dict(checkpoint['state_dict'])
@@ -87,7 +88,7 @@ class Trainer(object):
                 self.optimizer.load_state_dict(checkpoint['optimizer'])
             self.best_pred = checkpoint['best_pred']
             print("=> loaded checkpoint '{}' (epoch {})"
-                  .format(self.cfg.TRAIN.RESUME, checkpoint['epoch']))
+                  .format(model_filepath, checkpoint['epoch']))
 
         # Clear start epoch if fine-tuning
         if self.cfg.TRAIN.FINETUNE:

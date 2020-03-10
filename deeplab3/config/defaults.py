@@ -22,8 +22,6 @@ _C.TRAIN.START_EPOCH = 0
 _C.TRAIN.BATCH_SIZE = -1
 # whether to use balanced weights
 _C.TRAIN.USE_BALANCED_WEIGHTS = False
-# Resume training from checkpoint file
-_C.TRAIN.RESUME = ""
 # Checkpoint file name
 _C.TRAIN.CHECKNAME = 'deeplab-defaults'
 # Finetuning on a different dataset
@@ -77,6 +75,12 @@ _C.MODEL.MOBILENET = CN()
 _C.MODEL.MOBILENET.WIDTH_MULT = 1.
 
 _C.MODEL.INPUT_CHANNELS = 4
+
+# Where to save stuff
+_C.RESUME = CN()
+_C.TRAIN.RESUME = False
+_C.RESUME.DIRECTORY = ''
+_C.RESUME.MODEL = 'checkpoint.pth.tar'
 
 
 _C.DATASET = CN()

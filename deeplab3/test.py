@@ -56,18 +56,18 @@ class Tester:
             model = torch.nn.DataParallel(model, device_ids=self.cfg.SYSTEM.GPU_IDS)
             model = model.cuda()
 
-        if not os.path.isfile(self.cfg.TRAIN.RESUME):
-            raise RuntimeError("=> no checkpoint found at '{}'" .format(self.cfg.TRAIN.RESUME))
+        model_filepath = os.path.join(self.cfg.RESUME.DIRECTORY, self.cfg.RESUME.MODEL)
+        if not os.path.isfile(model_filepath):
+            raise RuntimeError("=> no checkpoint found at '{}'" .format(model_filepath))
 
-        checkpoint = torch.load(self.cfg.TRAIN.RESUME, map_location=torch.device('cpu'))
+        checkpoint = torch.load(model_filepath, map_location=torch.device('cpu'))
         self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']
         if self.cfg.SYSTEM.CUDA:
             model.module.load_state_dict(checkpoint['state_dict'])
         else:
             model.load_state_dict(checkpoint['state_dict'])
-        best_pred = checkpoint['best_pred']
         print("=> loaded checkpoint '{}' (epoch {})"
-              .format(self.cfg.TRAIN.RESUME, checkpoint['epoch']))
+              .format(model_filepath, checkpoint['epoch']))
         return model
 
     def run(self, dataloader, class_filter=None):
@@ -127,7 +127,7 @@ class Tester:
         plt.show()
 
 
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PyTorch DeeplabV3Plus Metric Calculation")
     parser.add_argument('config_file', help='config file path')
     parser.add_argument(
@@ -147,25 +147,3 @@ def main():
     torch.manual_seed(cfg.SYSTEM.SEED)
     trainer = Tester(cfg)
     trainer.run(trainer.val_loader)
-
-
-
-if __name__ == "__main__":
-   main()
-
-# fine_args = get_cfg_defaults()
-# fine_args.merge_from_file('configs/sunrgbd_finetune.yaml')
-# fine_args.merge_from_list(["DATASET.USE_DEPTH", False,
-#                           "TRAIN.RESUME", "run/sunrgbd/sunrgbd_rgbd_resnet_deeplab/experiment_2/checkpoint.pth.tar"])
-#
-# rgbd_args = get_cfg_defaults()
-# rgbd_args.merge_from_file('configs/coco_rgbd.yaml')
-# rgbd_args.merge_from_list(["DATASET.USE_DEPTH", False,
-#                           "TRAIN.RESUME", "pretrained/deeplab-resnet-rgbd.pth"])
-#
-#
-# rgbd_model = load_model(rgbd_args)
-# fine_model = load_model(fine_args)
-#
-# rgbd_model.eval()
-# fine_model.eval()

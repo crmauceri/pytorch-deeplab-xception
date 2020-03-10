@@ -114,7 +114,7 @@ class Tester:
         print('Loss: %.3f' % test_loss)
 
         print('Class breakdown:')
-        breakdown = {"Class": ['unknown'] + dataloader.dataset.class_names,
+        breakdown = {"Class": dataloader.dataset.class_names,
                  "N_Photos": total_photos,
                  "% Pixels": total_pix / total_pix.sum(),
                  "Accuracy": acc_class_tensor,

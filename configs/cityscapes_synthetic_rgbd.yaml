@@ -5,6 +5,7 @@ DATASET:
   N_CLASSES: 19
   CITYSCAPES:
     DEPTH_SOURCE: 'VNL_Monocular'
+    SYNTHETIC_DEPTH: True
 
 TRAIN:
   CHECKNAME: 'cityscapes_rgbd_resnet_deeplab'

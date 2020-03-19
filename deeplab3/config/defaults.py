@@ -105,6 +105,7 @@ _C.DATASET.COCO.CATEGORIES = 'coco' #['coco', 'pascal', 'sunrgbd']
 _C.DATASET.CITYSCAPES = CN()
 _C.DATASET.CITYSCAPES.GT_MODE = 'gtCoarse' #['gtCoarse', 'gtFine']
 _C.DATASET.CITYSCAPES.TRAIN_SET = 'train_extra' #['train_extra', 'train']
+_C.DATASET.CITYSCAPES.DEPTH_SOURCE = 'disparity' #['VNL_Monocular']
 
 
 _C.DATASET.N_CLASSES = 81

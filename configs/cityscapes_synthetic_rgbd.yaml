@@ -1,0 +1,11 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  USE_DEPTH: True
+  N_CLASSES: 19
+  CITYSCAPES:
+    DEPTH_SOURCE: 'VNL_Monocular'
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgbd_resnet_deeplab'
+  EPOCHS: 100

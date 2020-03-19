@@ -4,7 +4,7 @@ DATASET:
   USE_DEPTH: True
   N_CLASSES: 19
   CITYSCAPES:
-    DEPTH_SOURCE: 'VNL_Monocular'
+    DEPTH_DIR: 'VNL_Monocular'
     SYNTHETIC_DEPTH: True
 
 TRAIN:

@@ -5,8 +5,9 @@ DATASET:
   N_CLASSES: 19
 
 TRAIN:
-  CHECKNAME: 'cityscapes_rgb_resnet_deeplab'
+  CHECKNAME: 'cityscapes_rgb_imagenet'
   EPOCHS: 100
 
 MODEL:
   INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True

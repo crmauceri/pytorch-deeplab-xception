@@ -126,6 +126,8 @@ class Tester:
         plt.imshow(self.evaluator.confusion_matrix)
         plt.show()
 
+        print(output)
+
         return output, plt
 
 

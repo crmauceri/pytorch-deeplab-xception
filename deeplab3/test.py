@@ -2,6 +2,7 @@ from deeplab3.config.defaults import get_cfg_defaults
 
 from deeplab3.utils.metrics import Evaluator
 import numpy as np
+import scipy.io as sio
 import torch
 import argparse
 import os
@@ -128,7 +129,7 @@ class Tester:
 
         print(output)
 
-        return output, plt
+        return output, self.evaluator.confusion_matrix
 
 
 if __name__ == "__main__":
@@ -150,9 +151,9 @@ if __name__ == "__main__":
 
     torch.manual_seed(cfg.SYSTEM.SEED)
     trainer = Tester(cfg)
-    output, plt = trainer.run(trainer.val_loader)
+    output, mat = trainer.run(trainer.val_loader)
 
     with open(cfg.RESUME.DIRECTORY + 'report.txt', 'w') as f:
         f.write(output)
 
-    plt.savefig(cfg.RESUME.DIRECTORY + 'confusion.png')
+    sio.savemat(cfg.RESUME.DIRECTORY + 'confusion.mat', {'confusion': mat})

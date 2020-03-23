@@ -24,8 +24,8 @@ The code was tested with Anaconda and Python 3.8. After installing the Anaconda 
 
     For custom dependencies:
     ```Shell
-    conda install matplotlib pillow tqdm protobuf yacs
-    pip install tensorboardX
+    conda install matplotlib pillow tqdm protobuf tabulate
+    pip install tensorboardX yacs
     ```
 2. Compile SceneNetRGBD protobuf files
    ```bash

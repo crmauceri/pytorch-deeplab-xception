@@ -108,23 +108,25 @@ class Tester:
         mIoU, mIOU_class_tensor = self.evaluator.Mean_Intersection_over_Union()
         FWIoU = self.evaluator.Frequency_Weighted_Intersection_over_Union()
 
-        print('Results:')
-        print('[numImages: %5d]' % (i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0]))
-        print("Acc:{}, Acc_class:{}, mIoU:{}, fwIoU: {}".format(Acc, Acc_class, mIoU, FWIoU))
-        print('Loss: %.3f' % test_loss)
+        output = 'Results:\n'
+        output += '[numImages: %5d]\n' % (i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0])
+        output += "Acc:{}, Acc_class:{}, mIoU:{}, fwIoU: {}\n".format(Acc, Acc_class, mIoU, FWIoU)
+        output += 'Loss: %.3f\n' % test_loss
 
-        print('Class breakdown:')
+        output += 'Class breakdown:\n'
         breakdown = {"Class": dataloader.dataset.class_names,
                  "N_Photos": total_photos,
                  "% Pixels": total_pix / total_pix.sum(),
                  "Accuracy": acc_class_tensor,
                  "mIoU": mIOU_class_tensor}
 
-        print(tabulate(breakdown, headers="keys"))
+        output += tabulate(breakdown, headers="keys")
 
         plt.figure()
         plt.imshow(self.evaluator.confusion_matrix)
         plt.show()
+
+        return output, plt
 
 
 if __name__ == "__main__":
@@ -146,4 +148,9 @@ if __name__ == "__main__":
 
     torch.manual_seed(cfg.SYSTEM.SEED)
     trainer = Tester(cfg)
-    trainer.run(trainer.val_loader)
+    output, plt = trainer.run(trainer.val_loader)
+
+    with open(cfg.RESUME.DIRECTORY + 'report.txt', 'w') as f:
+        f.write(output)
+
+    plt.savefig(cfg.RESUME.DIRECTORY + 'confusion.png')

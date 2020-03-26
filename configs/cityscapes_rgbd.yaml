@@ -1,7 +1,7 @@
 DATASET:
   NAME: 'cityscapes'
   ROOT: 'datasets/cityscapes/'
-  USE_DEPTH: True
+  MODE: 'RGBD'
   N_CLASSES: 19
 
 TRAIN:

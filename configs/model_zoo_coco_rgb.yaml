@@ -1,7 +1,7 @@
 DATASET:
   NAME: 'coco'
   ROOT: 'datasets/coco/'
-  USE_DEPTH: False
+  MODE: 'RGB'
   COCO:
     CATEGORIES: 'pascal'
   N_CLASSES: 21

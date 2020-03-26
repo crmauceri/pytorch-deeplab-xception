@@ -47,6 +47,9 @@ class ASPP(nn.Module):
         else:
             raise NotImplementedError
 
+        if cfg.MODEL.ASPP_DOUBLE:
+            inplanes *= 2
+
         self.aspp1 = _ASPPModule(inplanes, 256, 1, padding=0, dilation=dilations[0], BatchNorm=BatchNorm)
         self.aspp2 = _ASPPModule(inplanes, 256, 3, padding=dilations[1], dilation=dilations[1], BatchNorm=BatchNorm)
         self.aspp3 = _ASPPModule(inplanes, 256, 3, padding=dilations[2], dilation=dilations[2], BatchNorm=BatchNorm)

@@ -1,7 +1,7 @@
 DATASET:
   NAME: 'coco'
   ROOT: 'datasets/coco/'
-  USE_DEPTH: False
+  MODE: 'RGB'
 
 MODEL:
   INPUT_CHANNELS: 3

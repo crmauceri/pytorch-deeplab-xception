@@ -1,7 +1,7 @@
 DATASET:
   NAME: 'coco'
   ROOT: 'datasets/coco/'
-  USE_DEPTH: True
+  MODE: 'RGBD'
 
 TRAIN:
   CHECKNAME: 'coco_rgbd_resnet_deeplab'

@@ -49,6 +49,7 @@ _C.TEST = CN()
 _C.TEST.BATCH_SIZE = -1
 
 _C.MODEL = CN()
+
 # Backbone name : ['resnet', 'xception', 'drn', 'mobilenet']
 _C.MODEL.BACKBONE = "resnet"
 # Use backbone weights from model zoo
@@ -63,6 +64,10 @@ _C.MODEL.SYNC_BN = False
 _C.MODEL.FREEZE_BN = False
 # Loss function type : ['ce', 'focal']
 _C.MODEL.LOSS_TYPE = 'ce'
+
+# Late Fusion options
+_C.MODEL.ASPP_DOUBLE = False
+_C.MODEL.DECODER_DOUBLE = False
 
 # Resnet specific variables
 _C.MODEL.RESNET = CN()
@@ -95,7 +100,7 @@ _C.DATASET.BASE_SIZE = 513
 # Crop image size
 _C.DATASET.CROP_SIZE = 513
 # Use RGB-D input
-_C.DATASET.USE_DEPTH = True
+_C.DATASET.MODE = 'RGBD' #['RGBD', 'RGB', 'RGB_HHA']
 
 # Variables specific to coco loader
 _C.DATASET.COCO = CN()

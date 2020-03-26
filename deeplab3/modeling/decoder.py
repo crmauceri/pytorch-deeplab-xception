@@ -7,6 +7,7 @@ from deeplab3.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 class Decoder(nn.Module):
     def __init__(self, cfg, BatchNorm):
         super(Decoder, self).__init__()
+
         if cfg.MODEL.BACKBONE == 'resnet' or cfg.MODEL.BACKBONE == 'drn':
             low_level_inplanes = 256
         elif cfg.MODEL.BACKBONE == 'xception':
@@ -16,10 +17,18 @@ class Decoder(nn.Module):
         else:
             raise NotImplementedError
 
+        if cfg.MODEL.DECODER_DOUBLE:
+            low_level_inplanes *= 2
+
+        if cfg.MODEL.DECODER_DOUBLE and not cfg.MODEL.ASPP_DOUBLE:
+            last_conv_dim = 560
+        else:
+            last_conv_dim = 304
+
         self.conv1 = nn.Conv2d(low_level_inplanes, 48, 1, bias=False)
         self.bn1 = BatchNorm(48)
         self.relu = nn.ReLU()
-        self.last_conv = nn.Sequential(nn.Conv2d(304, 256, kernel_size=3, stride=1, padding=1, bias=False),
+        self.last_conv = nn.Sequential(nn.Conv2d(last_conv_dim, 256, kernel_size=3, stride=1, padding=1, bias=False),
                                        BatchNorm(256),
                                        nn.ReLU(),
                                        nn.Dropout(0.5),

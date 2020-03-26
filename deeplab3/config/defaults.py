@@ -49,7 +49,7 @@ _C.TEST = CN()
 _C.TEST.BATCH_SIZE = -1
 
 _C.MODEL = CN()
-
+_C.MODEL.NAME = "deeplab"
 # Backbone name : ['resnet', 'xception', 'drn', 'mobilenet']
 _C.MODEL.BACKBONE = "resnet"
 # Use backbone weights from model zoo
@@ -110,8 +110,7 @@ _C.DATASET.COCO.CATEGORIES = 'coco' #['coco', 'pascal', 'sunrgbd']
 _C.DATASET.CITYSCAPES = CN()
 _C.DATASET.CITYSCAPES.GT_MODE = 'gtCoarse' #['gtCoarse', 'gtFine']
 _C.DATASET.CITYSCAPES.TRAIN_SET = 'train_extra' #['train_extra', 'train']
-_C.DATASET.CITYSCAPES.DEPTH_DIR = 'disparity' #['VNL_Monocular']
-_C.DATASET.CITYSCAPES.SYNTHETIC_DEPTH = False
+_C.DATASET.CITYSCAPES.DEPTH_DIR = 'disparity' #['disparity', 'VNL_Monocular', 'HHA']
 
 
 _C.DATASET.N_CLASSES = 81

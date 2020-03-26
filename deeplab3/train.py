@@ -1,12 +1,13 @@
 import argparse
 import os
 import numpy as np
+import torch
 from tqdm import tqdm
 
 from deeplab3.config.defaults import get_cfg_defaults
 from deeplab3.dataloaders import make_data_loader
 from deeplab3.modeling.sync_batchnorm.replicate import patch_replication_callback
-from deeplab3.modeling.deeplab import *
+from deeplab3.modeling import make_model
 from deeplab3.utils.loss import SegmentationLosses
 from deeplab3.utils.calculate_weights import calculate_weights_labels
 from deeplab3.utils.lr_scheduler import LR_Scheduler
@@ -32,7 +33,7 @@ class Trainer(object):
         assert(self.nclass == cfg.DATASET.N_CLASSES)
 
         # Define network
-        self.model = DeepLab(cfg)
+        self.model = make_model(cfg)
 
         if self.cfg.TRAIN.FINETUNE:
             #Trains backbone less aggressively than final layers

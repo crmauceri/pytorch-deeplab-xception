@@ -28,16 +28,15 @@ class MidFusion(nn.Module):
             self.freeze_bn()
 
     def forward(self, input):
-        rgb, hha = input
-        x_rgb, low_level_feat_rgb = self.backbone_rgb(rgb)
-        x_hha, low_level_feat_hha = self.backbone_hha(hha)
+        x_rgb, low_level_feat_rgb = self.backbone_rgb(input[:, :3, :, :])
+        x_hha, low_level_feat_hha = self.backbone_hha(input[:, 3:, :, :])
 
         x = torch.cat([x_rgb, x_hha], dim=1)
         low_level_feat = torch.cat([low_level_feat_rgb, low_level_feat_hha], dim=1)
 
         x = self.aspp(x)
         x = self.decoder(x, low_level_feat)
-        x = F.interpolate(x, size=rgb.size()[2:], mode='bilinear', align_corners=True)
+        x = F.interpolate(x, size=input.size()[2:], mode='bilinear', align_corners=True)
 
         return x
 
@@ -91,9 +90,8 @@ class LateFusion(nn.Module):
             self.freeze_bn()
 
     def forward(self, input):
-        rgb, hha = input
-        x_rgb, low_level_feat_rgb = self.backbone_rgb(rgb)
-        x_hha, low_level_feat_hha = self.backbone_hha(hha)
+        x_rgb, low_level_feat_rgb = self.backbone_rgb(input[:, :3, :, :])
+        x_hha, low_level_feat_hha = self.backbone_hha(input[:, 3:, :, :])
 
         x_rgb = self.aspp_rgb(x_rgb)
         x_hha = self.aspp_hha(x_hha)
@@ -102,7 +100,7 @@ class LateFusion(nn.Module):
         low_level_feat = torch.cat([low_level_feat_rgb, low_level_feat_hha], dim=1)
 
         x = self.decoder(x, low_level_feat)
-        x = F.interpolate(x, size=rgb.size()[2:], mode='bilinear', align_corners=True)
+        x = F.interpolate(x, size=input.size()[2:], mode='bilinear', align_corners=True)
 
         return x
 
@@ -136,15 +134,26 @@ class LateFusion(nn.Module):
 
 if __name__ == "__main__":
     from deeplab3.config.defaults import get_cfg_defaults
+    from deeplab3.dataloaders.datasets.cityscapes import CityscapesSegmentation
+    from torch.utils.data import DataLoader
 
     cfg = get_cfg_defaults()
-    cfg.merge_from_file('configs/cityscapes_rgb.yaml')
+    cfg.merge_from_file('configs/HHA/cityscapes_hha_imagenet.yaml')
     cfg.merge_from_list(['MODEL.DECODER_DOUBLE', True, 'MODEL.ASPP_DOUBLE', True])
 
     model = MidFusion(cfg)
     model.eval()
-    input = (torch.rand(1, 3, 513, 513), torch.rand(1, 3, 513, 513))
-    output = model(input)
-    print(output.size())
+
+    cityscapes_train = CityscapesSegmentation(cfg, split='val')
+
+    dataloader = DataLoader(cityscapes_train, batch_size=2, shuffle=True, num_workers=2)
+
+    for ii, sample in enumerate(dataloader):
+        output = model(sample['image'])
+        break
+
+    #input = (torch.rand(1, 3, 513, 513), torch.rand(1, 3, 513, 513))
+    # output = model(input)
+    # print(output.size())
 
 

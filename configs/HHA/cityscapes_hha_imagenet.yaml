@@ -3,6 +3,8 @@ DATASET:
   ROOT: 'datasets/cityscapes/'
   MODE: 'RGB_HHA'
   N_CLASSES: 19
+  CITYSCAPES:
+    DEPTH_DIR: 'HHA'
 
 TRAIN:
   CHECKNAME: 'cityscapes_hha_imagenet'

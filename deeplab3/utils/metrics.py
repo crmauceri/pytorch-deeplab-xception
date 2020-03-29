@@ -1,5 +1,6 @@
 import numpy as np
-
+from collections import defaultdict
+import matplotlib.pyplot as plt
 
 class Evaluator(object):
     def __init__(self, num_class):
@@ -49,6 +50,31 @@ class Evaluator(object):
     def reset(self):
         self.confusion_matrix = np.zeros((self.num_class,) * 2)
 
+class ImageEvaluator(object):
+    def __init__(self, model):
+        self.model = model
+        self.images_by_accuracy = defaultdict(list)
+        self.images_by_iou = defaultdict(list)
+        self.image_stats = defaultdict(dict)
 
+    def add_image(self, gt_image, pre_image, file_path):
+        accuracy = np.sum(gt_image==pre_image)/np.numel(gt_image)
+        intersection = np.sum(np.logical_and(gt_image, pre_image))
+        union = np.sum(np.logical_and(gt_image, pre_image))+np.sum(np.logical_xor(gt_image, pre_image))
+        iou = intersection/union
 
+        self.images_by_iou[iou].append(file_path)
+        self.images_by_accuracy[accuracy].append(file_path)
+        self.image_stats[file_path] = {'iou': iou,
+                                       'accuracy': accuracy}
 
+    def top_n(self, n=10):
+        return {'accuracy': {key: self.images_by_accuracy[key] for key in sorted(self.images_by_accuracy)[:n]},
+                'iou': {key: self.images_by_iou[key] for key in sorted(self.images_by_iou)[:n]}}
+
+    def bottom_n(self, n=10):
+        return {'accuracy': {key: self.images_by_accuracy[key] for key in sorted(self.images_by_accuracy, reverse=True)[:n]},
+                'iou': {key: self.images_by_iou[key] for key in sorted(self.images_by_iou, reverse=True)[:n]}}
+
+    def display_image(self, file_path):
+        image = plt.imread(file_path)

@@ -11,5 +11,6 @@ TRAIN:
   EPOCHS: 200
 
 MODEL:
+  NAME: 'latefusion'
   INPUT_CHANNELS: 3
   BACKBONE_ZOO: True

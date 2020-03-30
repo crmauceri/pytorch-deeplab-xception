@@ -57,10 +57,10 @@ class ImageEvaluator(object):
         self.image_stats = defaultdict(dict)
 
     def add_image(self, gt_image, pre_image, img_id):
-        accuracy = np.sum(gt_image==pre_image)/np.numel(gt_image)
-        intersection = np.sum(np.logical_and(gt_image, pre_image))
-        union = np.sum(np.logical_and(gt_image, pre_image))+np.sum(np.logical_xor(gt_image, pre_image))
-        iou = intersection/union
+        accuracy = (np.equal(gt_image, pre_image).sum()/float(gt_image.numel())).item()
+        intersection = np.logical_and(gt_image, pre_image).sum()
+        union = np.logical_and(gt_image, pre_image).sum()+np.logical_xor(gt_image, pre_image).sum()
+        iou = float(intersection)/float(union)
 
         self.images_by_iou[iou].append(img_id)
         self.images_by_accuracy[accuracy].append(img_id)

@@ -1,6 +1,6 @@
 from deeplab3.config.defaults import get_cfg_defaults
 
-from deeplab3.utils.metrics import Evaluator
+from deeplab3.utils.metrics import Evaluator, ImageEvaluator
 import numpy as np
 import scipy.io as sio
 import torch
@@ -49,6 +49,7 @@ class Tester:
             self.model = self.model.cuda()
 
         self.evaluator = Evaluator(self.nclass)
+        self.img_evaluator = ImageEvaluator()
 
 
     def run(self, dataloader, class_filter=None):
@@ -95,7 +96,7 @@ class Tester:
         output += 'Loss: %.3f\n' % test_loss
 
         output += 'Class breakdown:\n'
-        breakdown = {"Class": dataloader.dataset.class_names,
+        breakdown = {"Class": dataloader.dataset.loader.class_names,
                  "N_Photos": total_photos,
                  "% Pixels": total_pix / total_pix.sum(),
                  "Accuracy": acc_class_tensor,
@@ -111,6 +112,19 @@ class Tester:
 
         return output, self.evaluator.confusion_matrix
 
+    def rank_images(self, dataset):
+        for i, sample in enumerate(dataset):
+            image, target = sample['image'], sample['label']
+            if self.cfg.SYSTEM.CUDA:
+                image, target = image.cuda(), target.cuda()
+            with torch.no_grad():
+                output = self.model(image)
+
+            pred = output.data.cpu().numpy()
+            target = target.cpu().numpy()
+            pred = np.argmax(pred, axis=1)
+
+            self.img_evaluator.add_image(target, pred, i)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PyTorch DeeplabV3Plus Metric Calculation")

@@ -51,8 +51,7 @@ class Evaluator(object):
         self.confusion_matrix = np.zeros((self.num_class,) * 2)
 
 class ImageEvaluator(object):
-    def __init__(self, model):
-        self.model = model
+    def __init__(self):
         self.images_by_accuracy = defaultdict(list)
         self.images_by_iou = defaultdict(list)
         self.image_stats = defaultdict(dict)
@@ -75,6 +74,3 @@ class ImageEvaluator(object):
     def bottom_n(self, n=10):
         return {'accuracy': {key: self.images_by_accuracy[key] for key in sorted(self.images_by_accuracy, reverse=True)[:n]},
                 'iou': {key: self.images_by_iou[key] for key in sorted(self.images_by_iou, reverse=True)[:n]}}
-
-    def display_image(self, file_path):
-        image = plt.imread(file_path)

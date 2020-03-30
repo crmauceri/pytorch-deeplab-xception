@@ -11,7 +11,7 @@ TRAIN:
   EPOCHS: 200
 
 MODEL:
-  NAME: 'latefusion'
+  NAME: 'midfusion'
   INPUT_CHANNELS: 3
   BACKBONE_ZOO: True
   ASPP_DOUBLE: True

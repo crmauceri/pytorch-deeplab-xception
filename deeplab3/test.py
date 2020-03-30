@@ -56,7 +56,7 @@ class Tester:
         self.evaluator.reset()
         tbar = tqdm(dataloader, desc='\r')
 
-        num_classes = dataloader.dataset.NUM_CLASSES
+        num_classes = dataloader.dataset.loader.NUM_CLASSES
 
         test_loss = 0.0
         total_pix = np.zeros((num_classes,))

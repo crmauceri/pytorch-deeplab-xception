@@ -1,0 +1,18 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGB_HHA'
+  N_CLASSES: 19
+  CITYSCAPES:
+    DEPTH_DIR: 'HHA'
+
+TRAIN:
+  CHECKNAME: 'cityscapes_hha_midfusion'
+  EPOCHS: 200
+
+MODEL:
+  NAME: 'latefusion'
+  INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+  ASPP_DOUBLE: True
+  DECODER_DOUBLE: True

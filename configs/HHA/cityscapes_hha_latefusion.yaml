@@ -7,10 +7,12 @@ DATASET:
     DEPTH_DIR: 'HHA'
 
 TRAIN:
-  CHECKNAME: 'cityscapes_hha_imagenet'
+  CHECKNAME: 'cityscapes_hha_latefusion'
   EPOCHS: 200
 
 MODEL:
   NAME: 'latefusion'
   INPUT_CHANNELS: 3
   BACKBONE_ZOO: True
+  ASPP_DOUBLE: False
+  DECODER_DOUBLE: True

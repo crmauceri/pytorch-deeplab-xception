@@ -138,7 +138,7 @@ if __name__ == "__main__":
     from torch.utils.data import DataLoader
 
     cfg = get_cfg_defaults()
-    cfg.merge_from_file('configs/HHA/cityscapes_hha_imagenet.yaml')
+    cfg.merge_from_file('configs/HHA/cityscapes_hha_latefusion.yaml')
     cfg.merge_from_list(['MODEL.DECODER_DOUBLE', True, 'MODEL.ASPP_DOUBLE', True])
 
     model = MidFusion(cfg)

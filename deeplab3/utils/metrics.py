@@ -57,15 +57,15 @@ class ImageEvaluator(object):
         self.images_by_iou = defaultdict(list)
         self.image_stats = defaultdict(dict)
 
-    def add_image(self, gt_image, pre_image, file_path):
+    def add_image(self, gt_image, pre_image, img_id):
         accuracy = np.sum(gt_image==pre_image)/np.numel(gt_image)
         intersection = np.sum(np.logical_and(gt_image, pre_image))
         union = np.sum(np.logical_and(gt_image, pre_image))+np.sum(np.logical_xor(gt_image, pre_image))
         iou = intersection/union
 
-        self.images_by_iou[iou].append(file_path)
-        self.images_by_accuracy[accuracy].append(file_path)
-        self.image_stats[file_path] = {'iou': iou,
+        self.images_by_iou[iou].append(img_id)
+        self.images_by_accuracy[accuracy].append(img_id)
+        self.image_stats[img_id] = {'iou': iou,
                                        'accuracy': accuracy}
 
     def top_n(self, n=10):

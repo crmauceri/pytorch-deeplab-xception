@@ -10,7 +10,7 @@ from deeplab3.dataloaders import make_data_loader
 from deeplab3.modeling.sync_batchnorm.replicate import patch_replication_callback
 from deeplab3.utils.loss import SegmentationLosses
 from deeplab3.utils.calculate_weights import calculate_weights_labels
-from deeplab3.modeling.deeplab import *
+from deeplab3.modeling import load_model
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
@@ -26,7 +26,7 @@ class Tester:
         self.train_loader, self.val_loader, self.test_loader, self.nclass = make_data_loader(cfg, **kwargs)
 
         # Define Model and Load from File
-        self.model = self.load_model()
+        self.model = load_model(cfg)
 
         # Define Criterion
         # whether to use class balanced weights
@@ -50,26 +50,6 @@ class Tester:
 
         self.evaluator = Evaluator(self.nclass)
 
-    def load_model(self):
-        model = DeepLab(self.cfg)
-
-        if self.cfg.SYSTEM.CUDA:
-            model = torch.nn.DataParallel(model, device_ids=self.cfg.SYSTEM.GPU_IDS)
-            model = model.cuda()
-
-        model_filepath = os.path.join(self.cfg.RESUME.DIRECTORY, self.cfg.RESUME.MODEL)
-        if not os.path.isfile(model_filepath):
-            raise RuntimeError("=> no checkpoint found at '{}'" .format(model_filepath))
-
-        checkpoint = torch.load(model_filepath, map_location=torch.device('cpu'))
-        self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']
-        if self.cfg.SYSTEM.CUDA:
-            model.module.load_state_dict(checkpoint['state_dict'])
-        else:
-            model.load_state_dict(checkpoint['state_dict'])
-        print("=> loaded checkpoint '{}' (epoch {})"
-              .format(model_filepath, checkpoint['epoch']))
-        return model
 
     def run(self, dataloader, class_filter=None):
         self.model.eval()

@@ -52,12 +52,10 @@ class Tester:
         self.img_evaluator = ImageEvaluator(cfg.DATASET.N_CLASSES)
 
 
-    def run(self, dataloader, class_filter=None):
+    def run(self, dataloader, num_classes, class_filter=None):
         self.model.eval()
         self.evaluator.reset()
         tbar = tqdm(dataloader, desc='\r')
-
-        num_classes = dataloader.dataset.loader.NUM_CLASSES
 
         test_loss = 0.0
         total_pix = np.zeros((num_classes,))
@@ -136,9 +134,9 @@ if __name__ == "__main__":
     print(cfg)
 
     torch.manual_seed(cfg.SYSTEM.SEED)
-    val_loader = make_data_loader(cfg)[1]
+    train_loader, val_loader, test_loader, num_classes = make_data_loader(cfg)
     tester = Tester(cfg)
-    output, mat = tester.run(val_loader)
+    output, mat = tester.run(val_loader, num_classes)
     tester.rank_images()
 
     with open(cfg.RESUME.DIRECTORY + 'report.txt', 'w') as f:

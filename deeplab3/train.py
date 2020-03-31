@@ -13,7 +13,7 @@ from deeplab3.utils.calculate_weights import calculate_weights_labels
 from deeplab3.utils.lr_scheduler import LR_Scheduler
 from deeplab3.utils.saver import Saver
 from deeplab3.utils.summaries import TensorboardSummary
-from deeplab3.utils.metrics import Evaluator
+from deeplab3.utils.metrics import BatchEvaluator
 
 class Trainer(object):
     def __init__(self, cfg):
@@ -59,7 +59,7 @@ class Trainer(object):
         self.criterion = SegmentationLosses(weight=weight, cuda=self.cfg.SYSTEM.CUDA).build_loss(mode=self.cfg.MODEL.LOSS_TYPE)
 
         # Define Evaluator
-        self.evaluator = Evaluator(self.nclass)
+        self.evaluator = BatchEvaluator(self.nclass)
         # Define lr scheduler
         # self.scheduler = LR_Scheduler(self.cfg.TRAIN.LR_SCHEDULER, self.cfg.TRAIN.LR,
         #                                     self.cfg.TRAIN.EPOCHS, len(self.train_loader))

@@ -23,7 +23,6 @@ class Tester:
 
         # Define Dataloader
         kwargs = {'num_workers': self.cfg.SYSTEM.NUM_WORKERS, 'pin_memory': True}
-        self.train_loader, self.val_loader, self.test_loader, self.nclass = make_data_loader(cfg, **kwargs)
 
         # Define Model and Load from File
         self.model = load_model(cfg)
@@ -35,7 +34,8 @@ class Tester:
             if os.path.isfile(classes_weights_path):
                 weight = np.load(classes_weights_path)
             else:
-                weight = calculate_weights_labels(cfg.DATASET.ROOT, cfg.DATASET.NAME, self.train_loader, self.nclass)
+                train_loader = make_data_loader(cfg, **kwargs)[0]
+                weight = calculate_weights_labels(cfg.DATASET.ROOT, cfg.DATASET.NAME, train_loader, cfg.DATASET.N_CLASSES)
             weight = torch.from_numpy(weight.astype(np.float32))
         else:
             weight = None
@@ -48,8 +48,8 @@ class Tester:
             patch_replication_callback(self.model)
             self.model = self.model.cuda()
 
-        self.evaluator = BatchEvaluator(self.nclass)
-        self.img_evaluator = ImageEvaluator(self.nclass)
+        self.evaluator = BatchEvaluator(cfg.DATASET.N_CLASSES)
+        self.img_evaluator = ImageEvaluator(cfg.DATASET.N_CLASSES)
 
 
     def run(self, dataloader, class_filter=None):
@@ -136,8 +136,9 @@ if __name__ == "__main__":
     print(cfg)
 
     torch.manual_seed(cfg.SYSTEM.SEED)
+    val_loader = make_data_loader(cfg)[1]
     tester = Tester(cfg)
-    output, mat = tester.run(tester.val_loader)
+    output, mat = tester.run(val_loader)
     tester.rank_images()
 
     with open(cfg.RESUME.DIRECTORY + 'report.txt', 'w') as f:

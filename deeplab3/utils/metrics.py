@@ -58,7 +58,7 @@ class BatchEvaluator(Evaluator):
     def Pixel_Accuracy(self, confusion_matrix=None):
         if confusion_matrix is None:
             confusion_matrix = self.confusion_matrix
-        return super.Pixel_Accuracy(confusion_matrix)
+        return super().Pixel_Accuracy(confusion_matrix)
 
     # Return
     #   mean class accuracy,
@@ -66,7 +66,7 @@ class BatchEvaluator(Evaluator):
     def Pixel_Accuracy_Class(self, confusion_matrix=None):
         if confusion_matrix is None:
             confusion_matrix = self.confusion_matrix
-        return super.Pixel_Accuracy_Class(confusion_matrix)
+        return super().Pixel_Accuracy_Class(confusion_matrix)
 
     # Return
     #   mean class iou,
@@ -74,12 +74,12 @@ class BatchEvaluator(Evaluator):
     def Mean_Intersection_over_Union(self, confusion_matrix=None):
         if confusion_matrix is None:
             confusion_matrix = self.confusion_matrix
-        return super.Mean_Intersection_over_Union(confusion_matrix)
+        return super().Mean_Intersection_over_Union(confusion_matrix)
 
     def Frequency_Weighted_Intersection_over_Union(self, confusion_matrix=None):
         if confusion_matrix is None:
             confusion_matrix = self.confusion_matrix
-        return super.Frequency_Weighted_Intersection_over_Union(confusion_matrix)
+        return super().Frequency_Weighted_Intersection_over_Union(confusion_matrix)
 
 class ImageEvaluator(Evaluator):
     def __init__(self, num_class):
@@ -88,17 +88,18 @@ class ImageEvaluator(Evaluator):
         self.images_by_iou = defaultdict(list)
         self.image_stats = defaultdict(dict)
 
-    def add_image(self, gt_image, pre_image, img_id):
-        confusion_matrix = self._generate_matrix(gt_image, pre_image)
-        accuracy = self.Pixel_Accuracy(confusion_matrix)
-        iou = self.Mean_Intersection_over_Union(confusion_matrix)[0]
+    def add_images(self, gt_image, pre_image, img_ids):
+        for ii, img_id in enumerate(img_ids):
+            img_id = img_id.item()
+            confusion_matrix = self._generate_matrix(gt_image[ii, :, :], pre_image[ii, :, :])
+            accuracy = self.Pixel_Accuracy(confusion_matrix)
+            iou = self.Mean_Intersection_over_Union(confusion_matrix)[0]
 
-        self.images_by_iou[iou].append(img_id)
-        self.images_by_accuracy[accuracy].append(img_id)
-        self.image_stats[img_id] = {'iou': iou,
-                                       'accuracy': accuracy}
+            self.images_by_iou[iou].append(img_id)
+            self.images_by_accuracy[accuracy].append(img_id)
+            self.image_stats[img_id] = {'iou': iou,
+                                           'accuracy': accuracy}
 
-        return accuracy, iou
 
     def bottom_n(self, n=10):
         return {'accuracy': {key: self.images_by_accuracy[key] for key in sorted(self.images_by_accuracy)[:n]},
@@ -116,28 +117,28 @@ if __name__ == "__main__":
 
     img_eval = ImageEvaluator(19)
 
-    pred = np.ones((100, 100), dtype='int64')
-    gt = np.ones((100, 100), dtype='int64')
-    accuracy, iou = img_eval.add_image(gt, pred, 1)
+    pred = np.ones((1, 100, 100), dtype='int64')
+    gt = np.ones((1, 100, 100), dtype='int64')
+    accuracy, iou = img_eval.add_images(gt, pred, 1)
     assert accuracy == 1.0
     assert iou == 1.0
 
     #IOU of class 1 is 2/4, IOU of class 0 is 0/2
-    pred = np.ones((2, 2), dtype='int64')
-    gt = np.zeros((2, 2), dtype='int64')
+    pred = np.ones((1, 2, 2), dtype='int64')
+    gt = np.zeros((1, 2, 2), dtype='int64')
     gt[0:2, 0] = 1.0
-    accuracy, iou = img_eval.add_image(gt, pred, 2)
+    accuracy, iou = img_eval.add_images(gt, pred, 2)
     assert accuracy == 0.5
     assert iou == 0.25
 
     #IOU of class 1 is 1/3, IOU of class 2 is 1/3
     #Accuracy is 2/4
-    gt = np.zeros((2, 2), dtype='int64')
+    gt = np.zeros((1, 2, 2), dtype='int64')
     gt[0:2, 0] = 1.0
     gt[0:2, 1] = 2.0
     pred = gt.transpose()
 
-    accuracy, iou = img_eval.add_image(gt, pred, 3)
+    accuracy, iou = img_eval.add_images(gt, pred, 3)
     assert accuracy == 0.5
     assert iou == 1.0/3.0
 

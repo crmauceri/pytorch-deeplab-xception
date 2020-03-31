@@ -76,6 +76,7 @@ class Tester:
             pred = np.argmax(pred, axis=1)
             # Add batch sample into evaluator
             self.evaluator.add_batch(target, pred)
+            self.img_evaluator.add_images(target, pred, sample['id'])
 
             # Calculate class frequency
             mask = (target>=0) & (target < num_classes)
@@ -104,27 +105,18 @@ class Tester:
 
         output += tabulate(breakdown, headers="keys")
 
-        plt.figure()
-        plt.imshow(self.evaluator.confusion_matrix)
-        plt.show()
-
-        print(output)
+        # plt.figure()
+        # plt.imshow(self.evaluator.confusion_matrix)
+        # plt.show()
+        #
+        # print(output)
 
         return output, self.evaluator.confusion_matrix
 
-    def rank_images(self, dataset):
-        for i, sample in enumerate(dataset):
-            image, target = sample['image'], sample['label']
-            if self.cfg.SYSTEM.CUDA:
-                image, target = image.cuda(), target.cuda()
-            with torch.no_grad():
-                output = self.model(image)
+    def rank_images(self):
+        top = self.img_evaluator.top_n()
+        bottom = self.img_evaluator.bottom_n()
 
-            pred = output.data.cpu().numpy()
-            target = target.cpu().numpy()
-            pred = np.argmax(pred, axis=1)
-
-            self.img_evaluator.add_image(target, pred, i)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PyTorch DeeplabV3Plus Metric Calculation")
@@ -144,8 +136,9 @@ if __name__ == "__main__":
     print(cfg)
 
     torch.manual_seed(cfg.SYSTEM.SEED)
-    trainer = Tester(cfg)
-    output, mat = trainer.run(trainer.val_loader)
+    tester = Tester(cfg)
+    output, mat = tester.run(tester.val_loader)
+    tester.rank_images()
 
     with open(cfg.RESUME.DIRECTORY + 'report.txt', 'w') as f:
         f.write(output)

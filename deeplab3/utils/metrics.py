@@ -90,7 +90,6 @@ class ImageEvaluator(Evaluator):
 
     def add_images(self, gt_image, pre_image, img_ids):
         for ii, img_id in enumerate(img_ids):
-            img_id = img_id.item()
             confusion_matrix = self._generate_matrix(gt_image[ii, :, :], pre_image[ii, :, :])
             accuracy = self.Pixel_Accuracy(confusion_matrix)
             iou = self.Mean_Intersection_over_Union(confusion_matrix)[0]

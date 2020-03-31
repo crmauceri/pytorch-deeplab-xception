@@ -49,7 +49,7 @@ class Tester:
             self.model = self.model.cuda()
 
         self.evaluator = BatchEvaluator(self.nclass)
-        self.img_evaluator = ImageEvaluator()
+        self.img_evaluator = ImageEvaluator(self.nclass)
 
 
     def run(self, dataloader, class_filter=None):

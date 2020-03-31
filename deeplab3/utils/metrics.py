@@ -100,11 +100,11 @@ class ImageEvaluator(Evaluator):
 
         return accuracy, iou
 
-    def top_n(self, n=10):
+    def bottom_n(self, n=10):
         return {'accuracy': {key: self.images_by_accuracy[key] for key in sorted(self.images_by_accuracy)[:n]},
                 'm_iou': {key: self.images_by_iou[key] for key in sorted(self.images_by_iou)[:n]}}
 
-    def bottom_n(self, n=10):
+    def top_n(self, n=10):
         return {'accuracy': {key: self.images_by_accuracy[key] for key in sorted(self.images_by_accuracy, reverse=True)[:n]},
                 'm_iou': {key: self.images_by_iou[key] for key in sorted(self.images_by_iou, reverse=True)[:n]}}
 

@@ -93,11 +93,13 @@ class ImageEvaluator(Evaluator):
             confusion_matrix = self._generate_matrix(gt_image[ii, :, :], pre_image[ii, :, :])
             accuracy = self.Pixel_Accuracy(confusion_matrix)
             iou = self.Mean_Intersection_over_Union(confusion_matrix)[0]
+            fw_iou = self.Frequency_Weighted_Intersection_over_Union(confusion_matrix)[0]
 
             self.images_by_iou[iou].append(img_id)
             self.images_by_accuracy[accuracy].append(img_id)
-            self.image_stats[img_id] = {'iou': iou,
-                                           'accuracy': accuracy}
+            self.image_stats[img_id] = {'m_iou': iou,
+                                        'accuracy': accuracy,
+                                        'fw_iou': fw_iou}
 
 
     def bottom_n(self, n=10):

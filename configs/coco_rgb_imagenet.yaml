@@ -11,6 +11,6 @@ MODEL:
   BACKBONE_ZOO: True
 
 TRAIN:
-  CHECKNAME: 'coco_rgb_resnet_deeplab'
+  CHECKNAME: 'coco_rgb_resnet_pt'
   EPOCHS: 100
   RESUME: 'pretrained/deeplab-resnet.pth.tar'

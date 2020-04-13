@@ -5,5 +5,5 @@ DATASET:
   N_CLASSES: 19
 
 TRAIN:
-  CHECKNAME: 'cityscapes_rgbd_resnet_deeplab'
-  EPOCHS: 100
+  CHECKNAME: 'cityscapes_rgbd_resnet'
+  EPOCHS: 200

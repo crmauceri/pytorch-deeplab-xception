@@ -5,8 +5,8 @@ DATASET:
   N_CLASSES: 19
 
 TRAIN:
-  CHECKNAME: 'cityscapes_rgb_imagenet'
-  EPOCHS: 100
+  CHECKNAME: 'cityscapes_rgb_resnet_pt'
+  EPOCHS: 200
 
 MODEL:
   INPUT_CHANNELS: 3

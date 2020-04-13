@@ -3,10 +3,15 @@ DATASET:
   ROOT: 'datasets/cityscapes/'
   MODE: 'RGB'
   N_CLASSES: 19
+  CITYSCAPES:
+    TRAIN_SET: 'train'
 
 TRAIN:
-  CHECKNAME: 'cityscapes_rgb_resnet'
+  CHECKNAME: 'cityscapes_rgb_xception_pt'
   EPOCHS: 200
 
 MODEL:
   INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+  BACKBONE: 'xception'
+

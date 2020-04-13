@@ -4,5 +4,5 @@ DATASET:
   MODE: 'RGBD'
 
 TRAIN:
-  CHECKNAME: 'coco_rgbd_resnet_deeplab'
+  CHECKNAME: 'coco_rgbd_resnet'
   EPOCHS: 100

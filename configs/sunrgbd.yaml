@@ -5,5 +5,5 @@ DATASET:
   N_CLASSES: 38
 
 TRAIN:
-  CHECKNAME: 'sunrgbd_rgbd_resnet_deeplab'
+  CHECKNAME: 'sunrgbd_rgbd_resnet'
   EPOCHS: 100

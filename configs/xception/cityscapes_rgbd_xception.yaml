@@ -1,0 +1,12 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGBD'
+  N_CLASSES: 19
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgbd_xception'
+  EPOCHS: 200
+
+MODEL:
+  BACKBONE: 'xception'

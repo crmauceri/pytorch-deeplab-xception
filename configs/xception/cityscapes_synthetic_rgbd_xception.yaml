@@ -1,0 +1,14 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGBD'
+  N_CLASSES: 19
+  CITYSCAPES:
+    DEPTH_DIR: 'VNL_Monocular'
+
+TRAIN:
+  CHECKNAME: 'cityscapes_synth_rgbd_xception'
+  EPOCHS: 200
+
+MODEL:
+  BACKBONE: 'xception'

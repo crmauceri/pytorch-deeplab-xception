@@ -10,7 +10,7 @@ class Saver(object):
         self.cfg = cfg
         self.directory = os.path.join('run', cfg.DATASET.NAME, cfg.TRAIN.CHECKNAME)
         self.runs = sorted(glob.glob(os.path.join(self.directory, 'experiment_*')))
-        if self.cfg.RESUME.DIRECTORY == "":
+        if self.cfg.RESUME.DIRECTORY == "" or self.cfg.TRAIN.FINETUNE:
             run_id = int(self.runs[-1].split('_')[-1]) + 1 if self.runs else 0
             self.experiment_dir = os.path.join(self.directory, 'experiment_{}'.format(str(run_id)))
             if not os.path.exists(self.experiment_dir):

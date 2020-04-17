@@ -9,6 +9,7 @@ DATASET:
 TRAIN:
   CHECKNAME: 'cityscapes_midfusion_xception'
   EPOCHS: 200
+  BATCH_SIZE: 2
 
 MODEL:
   BACKBONE: 'xception'

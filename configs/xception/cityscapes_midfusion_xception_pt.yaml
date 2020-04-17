@@ -7,8 +7,9 @@ DATASET:
     DEPTH_DIR: 'HHA'
 
 TRAIN:
-  CHECKNAME: 'cityscapes_midfusion_xception'
+  CHECKNAME: 'cityscapes_midfusion_xception_pt'
   EPOCHS: 200
+  BATCH_SIZE: 2
 
 MODEL:
   BACKBONE: 'xception'

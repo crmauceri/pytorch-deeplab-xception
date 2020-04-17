@@ -27,6 +27,7 @@ The code was tested with Anaconda and Python 3.8. After installing the Anaconda 
     conda install matplotlib pillow tqdm protobuf tabulate
     pip install tensorboardX yacs
     ```
+    
 2. Compile SceneNetRGBD protobuf files
    ```bash
    cd deeplab3/dataloaders/datasets

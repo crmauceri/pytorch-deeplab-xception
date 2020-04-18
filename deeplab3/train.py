@@ -115,7 +115,7 @@ class Trainer(object):
                 tbar.set_description('Train loss: %.3f' % (train_loss / (i + 1)))
                 self.writer.add_scalar('train/total_loss_iter', loss.item(), i + num_img_tr * epoch)
             except ValueError as e:
-                print("{}: {}".format(e.message, sample['id']))
+                print("{}: {}".format(str(e), sample['id']))
 
             # Show 10 * 3 inference results each epoch
            # if i % (num_img_tr // 10) == 0:

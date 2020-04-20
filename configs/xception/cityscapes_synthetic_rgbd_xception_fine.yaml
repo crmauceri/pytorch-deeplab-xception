@@ -6,6 +6,7 @@ DATASET:
   CITYSCAPES:
     DEPTH_DIR: 'VNL_Monocular'
     TRAIN_SET: 'train'
+    GT_MODE: 'gtFine'
 
 TRAIN:
   CHECKNAME: 'cityscapes_synth_rgbd_xception'

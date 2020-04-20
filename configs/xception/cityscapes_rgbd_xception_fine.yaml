@@ -5,6 +5,7 @@ DATASET:
   N_CLASSES: 19
   CITYSCAPES:
     TRAIN_SET: 'train'
+    GT_MODE: 'gtFine'
 
 TRAIN:
   CHECKNAME: 'cityscapes_rgbd_xception'

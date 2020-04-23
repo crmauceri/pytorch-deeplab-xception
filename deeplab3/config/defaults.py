@@ -13,6 +13,13 @@ _C.SYSTEM.NO_CUDA = False
 # Random Seed
 _C.SYSTEM.SEED = 1
 
+# Checkpoint variables
+# Where to save stuff
+_C.CHECKPOINT = CN()
+_C.CHECKPOINT.RESUME = False
+_C.CHECKPOINT.DIRECTORY = ''
+_C.CHECKPOINT.MODEL = 'checkpoint.pth.tar'
+
 _C.TRAIN = CN()
 # number of epochs to train (default: auto)
 _C.TRAIN.EPOCHS = -1
@@ -80,12 +87,6 @@ _C.MODEL.MOBILENET = CN()
 _C.MODEL.MOBILENET.WIDTH_MULT = 1.
 
 _C.MODEL.INPUT_CHANNELS = 4
-
-# Where to save stuff
-_C.RESUME = CN()
-_C.TRAIN.RESUME = False
-_C.RESUME.DIRECTORY = ''
-_C.RESUME.MODEL = 'checkpoint.pth.tar'
 
 
 _C.DATASET = CN()

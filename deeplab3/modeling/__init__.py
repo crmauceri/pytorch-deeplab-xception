@@ -21,7 +21,7 @@ def load_model(cfg):
         model = torch.nn.DataParallel(model, device_ids=cfg.SYSTEM.GPU_IDS)
         model = model.cuda()
 
-    model_filepath = os.path.join(cfg.RESUME.DIRECTORY, cfg.RESUME.MODEL)
+    model_filepath = os.path.join(cfg.CHECKPOINT.DIRECTORY, cfg.CHECKPOINT.MODEL)
     if not os.path.isfile(model_filepath):
         raise RuntimeError("=> no checkpoint found at '{}'" .format(model_filepath))
 

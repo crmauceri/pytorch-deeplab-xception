@@ -72,8 +72,9 @@ class Trainer(object):
 
         # Resuming checkpoint
         self.best_pred = 0.0
-        if self.cfg.TRAIN.RESUME:
-            model_filepath = os.path.join(self.cfg.RESUME.DIRECTORY, self.cfg.RESUME.MODEL)
+        if self.cfg.CHECKPOINT.RESUME or self.cfg.TRAIN.FINETUNE:
+            model_filepath = os.path.join(self.cfg.CHECKPOINT.DIRECTORY, self.cfg.CHECKPOINT.MODEL)
+
             if not os.path.isfile(model_filepath):
                 raise RuntimeError("=> no checkpoint found at '{}'" .format(model_filepath))
             if cfg.SYSTEM.CUDA:

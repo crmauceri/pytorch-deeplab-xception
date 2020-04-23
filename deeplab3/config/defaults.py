@@ -101,6 +101,7 @@ _C.DATASET.BASE_SIZE = 513
 _C.DATASET.CROP_SIZE = 513
 # Use RGB-D input
 _C.DATASET.MODE = 'RGBD' #['RGBD', 'RGB', 'RGB_HHA']
+_C.DATASET.SYNTHETIC = False
 
 # Variables specific to coco loader
 _C.DATASET.COCO = CN()

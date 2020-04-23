@@ -2,6 +2,7 @@ DATASET:
   NAME: 'coco'
   ROOT: 'datasets/coco/'
   MODE: 'RGBD'
+  SYNTHETIC: True
 
 TRAIN:
   CHECKNAME: 'coco_rgbd_resnet'

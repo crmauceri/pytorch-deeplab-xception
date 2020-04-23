@@ -22,10 +22,18 @@ The code was tested with Anaconda and Python 3.8. After installing the Anaconda 
 
     For PyTorch dependency, see [pytorch.org](https://pytorch.org/) for more details.
 
-    For custom dependencies:
+    Other dependencies:
     ```Shell
-    conda install matplotlib pillow tqdm protobuf tabulate
+    conda install matplotlib pillow tqdm protobuf tabulate scipy numpy
     pip install tensorboardX yacs
+    
+    conda install -c conda-forge pycocotools
+    ```
+    
+    For visualuzation scripts:
+    ```Shell
+    conda install pandas
+    conda install -c conda-forge tensorflow 
     ```
     
 2. Compile SceneNetRGBD protobuf files

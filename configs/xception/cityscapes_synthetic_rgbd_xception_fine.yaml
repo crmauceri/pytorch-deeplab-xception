@@ -12,7 +12,6 @@ DATASET:
 TRAIN:
   CHECKNAME: 'cityscapes_synth_rgbd_xception_fine'
   EPOCHS: 200
-  RESUME: True
 
 MODEL:
   BACKBONE: 'xception'

@@ -10,7 +10,6 @@ DATASET:
 TRAIN:
   CHECKNAME: 'cityscapes_rgb_xception_pt_fine'
   EPOCHS: 200
-  RESUME: True
 
 
 MODEL:

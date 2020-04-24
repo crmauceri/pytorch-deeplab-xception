@@ -102,21 +102,22 @@ class Trainer(object):
         tbar = tqdm(self.train_loader)
         num_img_tr = len(self.train_loader)
         for i, sample in enumerate(tbar):
-            image, target = sample['image'], sample['label']
-            if self.cfg.SYSTEM.CUDA:
-                image, target = image.cuda(), target.cuda()
-            # self.scheduler(self.optimizer, i, epoch, self.best_pred)
-            self.optimizer.zero_grad()
-            try:
-                output = self.model(image)
-                loss = self.criterion(output, target)
-                loss.backward()
-                self.optimizer.step()
-                train_loss += loss.item()
-                tbar.set_description('Train loss: %.3f' % (train_loss / (i + 1)))
-                self.writer.add_scalar('train/total_loss_iter', loss.item(), i + num_img_tr * epoch)
-            except ValueError as e:
-                print("{}: {}".format(str(e), sample['id']))
+            if sample is not None:
+                image, target = sample['image'], sample['label']
+                if self.cfg.SYSTEM.CUDA:
+                    image, target = image.cuda(), target.cuda()
+                # self.scheduler(self.optimizer, i, epoch, self.best_pred)
+                self.optimizer.zero_grad()
+                try:
+                    output = self.model(image)
+                    loss = self.criterion(output, target)
+                    loss.backward()
+                    self.optimizer.step()
+                    train_loss += loss.item()
+                    tbar.set_description('Train loss: %.3f' % (train_loss / (i + 1)))
+                    self.writer.add_scalar('train/total_loss_iter', loss.item(), i + num_img_tr * epoch)
+                except ValueError as e:
+                    print("{}: {}".format(str(e), sample['id']))
 
             # Show 10 * 3 inference results each epoch
            # if i % (num_img_tr // 10) == 0:

@@ -10,12 +10,8 @@ DATASET:
 TRAIN:
   CHECKNAME: 'cityscapes_rgb_xception_pt_fine'
   EPOCHS: 200
-  FINETUNE: True
   RESUME: True
 
-RESUME:
-  DIRECTORY: 'runs/cityscapes_rgb_xception_pt/'
-  MODEL: 'model_best.pth.tar'
 
 MODEL:
   INPUT_CHANNELS: 3

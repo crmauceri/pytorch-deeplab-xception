@@ -8,14 +8,9 @@ DATASET:
     GT_MODE: 'gtFine'
 
 TRAIN:
-  CHECKNAME: 'cityscapes_rgbd_xception'
+  CHECKNAME: 'cityscapes_rgbd_xception_fine'
   EPOCHS: 200
-  FINETUNE: True
   RESUME: True
-
-RESUME:
-  DIRECTORY: 'runs/cityscapes_rgbd_xception/'
-  MODEL: 'model_best.pth.tar'
 
 MODEL:
   BACKBONE: 'xception'

@@ -1,0 +1,20 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGB'
+  N_CLASSES: 19
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgb_xception_pt_fine_coarse'
+  EPOCHS: 200
+  FINETUNE: True
+
+CHECKPOINT:
+  DIRECTORY: 'run/cityscapes/cityscapes_rgb_xception_pt_fine/'
+  MODEL: 'model_best.pth.tar'
+
+MODEL:
+  INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+  BACKBONE: 'xception'
+

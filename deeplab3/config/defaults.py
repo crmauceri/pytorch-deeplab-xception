@@ -92,6 +92,7 @@ _C.MODEL.INPUT_CHANNELS = 4
 _C.DATASET = CN()
 # ['pascal', 'coco', 'cityscapes', 'sunrgbd']
 _C.DATASET.NAME = 'coco'
+_C.DATASET.N_CLASSES = 81
 # Root directory of dataset
 _C.DATASET.ROOT = '../datasets/coco/'
 # whether to use SBD dataset
@@ -114,8 +115,10 @@ _C.DATASET.CITYSCAPES.GT_MODE = 'gtCoarse' #['gtCoarse', 'gtFine']
 _C.DATASET.CITYSCAPES.TRAIN_SET = 'train_extra' #['train_extra', 'train']
 _C.DATASET.CITYSCAPES.DEPTH_DIR = 'disparity' #['disparity', 'VNL_Monocular', 'HHA']
 
-
-_C.DATASET.N_CLASSES = 81
+# Use Box-Cox Transform on Depth Data
+_C.DATASET.POWER_TRANSFORM = False
+# Box-Cox Lambda
+_C.DATASET.PT_LAMBDA = -0.5
 
 def get_cfg_defaults():
   """Get a yacs CfgNode object with default values for my_project."""

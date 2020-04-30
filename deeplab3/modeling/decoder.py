@@ -8,7 +8,7 @@ class Decoder(nn.Module):
     def __init__(self, cfg, BatchNorm):
         super(Decoder, self).__init__()
 
-        if cfg.MODEL.BACKBONE == 'resnet' or cfg.MODEL.BACKBONE == 'drn':
+        if cfg.MODEL.BACKBONE in ['resnet', 'drn', 'depthaware_resnet']:
             low_level_inplanes = 256
         elif cfg.MODEL.BACKBONE == 'xception':
             low_level_inplanes = 128

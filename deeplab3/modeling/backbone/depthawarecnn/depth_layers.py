@@ -142,5 +142,3 @@ if __name__ == '__main__':
     torch_pool = nn.functional.avg_pool2d(torch_conv, 3, stride=1, padding=0)
     np.testing.assert_array_almost_equal(torch_pool, test_pool)
 
-    torch_pool.bac
-

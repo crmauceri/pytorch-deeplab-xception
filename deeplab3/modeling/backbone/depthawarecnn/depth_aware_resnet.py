@@ -198,6 +198,11 @@ if __name__ == "__main__":
 
     model = ResNet101(cfg, BatchNorm=nn.BatchNorm2d)
     input = torch.rand(1, 4, 512, 512)
+
+    if torch.cuda.is_available():
+        model = model.cuda()
+        input = input.cuda()
+
     output, low_level_feat = model(input)
-    print(output.size())
-    print(low_level_feat.size())
+    print(output.gpu().shape)
+    print(low_level_feat.gpu().shape)

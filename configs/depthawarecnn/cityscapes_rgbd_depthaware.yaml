@@ -10,3 +10,4 @@ TRAIN:
 
 MODEL:
   INPUT_CHANNELS: 3
+  BACKBONE: 'depthaware_resnet'

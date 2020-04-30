@@ -35,7 +35,7 @@ class DepthConv(nn.Module):
         depth = self.pad(depth)
         b, c, w, h = img.shape
 
-        output = torch.zeros(output_size)
+        output = torch.zeros(output_size, device=img.device)
 
         window_width = self.kernel_size*self.dilation
         calc_dim = (b, self.out_channels, self.in_channels, self.kernel_size, self.kernel_size)
@@ -92,7 +92,7 @@ class DepthAvgPooling(nn.Module):
         output_size = self.output_size(img)
         b, c, w, h = img.shape
 
-        output = torch.zeros(output_size)
+        output = torch.zeros(output_size, device=img.device)
 
         for i in range(0, output_size[2]):
             for j in range(0, output_size[3]):

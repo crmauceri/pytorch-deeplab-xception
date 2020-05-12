@@ -636,6 +636,7 @@ if __name__ == "__main__":
     if torch.cuda.is_available():
         model = model.cuda()
         input = input.cuda()
+        target = target.cuda()
 
     output = model(input)
     output_loss = loss(output, target)

@@ -642,4 +642,3 @@ if __name__ == "__main__":
 
     output_loss.backward()
     print(output.cpu().shape)
-    print(low_level_feat.cpu().shape)

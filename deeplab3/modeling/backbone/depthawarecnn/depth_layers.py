@@ -154,7 +154,7 @@ class DepthAvgPooling(nn.Module):
 
         self.kernel_size = kernel_size
         # Average kernel
-        self.weight = torch.ones((1, 1, kernel_size, kernel_size)).div(kernel_size*kernel_size)
+        self.weight = torch.nn.Parameter(torch.ones((1, 1, kernel_size, kernel_size)).div(kernel_size*kernel_size))
 
         if stride is None:
             self.stride = kernel_size

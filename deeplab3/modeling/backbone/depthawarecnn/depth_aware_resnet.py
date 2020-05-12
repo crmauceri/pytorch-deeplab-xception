@@ -6,17 +6,21 @@ import torch.utils.model_zoo as model_zoo
 from deeplab3.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 from deeplab3.modeling.backbone.depthawarecnn.depth_layers import DepthAvgPooling, DepthConv
 
+import gc
+
 class Bottleneck(nn.Module):
     expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, dilation=1, downsample=None, BatchNorm=None):
         super(Bottleneck, self).__init__()
+
         self.conv1 = DepthConv(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = BatchNorm(planes)
-        self.conv2 = DepthConv(planes, planes, kernel_size=3, stride=stride,
+
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
                                dilation=dilation, padding=dilation, bias=False)
         self.bn2 = BatchNorm(planes)
-        self.conv3 = DepthConv(planes, planes * 4, kernel_size=1, bias=False)
+        self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
         self.bn3 = BatchNorm(planes * 4)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
@@ -31,20 +35,20 @@ class Bottleneck(nn.Module):
         out = self.bn1(out)
         out = self.relu(out)
 
-        out = self.conv2((out, depth))
+        out = self.conv2(out)
         out = self.bn2(out)
         out = self.relu(out)
 
-        out = self.conv3((out, depth))
+        out = self.conv3(out)
         out = self.bn3(out)
 
         if self.downsample is not None:
-            residual = self.downsample((x,depth))
+            residual = self.downsample(x)
 
         out += residual
         out = self.relu(out)
 
-        return (out, depth)
+        return (out, depth_d)
 
 class ResNet(nn.Module):
 
@@ -68,10 +72,12 @@ class ResNet(nn.Module):
                                 bias=False)
         self.bn1 = BatchNorm(64)
         self.relu = nn.ReLU(inplace=True)
-        self.maxpool = DepthAvgPooling(kernel_size=3, stride=2, padding=1)
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
+        self.depth_downsample1 = nn.AvgPool2d(5, padding=1, stride=4)
         self.layer1 = self._make_layer(block, 64, layers[0], stride=strides[0], dilation=dilations[0], BatchNorm=BatchNorm)
         self.layer2 = self._make_layer(block, 128, layers[1], stride=strides[1], dilation=dilations[1], BatchNorm=BatchNorm)
+
         self.layer3 = self._make_layer(block, 256, layers[2], stride=strides[2], dilation=dilations[2], BatchNorm=BatchNorm)
         self.layer4 = self._make_MG_unit(block, 512, blocks=blocks, stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         # self.layer4 = self._make_layer(block, 512, layers[3], stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
@@ -104,13 +110,18 @@ class ResNet(nn.Module):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
-                DepthConv(self.inplanes, planes * block.expansion,
+                nn.Conv2d(self.inplanes, planes * block.expansion,
                           kernel_size=1, stride=stride, bias=False),
                 BatchNorm(planes * block.expansion),
             )
 
         layers = []
         layers.append(block(self.inplanes, planes, stride, dilation, downsample, BatchNorm))
+
+
+        if stride !=1:
+            layers.append[nn.AvgPool2d(2*stride+1, padding=1, stride=stride)]
+
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
             layers.append(block(self.inplanes, planes, dilation=dilation, BatchNorm=BatchNorm))
@@ -145,12 +156,13 @@ class ResNet(nn.Module):
         x = self.conv1((img, depth))
         x = self.bn1(x)
         x = self.relu(x)
-        x = self.maxpool((x, depth))
+        x = self.maxpool(x)
 
         if "stem" in self._out_features:
             outputs['stem'] = x
 
-        x_depth_pair = self.layer1((x, depth))
+        x_d = self.depth_downsample1(depth)
+        x_depth_pair = self.layer1((x, x_d))
         if 'res2' in self._out_features:
             outputs['res2'] = x_depth_pair[0]
 
@@ -204,5 +216,7 @@ if __name__ == "__main__":
         input = input.cuda()
 
     output, low_level_feat = model(input)
-    print(output.gpu().shape)
-    print(low_level_feat.gpu().shape)
+
+    output.backward()
+    print(output.cpu().shape)
+    print(low_level_feat.cpu().shape)

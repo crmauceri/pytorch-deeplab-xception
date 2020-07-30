@@ -1,0 +1,10 @@
+,model,dataset,mode,path,value
+57,xception,cityscapes,RGB,../models/temp/models/cityscapes_rgb_xception_pt_fine/2020_04_23/2020_04_18/best_pred.txt,0.7639707051861098
+67,xception,cityscapes,RGBD,../models/temp/models/cityscapes_rgbd_xception/2020_04_18/best_pred.txt,0.7808690034648349
+41,xception,cityscapes,RGB_HHAmid,../models/temp/models/cityscapes_midfusion_xception/2020_04_23/best_pred.txt,0.6772104655257539
+49,resnet,cityscapes,RGB,../models/temp/models/cityscapes_rgb_imagenet/2020-03-30/best_pred.txt,0.7538595884586378
+64,resnet,cityscapes,RGBD,../models/temp/models/cityscapes_rgbd_resnet_deeplab/2020_04_10/best_pred.txt,0.7697157282929562
+38,resnet,cityscapes,RGB_HHAmid,../models/temp/models/cityscapes_hha_midfusion/2020_04_16/best_pred.txt,0.7723354194038323
+34,resnet,cityscapes,RGB_HHAlat,../models/temp/models/cityscapes_hha_latefusion/2020_04_16/best_pred.txt,0.762379942645497
+89,resnet,coco,RGB,../models/temp/models/coco_rgb_resnet_scratch/2020_04_10/best_pred.txt,0.4023034444352819
+31,resnet,coco,RGBD,../models/chameleon_run/run/coco/coco_rgbd_resnet/2020_04_24-15_35_25/best_pred.txt,0.38892503996915084

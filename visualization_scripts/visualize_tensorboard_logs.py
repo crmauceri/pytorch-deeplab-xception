@@ -16,12 +16,19 @@ def plot_range(metric, title, use_max=True):
     fig = plt.figure(figsize=(16, 14))
     plt.suptitle(title, fontsize=14)
 
-    key_list = [[x for x in metric.keys() if 'rgb/' in x]]
-    key_list.append([x for x in metric.keys() if 'rgb_pt' in x])
-    key_list.append([x for x in metric.keys() if 'rgbd' in x])
-    key_list.append([x for x in metric.keys() if 'synthetic' in x])
-    key_list.append([x for x in metric.keys() if 'latefusion' in x])
-    key_list.append([x for x in metric.keys() if 'midfusion' in x])
+    key_sort = list(set([x.split('/')[0] for x in metric.keys()]))
+    key_sort.sort()
+    key_list = []
+
+    for key in key_sort:
+        key_list.append([x for x in metric.keys() if key +'/' in x])
+
+    # key_list = [[x for x in metric.keys() if 'rgb/' in x]]
+    # key_list.append([x for x in metric.keys() if 'rgb_pt' in x])
+    # key_list.append([x for x in metric.keys() if 'rgbd' in x])
+    # key_list.append([x for x in metric.keys() if 'synthetic' in x])
+    # key_list.append([x for x in metric.keys() if 'latefusion' in x])
+    # key_list.append([x for x in metric.keys() if 'midfusion' in x])
 
     n = len(metric.keys())
     cols = max([len(row) for row in key_list])
@@ -32,11 +39,15 @@ def plot_range(metric, title, use_max=True):
 
         for j, key in enumerate(row):
             x = i*cols + j
+
+            group, title = key.split('/')
             ax = plt.subplot(rows, cols, x+1)
+            if j==0:
+                ax.set_ylabel(group, rotation=0, size='large')
 
             plt.plot(metric.index, metric[key], 'k', linewidth=1)
             plt.fill_between(metric.index, y1, y2, color='b', alpha=0.2)
-            plt.title(key)
+            plt.title(title)
 
             style = dict(size=10, color='black')
             if use_max:

@@ -427,9 +427,9 @@ class VGG(nn.Module):
         img = input[:, :3, :, :]
         depth = input[:, 3, :, :].unsqueeze(1)
 
-        x, depth = self.features(img,depth)
-        x = self.classifier(x,depth)
-        return x
+        x_feat, depth = self.features(img,depth)
+        x = self.classifier(x_feat,depth)
+        return x, x_feat
 
     def _initialize_weights(self):
         for m in self.modules():

@@ -14,7 +14,7 @@ TRAIN:
 
 CHECKPOINT:
   DIRECTORY: 'models/xception_cityscapes_rgb_2020_04_27/'
-  MODEL: 'model_best.pth.tar'
+  MODEL: 'checkpoint.pth.tar'
 
 MODEL:
   INPUT_CHANNELS: 3

@@ -1,0 +1,23 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGB'
+  N_CLASSES: 19
+  CITYSCAPES:
+    TRAIN_SET: 'train'
+    GT_MODE: 'gtFine'
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgb_xception_pt_coarse_fine'
+  EPOCHS: 200
+  FINETUNE: True
+
+CHECKPOINT:
+  DIRECTORY: 'models/xception_cityscapes_rgb_2020_04_27/'
+  MODEL: 'model_best.pth.tar'
+
+MODEL:
+  INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+  BACKBONE: 'xception'
+

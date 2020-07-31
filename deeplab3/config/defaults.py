@@ -5,7 +5,7 @@ _C = CN()
 
 _C.SYSTEM = CN()
 # Number of GPUS to use in the experiment
-_C.SYSTEM.GPU_IDS = [0, 1]
+_C.SYSTEM.GPU_IDS = [0]
 # Number of workers for doing things
 _C.SYSTEM.NUM_WORKERS = 4
 # Disable CUDA
@@ -41,15 +41,6 @@ _C.TRAIN.NO_VAL = False
 ## Learning Optimizer Parameters
 # Learning rate (default: auto)
 _C.TRAIN.LR = 0.001
-# Learnign rate scheduler mode : ['poly', 'step', 'cos']
-_C.TRAIN.LR_SCHEDULER = 'poly'
-# Momentum
-_C.TRAIN.MOMENTUM = 0.9
-# Weight Decay
-_C.TRAIN.WEIGHT_DECAY = 5e-4
-# Whether to use nesterov
-_C.TRAIN.NESTROV = False
-
 
 _C.TEST = CN()
 # batch size (default: auto)

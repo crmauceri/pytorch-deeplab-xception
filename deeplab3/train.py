@@ -40,7 +40,7 @@ class Trainer(object):
             train_params = [{'params': self.model.get_1x_lr_params(), 'lr': self.cfg.TRAIN.LR},
                             {'params': self.model.get_10x_lr_params(), 'lr': self.cfg.TRAIN.LR * 10}]
         else:
-            train_params = self.model.parameters()
+            train_params = [{'params':self.model.parameters(), 'lr': self.cfg.TRAIN.LR}]
 
         # Define Optimizer
         self.optimizer = torch.optim.AdamW(train_params)
@@ -60,9 +60,6 @@ class Trainer(object):
 
         # Define Evaluator
         self.evaluator = BatchEvaluator(self.nclass)
-        # Define lr scheduler
-        # self.scheduler = LR_Scheduler(self.cfg.TRAIN.LR_SCHEDULER, self.cfg.TRAIN.LR,
-        #                                     self.cfg.TRAIN.EPOCHS, len(self.train_loader))
 
         # Using cuda
         if self.cfg.SYSTEM.CUDA:
@@ -92,9 +89,10 @@ class Trainer(object):
             print("=> loaded checkpoint '{}' (epoch {})"
                   .format(model_filepath, checkpoint['epoch']))
 
-        # Clear start epoch if fine-tuning
+        # Clear start epoch and reduce learning rate if fine-tuning
         if self.cfg.TRAIN.FINETUNE:
             self.cfg.TRAIN.START_EPOCH  = 0
+
 
     def training(self, epoch):
         train_loss = 0.0
@@ -106,7 +104,7 @@ class Trainer(object):
                 image, target = sample['image'], sample['label']
                 if self.cfg.SYSTEM.CUDA:
                     image, target = image.cuda(), target.cuda()
-                # self.scheduler(self.optimizer, i, epoch, self.best_pred)
+
                 self.optimizer.zero_grad()
                 try:
                     output = self.model(image)

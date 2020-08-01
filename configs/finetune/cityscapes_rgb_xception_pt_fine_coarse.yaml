@@ -8,10 +8,11 @@ TRAIN:
   CHECKNAME: 'cityscapes_rgb_xception_pt_fine_coarse'
   EPOCHS: 200
   FINETUNE: True
+  LR: 0.0001
 
 CHECKPOINT:
-  DIRECTORY: 'run/cityscapes/cityscapes_rgb_xception_pt_fine/'
-  MODEL: 'model_best.pth.tar'
+  DIRECTORY: 'models/xception_cityscapes_rgb_fine_2020_04_18/'
+  MODEL: 'checkpoint.pth.tar'
 
 MODEL:
   INPUT_CHANNELS: 3

@@ -140,10 +140,10 @@ class DepthAwareResNet(nn.Module):
     def forward(self, input):
         outputs = {}
 
-        x = self.conv1(input[:3, :, :, :], depth=input[3, :, :, :])
+        x = self.conv1(input[:, :3, :, :], depth=input[:, 3, :, :])
         x = self.bn1(x)
         x = self.relu(x)
-        x = self.maxpool(x, depth=input[3, :, :, :])
+        x = self.maxpool(x, depth=input[:, 3, :, :])
 
         if "stem" in self._out_features:
             outputs['stem'] = x

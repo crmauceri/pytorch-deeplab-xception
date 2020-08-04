@@ -141,7 +141,9 @@ class DepthAwareResNet(nn.Module):
         outputs = {}
         print(input.shape)
         img = input[:, :3, :, :].contiguous()
-        depth = input[:, 3, :, :].contiguous()
+        depth = input[:, 3, :, :].unsqueeze(1).contiguous()
+        print(depth.shape)
+        print(img.shape)
 
         x = self.conv1(img, depth=depth)
         x = self.bn1(x)

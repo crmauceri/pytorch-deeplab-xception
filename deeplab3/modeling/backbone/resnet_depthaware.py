@@ -139,7 +139,7 @@ class DepthAwareResNet(nn.Module):
 
     def forward(self, input):
         outputs = {}
-        depth = input[:, 3, :, :].contiguous()
+        depth = input[:, 3, :, :].unsqueeze(1).contiguous()
 
         x = self.conv1(input[:, :3, :, :].contiguous(), depth=depth)
         x = self.bn1(x)

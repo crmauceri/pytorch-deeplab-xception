@@ -140,7 +140,7 @@ class DepthAwareResNet(nn.Module):
     def forward(self, input):
         outputs = {}
         img = input[:, :3, :, :].contiguous()
-        depth = input[:, 3, :, :].unsqueeze(1).contiguous()
+        depth = input[:, 3, :, :].contiguous()
         print(img.shape)
         print(depth.shape)
 

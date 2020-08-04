@@ -28,6 +28,9 @@ class DepthconvFunction(Function):
 
         if bias is None:
             bias = torch.zeros(weight.shape[0], device=weight.device)
+            ctx.no_bias = True
+        else:
+            ctx.no_bias = False
 
         ctx.save_for_backward(input, depth, weight, bias)
         ctx.alpha = alpha
@@ -76,7 +79,7 @@ class DepthconvFunction(Function):
                 print("Error in Conv: kernel:{}, stride:{}, padding:{}, dilation:{}".format(weight.shape, ctx.stride, ctx.padding, ctx.dilation))
                 raise e
 
-        if bias is None:
+        if ctx.no_bias:
             grad_bias = None
 
         return grad_input, None, grad_weight, grad_bias, None, None, None, None, None

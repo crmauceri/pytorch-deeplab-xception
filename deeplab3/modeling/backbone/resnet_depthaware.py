@@ -139,13 +139,9 @@ class DepthAwareResNet(nn.Module):
 
     def forward(self, input):
         outputs = {}
-        print(input.shape)
 
         img = input[:, :3, :, :].contiguous()
         depth = input[:, 3, :, :].unsqueeze(1).contiguous()
-
-        print(depth.shape)
-        print(img.shape)
 
         x = self.conv1(img, depth=depth)
         x = self.bn1(x)
@@ -155,6 +151,7 @@ class DepthAwareResNet(nn.Module):
         if "stem" in self._out_features:
             outputs['stem'] = x
 
+        print(depth.shape)
         print(x.shape)
         x = self.layer1(x, depth)
         if 'res2' in self._out_features:

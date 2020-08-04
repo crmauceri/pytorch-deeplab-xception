@@ -66,14 +66,18 @@ class DepthAwareResNet(nn.Module):
         # Modules
         self.conv1 = DepthConv(self.channels, 64, kernel_size=7, stride=2, padding=3,
                                 bias=False)
+        self.downsample_depth_a = nn.AvgPool2d(7, padding=3, stride=2)
         self.bn1 = BatchNorm(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = DepthAvgPooling(kernel_size=3, stride=2, padding=1)
-        self.downsample_depth = nn.AvgPool2d(3, padding=1, stride=2)
+        self.downsample_depth_b = nn.AvgPool2d(3, padding=1, stride=2)
 
         self.layer1 = self._make_layer(block, 64, layers[0], stride=strides[0], dilation=dilations[0], BatchNorm=BatchNorm)
+        self.downsample_depth1 = nn.AvgPool2d(3, padding=dilations[0], stride=strides[0])
         self.layer2 = self._make_layer(block, 128, layers[1], stride=strides[1], dilation=dilations[1], BatchNorm=BatchNorm)
+        self.downsample_depth2 = nn.AvgPool2d(3, padding=dilations[1], stride=strides[1])
         self.layer3 = self._make_layer(block, 256, layers[2], stride=strides[2], dilation=dilations[2], BatchNorm=BatchNorm)
+        self.downsample_depth3 = nn.AvgPool2d(3, padding=dilations[2], stride=strides[2])
         self.layer4 = self._make_MG_unit(block, 512, blocks=blocks, stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         # self.layer4 = self._make_layer(block, 512, layers[3], stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         self._init_weight()
@@ -147,30 +151,41 @@ class DepthAwareResNet(nn.Module):
         x = self.bn1(x)
         x = self.relu(x)
 
-        depth = self.downsample_depth(depth)
+        depth = self.downsample_depth_a(depth)
         x = self.maxpool(x, depth=depth)
 
         if "stem" in self._out_features:
             outputs['stem'] = x
 
+        depth = self.downsample_depth_b(depth)
         print(depth.shape)
         print(x.shape)
-        x = self.layer1(x, depth)
+
+        x = self.layer1(x, depth=depth)
         if 'res2' in self._out_features:
             outputs['res2'] = x
 
+        depth = self.downsample_depth1(depth)
+        print(depth.shape)
         print(x.shape)
-        x = self.layer2(x, depth)
+
+        x = self.layer2(x, depth=depth)
         if 'res3' in self._out_features:
             outputs['res3'] = x
 
+        depth = self.downsample_depth2(depth)
+        print(depth.shape)
         print(x.shape)
-        x = self.layer3(x, depth)
+
+        x = self.layer3(x, depth=depth)
         if 'res4' in self._out_features:
             outputs['res4'] = x
 
+        depth = self.downsample_depth3(depth)
+        print(depth.shape)
         print(x.shape)
-        x = self.layer4(x, depth)
+
+        x = self.layer4(x, depth=depth)
         if 'res5' in self._out_features:
             outputs['res5'] = x
 

@@ -21,13 +21,13 @@ class Bottleneck(nn.Module):
         self.bn3 = BatchNorm(planes * 4)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
-        if downsample is None:
-            weight_size = [(3 - 1) * (dilation - 1) + 3]
-            self.depth_downsample = nn.AvgPool2d(weight_size, stride=stride, padding=dilation)
-        else:
-            weight_size = [(3 - 1) * (dilation - 1) + 3]
-            self.depth_downsample = nn.Sequential(nn.AvgPool2d(weight_size, stride=stride, padding=dilation),
-                                                  nn.AvgPool2d(1, stride=stride))
+        # if downsample is None:
+        weight_size = [(3 - 1) * (dilation - 1) + 3]
+        self.depth_downsample = nn.AvgPool2d(weight_size, stride=stride, padding=dilation)
+        # else:
+        #     weight_size = [(3 - 1) * (dilation - 1) + 3]
+        #     self.depth_downsample = nn.Sequential(nn.AvgPool2d(weight_size, stride=stride, padding=dilation),
+        #                                           nn.AvgPool2d(1, stride=stride))
         self.stride = stride
         self.dilation = dilation
 

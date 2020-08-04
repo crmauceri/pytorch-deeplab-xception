@@ -21,18 +21,14 @@ class Bottleneck(nn.Module):
         self.bn3 = BatchNorm(planes * 4)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
-        # if downsample is None:
+
+        # Downsample depth to match resulting image feature dimensions
         weight_size = [(3 - 1) * (dilation - 1) + 3]
         self.depth_downsample = nn.AvgPool2d(weight_size, stride=stride, padding=dilation)
-        # else:
-        #     weight_size = [(3 - 1) * (dilation - 1) + 3]
-        #     self.depth_downsample = nn.Sequential(nn.AvgPool2d(weight_size, stride=stride, padding=dilation),
-        #                                           nn.AvgPool2d(1, stride=stride))
         self.stride = stride
         self.dilation = dilation
 
     def forward(self, input):
-        print("Start bottleneck")
         x, depth = input
         assert depth.size(2) == x.size(2) and depth.size(3) == x.size(3), "Depth shape:{}, img shape:{}".format(depth.shape, x.shape)
 
@@ -167,22 +163,22 @@ class DepthAwareResNet(nn.Module):
             outputs['stem'] = x
 
         depth = self.downsample_depth_b(depth)
-        print("Layer 1")
+        # print("Layer 1")
         x, depth = self.layer1((x, depth))
         if 'res2' in self._out_features:
             outputs['res2'] = x
 
-        print("Layer 2")
+        # print("Layer 2")
         x, depth = self.layer2((x, depth))
         if 'res3' in self._out_features:
             outputs['res3'] = x
 
-        print("Layer 3")
+        # print("Layer 3")
         x, depth = self.layer3((x, depth))
         if 'res4' in self._out_features:
             outputs['res4'] = x
 
-        print("Layer 4")
+        # print("Layer 4")
         x, depth = self.layer4((x, depth))
         if 'res5' in self._out_features:
             outputs['res5'] = x

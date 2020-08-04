@@ -76,6 +76,7 @@ class DepthconvFunction(Function):
                 print("Error in Conv: kernel:{}, stride:{}, padding:{}, dilation:{}".format(weight.shape, ctx.stride, ctx.padding, ctx.dilation))
                 raise e
 
-        # print(grad_input.shape)
+        if bias is None:
+            grad_bias = None
 
         return grad_input, None, grad_weight, grad_bias, None, None, None, None, None

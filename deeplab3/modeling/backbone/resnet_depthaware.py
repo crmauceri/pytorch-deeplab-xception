@@ -24,10 +24,11 @@ class Bottleneck(nn.Module):
         self.stride = stride
         self.dilation = dilation
 
-    def forward(self, x):
+    def forward(self, x, depth):
         residual = x
 
-        out = self.conv1(x[3:, :, :, :], depth=x[3, :, :, :])
+
+        out = self.conv1(x, depth=depth)
         out = self.bn1(out)
         out = self.relu(out)
 
@@ -140,8 +141,10 @@ class DepthAwareResNet(nn.Module):
     def forward(self, input):
         outputs = {}
         print(input.shape)
+
         img = input[:, :3, :, :].contiguous()
         depth = input[:, 3, :, :].unsqueeze(1).contiguous()
+
         print(depth.shape)
         print(img.shape)
 
@@ -153,19 +156,19 @@ class DepthAwareResNet(nn.Module):
         if "stem" in self._out_features:
             outputs['stem'] = x
 
-        x = self.layer1(x)
+        x = self.layer1(x, depth)
         if 'res2' in self._out_features:
             outputs['res2'] = x
 
-        x = self.layer2(x)
+        x = self.layer2(x, depth)
         if 'res3' in self._out_features:
             outputs['res3'] = x
 
-        x = self.layer3(x)
+        x = self.layer3(x, depth)
         if 'res4' in self._out_features:
             outputs['res4'] = x
 
-        x = self.layer4(x)
+        x = self.layer4(x, depth)
         if 'res5' in self._out_features:
             outputs['res5'] = x
 

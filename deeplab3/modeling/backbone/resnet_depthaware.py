@@ -52,7 +52,7 @@ class DepthAwareResNet(nn.Module):
 
         self.channels = cfg.MODEL.INPUT_CHANNELS
         self.inplanes = 64
-        super(ResNet, self).__init__()
+        super(DepthAwareResNet, self).__init__()
         blocks = [1, 2, 4]
         if cfg.MODEL.OUT_STRIDE == 16:
             strides = [1, 2, 2, 1]

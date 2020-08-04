@@ -27,7 +27,6 @@ class Bottleneck(nn.Module):
     def forward(self, x, depth):
         residual = x
 
-
         out = self.conv1(x, depth=depth)
         out = self.bn1(out)
         out = self.relu(out)
@@ -51,7 +50,7 @@ class DepthAwareResNet(nn.Module):
 
     def __init__(self, cfg, block, layers, BatchNorm=nn.BatchNorm2d):
 
-        self.channels = cfg.MODEL.INPUT_CHANNELS
+        self.channels = 3
         self.inplanes = 64
         super(DepthAwareResNet, self).__init__()
         blocks = [1, 2, 4]

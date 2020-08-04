@@ -36,13 +36,13 @@ class DepthconvFunction(Function):
         ctx.dilation = dilation
         ctx.useDepth = useDepth
 
-        print(
-            "Conv: input:{}, depth:{}, kernel:{}, stride:{}, padding:{}, dilation:{}".format(input.shape,
-                                                                                                            depth.shape,
-                                                                                                            weight.shape,
-                                                                                                            ctx.stride,
-                                                                                                            ctx.padding,
-                                                                                                            ctx.dilation))
+        # print(
+        #     "Conv: input:{}, depth:{}, kernel:{}, stride:{}, padding:{}, dilation:{}".format(input.shape,
+        #                                                                                                     depth.shape,
+        #                                                                                                     weight.shape,
+        #                                                                                                     ctx.stride,
+        #                                                                                                     ctx.padding,
+        #                                                                                                     ctx.dilation))
 
         if not input.is_cuda:
             raise NotImplementedError

@@ -32,8 +32,9 @@ class Bottleneck(nn.Module):
         self.dilation = dilation
 
     def forward(self, input):
+        print("Start bottleneck")
         x, depth = input
-        assert(depth.size(2) == x.size(2) and depth.size(3) == x.size(3))
+        assert depth.size(2) == x.size(2) and depth.size(3) == x.size(3), "Depth shape:{}, img shape:{}".format(depth.shape, x.shape)
 
         residual = x
 

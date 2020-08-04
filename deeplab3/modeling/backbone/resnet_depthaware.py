@@ -21,6 +21,7 @@ class Bottleneck(nn.Module):
         self.bn3 = BatchNorm(planes * 4)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
+        self.depth_downsample = nn.AvgPool2d(3, stride=stride, padding=dilation)
         self.stride = stride
         self.dilation = dilation
 
@@ -49,6 +50,7 @@ class Bottleneck(nn.Module):
         out += residual
         out = self.relu(out)
 
+        depth = self.depth_downsample(depth)
         return (out, depth)
 
 class DepthAwareResNet(nn.Module):
@@ -78,11 +80,8 @@ class DepthAwareResNet(nn.Module):
         self.downsample_depth_b = nn.AvgPool2d(3, padding=1, stride=2)
 
         self.layer1 = self._make_layer(block, 64, layers[0], stride=strides[0], dilation=dilations[0], BatchNorm=BatchNorm)
-        self.downsample_depth1 = nn.AvgPool2d(3, padding=dilations[0], stride=strides[0])
         self.layer2 = self._make_layer(block, 128, layers[1], stride=strides[1], dilation=dilations[1], BatchNorm=BatchNorm)
-        self.downsample_depth2 = nn.AvgPool2d(3, padding=dilations[1], stride=strides[1])
         self.layer3 = self._make_layer(block, 256, layers[2], stride=strides[2], dilation=dilations[2], BatchNorm=BatchNorm)
-        self.downsample_depth3 = nn.AvgPool2d(3, padding=dilations[2], stride=strides[2])
         self.layer4 = self._make_MG_unit(block, 512, blocks=blocks, stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         # self.layer4 = self._make_layer(block, 512, layers[3], stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         self._init_weight()
@@ -168,19 +167,16 @@ class DepthAwareResNet(nn.Module):
         if 'res2' in self._out_features:
             outputs['res2'] = x
 
-        depth = self.downsample_depth1(depth)
         print("Layer 2")
         x, depth = self.layer2((x, depth))
         if 'res3' in self._out_features:
             outputs['res3'] = x
 
-        depth = self.downsample_depth2(depth)
         print("Layer 3")
         x, depth = self.layer3((x, depth))
         if 'res4' in self._out_features:
             outputs['res4'] = x
 
-        depth = self.downsample_depth3(depth)
         print("Layer 4")
         x, depth = self.layer4((x, depth))
         if 'res5' in self._out_features:

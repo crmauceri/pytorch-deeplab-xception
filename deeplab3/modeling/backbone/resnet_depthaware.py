@@ -25,7 +25,9 @@ class Bottleneck(nn.Module):
             weight_size = [(3 - 1) * (dilation - 1) + 3]
             self.depth_downsample = nn.AvgPool2d(weight_size, stride=stride, padding=dilation)
         else:
-            raise NotImplementedError("Need to calculate combination of image downsampling and convolutional downsampling")
+            weight_size = [(3 - 1) * (dilation - 1) + 3]
+            self.depth_downsample = nn.Sequential(nn.AvgPool2d(weight_size, stride=stride, padding=dilation),
+                                                  nn.AvgPool2d(1, stride=stride))
         self.stride = stride
         self.dilation = dilation
 

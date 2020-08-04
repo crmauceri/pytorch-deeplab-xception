@@ -458,7 +458,7 @@ std::vector<torch::Tensor> depthconv_backward_cuda(
 
     torch::Tensor gradInput, gradWeight, gradBias;
     try{
-    //    std::cout << "Do input grad" << inputWidth << "x" << inputHeight << std::endl;
+        std::cout << "Do input grad" << inputWidth << "x" << inputHeight << std::endl;
         gradInput = depthconv_input_grad(input_depth, gradOutput, weight, alpha,
                                                        nInputPlane, inputWidth, inputHeight,
                                                        kW, kH, strideW, strideH,
@@ -473,7 +473,7 @@ std::vector<torch::Tensor> depthconv_backward_cuda(
     }
 
     try{
-    //    std::cout << "Do weight grad" << std::endl;
+        std::cout << "Do weight grad" << std::endl;
         gradWeight = depthconv_weight_grad(input, input_depth, gradOutput, alpha,
                                                     kW, kH, strideW, strideH,
                                                     padW, padH, dilationH, dilationW, useDepth);
@@ -486,7 +486,7 @@ std::vector<torch::Tensor> depthconv_backward_cuda(
     }
 
    try{
-//    std::cout << "Do bias grad" << std::endl;
+        std::cout << "Do bias grad" << std::endl;
         gradBias = depthconv_bias_grad(gradOutput, scale);
 
     }catch(thrust::system_error &e){

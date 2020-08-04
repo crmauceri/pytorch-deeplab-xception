@@ -156,18 +156,22 @@ class DepthAwareResNet(nn.Module):
         if "stem" in self._out_features:
             outputs['stem'] = x
 
+        print(x.shape)
         x = self.layer1(x, depth)
         if 'res2' in self._out_features:
             outputs['res2'] = x
 
+        print(x.shape)
         x = self.layer2(x, depth)
         if 'res3' in self._out_features:
             outputs['res3'] = x
 
+        print(x.shape)
         x = self.layer3(x, depth)
         if 'res4' in self._out_features:
             outputs['res4'] = x
 
+        print(x.shape)
         x = self.layer4(x, depth)
         if 'res5' in self._out_features:
             outputs['res5'] = x

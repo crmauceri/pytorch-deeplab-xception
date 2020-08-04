@@ -26,6 +26,10 @@ class Bottleneck(nn.Module):
 
     def forward(self, input):
         x, depth = input
+
+        print(depth.shape)
+        print(x.shape)
+
         residual = x
 
         out = self.conv1(x, depth)
@@ -159,33 +163,25 @@ class DepthAwareResNet(nn.Module):
             outputs['stem'] = x
 
         depth = self.downsample_depth_b(depth)
-        print(depth.shape)
-        print(x.shape)
-
+        print("Layer 1")
         x, depth = self.layer1((x, depth))
         if 'res2' in self._out_features:
             outputs['res2'] = x
 
         depth = self.downsample_depth1(depth)
-        print(depth.shape)
-        print(x.shape)
-
+        print("Layer 2")
         x, depth = self.layer2((x, depth))
         if 'res3' in self._out_features:
             outputs['res3'] = x
 
         depth = self.downsample_depth2(depth)
-        print(depth.shape)
-        print(x.shape)
-
+        print("Layer 3")
         x, depth = self.layer3((x, depth))
         if 'res4' in self._out_features:
             outputs['res4'] = x
 
         depth = self.downsample_depth3(depth)
-        print(depth.shape)
-        print(x.shape)
-
+        print("Layer 4")
         x, depth = self.layer4((x, depth))
         if 'res5' in self._out_features:
             outputs['res5'] = x

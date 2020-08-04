@@ -25,7 +25,6 @@ class Bottleneck(nn.Module):
         self.dilation = dilation
 
     def forward(self, input):
-        print(len(input))
         x, depth = input
         residual = x
 
@@ -46,7 +45,7 @@ class Bottleneck(nn.Module):
         out += residual
         out = self.relu(out)
 
-        return out
+        return (out, depth)
 
 class DepthAwareResNet(nn.Module):
 
@@ -163,7 +162,7 @@ class DepthAwareResNet(nn.Module):
         print(depth.shape)
         print(x.shape)
 
-        x = self.layer1((x, depth))
+        x, depth = self.layer1((x, depth))
         if 'res2' in self._out_features:
             outputs['res2'] = x
 
@@ -171,7 +170,7 @@ class DepthAwareResNet(nn.Module):
         print(depth.shape)
         print(x.shape)
 
-        x = self.layer2((x, depth))
+        x, depth = self.layer2((x, depth))
         if 'res3' in self._out_features:
             outputs['res3'] = x
 
@@ -179,7 +178,7 @@ class DepthAwareResNet(nn.Module):
         print(depth.shape)
         print(x.shape)
 
-        x = self.layer3((x, depth))
+        x, depth = self.layer3((x, depth))
         if 'res4' in self._out_features:
             outputs['res4'] = x
 
@@ -187,7 +186,7 @@ class DepthAwareResNet(nn.Module):
         print(depth.shape)
         print(x.shape)
 
-        x = self.layer4((x, depth))
+        x, depth = self.layer4((x, depth))
         if 'res5' in self._out_features:
             outputs['res5'] = x
 

@@ -22,7 +22,10 @@ class Bottleneck(nn.Module):
         self.stride = stride
         self.dilation = dilation
 
-    def forward(self, x):
+    def forward(self, input):
+        print(len(input))
+        x, depth = input
+
         residual = x
 
         out = self.conv1(x)

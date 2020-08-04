@@ -25,6 +25,7 @@ class Bottleneck(nn.Module):
         self.dilation = dilation
 
     def forward(self, input):
+        print(len(input))
         x, depth = input
         residual = x
 

@@ -146,6 +146,8 @@ class DepthAwareResNet(nn.Module):
         x = self.conv1(img, depth=depth)
         x = self.bn1(x)
         x = self.relu(x)
+
+        depth = self.downsample_depth(depth)
         x = self.maxpool(x, depth=depth)
 
         if "stem" in self._out_features:

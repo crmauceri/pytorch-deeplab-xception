@@ -1,5 +1,4 @@
-from deeplab3.modeling.backbone import resnet, xception, drn, mobilenet
-from deeplab3.modeling.backbone.depthawarecnn import depth_aware_resnet, depth_aware_vgg16
+from deeplab3.modeling.backbone import resnet, xception, drn, mobilenet, resnet_depthaware
 
 def build_backbone(cfg, BatchNorm, name=None): #backbone, output_stride, BatchNorm, use_depth, use_deeplab_format=True):
 
@@ -14,8 +13,6 @@ def build_backbone(cfg, BatchNorm, name=None): #backbone, output_stride, BatchNo
     elif name == 'mobilenet':
         return mobilenet.MobileNetV2(cfg, BatchNorm)
     elif name == 'depthaware_resnet':
-        return depth_aware_resnet.ResNet101(cfg, BatchNorm)
-    elif name == 'depthaware_vgg16':
-        return depth_aware_vgg16.vgg16_bn(cfg)
+        return resnet_depthaware.DepthAwareResNet101(cfg, BatchNorm)
     else:
         raise NotImplementedError

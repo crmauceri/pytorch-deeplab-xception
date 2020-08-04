@@ -4,19 +4,16 @@ import torch
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 from deeplab3.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
-from deeplab3.modeling.backbone.depthawarecnn.depth_layers import DepthAvgPooling, DepthConv
-
-import gc
+from deeplab3.modeling.backbone.ops.depthconv.module import DepthConv
+from deeplab3.modeling.backbone.ops.depthavgpooling.module import DepthAvgPooling
 
 class Bottleneck(nn.Module):
     expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, dilation=1, downsample=None, BatchNorm=None):
         super(Bottleneck, self).__init__()
-
         self.conv1 = DepthConv(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = BatchNorm(planes)
-
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
                                dilation=dilation, padding=dilation, bias=False)
         self.bn2 = BatchNorm(planes)
@@ -27,11 +24,10 @@ class Bottleneck(nn.Module):
         self.stride = stride
         self.dilation = dilation
 
-    def forward(self, input):
-        x, depth = input
+    def forward(self, x):
         residual = x
 
-        out = self.conv1((x, depth))
+        out = self.conv1(x[3:, :, :, :], depth=x[3, :, :, :])
         out = self.bn1(out)
         out = self.relu(out)
 
@@ -48,9 +44,9 @@ class Bottleneck(nn.Module):
         out += residual
         out = self.relu(out)
 
-        return (out, depth_d)
+        return out
 
-class ResNet(nn.Module):
+class DepthAwareResNet(nn.Module):
 
     def __init__(self, cfg, block, layers, BatchNorm=nn.BatchNorm2d):
 
@@ -72,12 +68,11 @@ class ResNet(nn.Module):
                                 bias=False)
         self.bn1 = BatchNorm(64)
         self.relu = nn.ReLU(inplace=True)
-        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        self.maxpool = DepthAvgPooling(kernel_size=3, stride=2, padding=1)
+        self.downsample_depth = nn.AvgPool2d(3, padding=1, stride=2)
 
-        self.depth_downsample1 = nn.AvgPool2d(5, padding=1, stride=4)
         self.layer1 = self._make_layer(block, 64, layers[0], stride=strides[0], dilation=dilations[0], BatchNorm=BatchNorm)
         self.layer2 = self._make_layer(block, 128, layers[1], stride=strides[1], dilation=dilations[1], BatchNorm=BatchNorm)
-
         self.layer3 = self._make_layer(block, 256, layers[2], stride=strides[2], dilation=dilations[2], BatchNorm=BatchNorm)
         self.layer4 = self._make_MG_unit(block, 512, blocks=blocks, stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         # self.layer4 = self._make_layer(block, 512, layers[3], stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
@@ -117,11 +112,6 @@ class ResNet(nn.Module):
 
         layers = []
         layers.append(block(self.inplanes, planes, stride, dilation, downsample, BatchNorm))
-
-
-        if stride !=1:
-            layers.append[nn.AvgPool2d(2*stride+1, padding=1, stride=stride)]
-
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
             layers.append(block(self.inplanes, planes, dilation=dilation, BatchNorm=BatchNorm))
@@ -132,7 +122,7 @@ class ResNet(nn.Module):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
-                DepthConv(self.inplanes, planes * block.expansion,
+                nn.Conv2d(self.inplanes, planes * block.expansion,
                           kernel_size=1, stride=stride, bias=False),
                 BatchNorm(planes * block.expansion),
             )
@@ -150,33 +140,29 @@ class ResNet(nn.Module):
     def forward(self, input):
         outputs = {}
 
-        img = input[:, :3, :, :]
-        depth = input[:, 3, :, :].unsqueeze(1)
-
-        x = self.conv1((img, depth))
+        x = self.conv1(input[:3, :, :, :], depth=input[3, :, :, :])
         x = self.bn1(x)
         x = self.relu(x)
-        x = self.maxpool(x)
+        x = self.maxpool(x, depth=input[3, :, :, :])
 
         if "stem" in self._out_features:
             outputs['stem'] = x
 
-        x_d = self.depth_downsample1(depth)
-        x_depth_pair = self.layer1((x, x_d))
+        x = self.layer1(x)
         if 'res2' in self._out_features:
-            outputs['res2'] = x_depth_pair[0]
+            outputs['res2'] = x
 
-        x_depth_pair = self.layer2(x_depth_pair)
+        x = self.layer2(x)
         if 'res3' in self._out_features:
-            outputs['res3'] = x_depth_pair[0]
+            outputs['res3'] = x
 
-        x_depth_pair = self.layer3(x_depth_pair)
+        x = self.layer3(x)
         if 'res4' in self._out_features:
-            outputs['res4'] = x_depth_pair[0]
+            outputs['res4'] = x
 
-        x_depth_pair = self.layer4(x_depth_pair)
+        x = self.layer4(x)
         if 'res5' in self._out_features:
-            outputs['res5'] = x_depth_pair[0]
+            outputs['res5'] = x
 
         if self.use_deeplab_out:
             return outputs['res5'], outputs['res2']
@@ -184,8 +170,8 @@ class ResNet(nn.Module):
 
     def _init_weight(self):
         for m in self.modules():
-            if isinstance(m, DepthConv):
-                n = m.kernel_size * m.kernel_size * m.out_channels
+            if isinstance(m, nn.Conv2d):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, math.sqrt(2. / n))
             elif isinstance(m, SynchronizedBatchNorm2d):
                 m.weight.data.fill_(1)
@@ -194,29 +180,40 @@ class ResNet(nn.Module):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
 
-def ResNet101(cfg, BatchNorm=nn.BatchNorm2d):
+    def _load_pretrained_model(self, model_file=None, zoo_url='https://download.pytorch.org/models/resnet101-5d3b4d8f.pth', use_cuda=True):
+        if model_file:
+            print("Loading pretrained ResNet model: {}".format(model_file))
+            if use_cuda:
+                pretrain_dict = torch.load(model_file, map_location=torch.device('cuda'))
+            else:
+                pretrain_dict = torch.load(model_file, map_location=torch.device('cpu'))
+        else:
+            print("Loading pretrained ResNet model: {}".format(zoo_url))
+            pretrain_dict = model_zoo.load_url(zoo_url)
+        model_dict = {}
+        state_dict = self.state_dict()
+        for k, v in pretrain_dict.items():
+            if k in state_dict:
+                model_dict[k] = v
+        state_dict.update(model_dict)
+        self.load_state_dict(state_dict)
+
+def DepthAwareResNet101(cfg, BatchNorm=nn.BatchNorm2d):
     """Constructs a ResNet-101 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(cfg, Bottleneck, [3, 4, 23, 3], BatchNorm=BatchNorm)
+    model = DepthAwareResNet(cfg, Bottleneck, [3, 4, 23, 3], BatchNorm=BatchNorm)
     return model
 
 if __name__ == "__main__":
     import torch
     from deeplab3.config.defaults import get_cfg_defaults
     cfg = get_cfg_defaults()
-    cfg.merge_from_file('configs/depthawarecnn/cityscapes_rgbd_depthaware.yaml')
+    cfg.merge_from_file('configs/coco_rgbd_finetune.yaml')
 
-    model = ResNet101(cfg, BatchNorm=nn.BatchNorm2d)
+    model = DepthAwareResNet101(cfg, BatchNorm=nn.BatchNorm2d)
     input = torch.rand(1, 4, 512, 512)
-
-    if torch.cuda.is_available():
-        model = model.cuda()
-        input = input.cuda()
-
     output, low_level_feat = model(input)
-
-    output.backward()
-    print(output.cpu().shape)
-    print(low_level_feat.cpu().shape)
+    print(output.size())
+    print(low_level_feat.size())

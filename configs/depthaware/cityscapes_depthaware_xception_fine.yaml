@@ -1,0 +1,15 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGBD'
+  N_CLASSES: 19
+  CITYSCAPES:
+    TRAIN_SET: 'train'
+    GT_MODE: 'gtFine'
+
+TRAIN:
+  CHECKNAME: 'cityscapes_depthaware_xception_fine'
+  EPOCHS: 200
+
+MODEL:
+  BACKBONE: 'depthaware_resnet'

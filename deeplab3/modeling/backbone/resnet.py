@@ -22,10 +22,7 @@ class Bottleneck(nn.Module):
         self.stride = stride
         self.dilation = dilation
 
-    def forward(self, input):
-        print(len(input))
-        x, depth = input
-
+    def forward(self, x):
         residual = x
 
         out = self.conv1(x)
@@ -148,7 +145,7 @@ class ResNet(nn.Module):
         if "stem" in self._out_features:
             outputs['stem'] = x
 
-        x = self.layer1((x, "test"))
+        x = self.layer1(x)
         if 'res2' in self._out_features:
             outputs['res2'] = x
 

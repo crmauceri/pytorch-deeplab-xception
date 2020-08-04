@@ -21,15 +21,17 @@ class Bottleneck(nn.Module):
         self.bn3 = BatchNorm(planes * 4)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
-        self.depth_downsample = nn.AvgPool2d(3, stride=stride, padding=dilation)
+        if downsample is None:
+            weight_size = [(3 - 1) * (dilation - 1) + 3]
+            self.depth_downsample = nn.AvgPool2d(weight_size, stride=stride, padding=dilation)
+        else:
+            raise NotImplementedError("Need to calculate combination of image downsampling and convolutional downsampling")
         self.stride = stride
         self.dilation = dilation
 
     def forward(self, input):
         x, depth = input
-
-        print(depth.shape)
-        print(x.shape)
+        assert(depth.size(2) == x.size(2) and depth.size(3) == x.size(3))
 
         residual = x
 

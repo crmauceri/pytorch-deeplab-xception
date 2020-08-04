@@ -45,6 +45,8 @@ class DepthConv(Module):
             self.bias.data.uniform_(-stdv, stdv)
 
     def forward(self, input, depth):
+        print(self.weight.shape)
+
         return DepthconvFunction.apply(input, depth, self.weight, self.bias, self.alpha, self.stride,
                              self.padding, self.dilation)
 

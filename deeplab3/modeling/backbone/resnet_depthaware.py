@@ -103,9 +103,7 @@ class DepthAwareResNet(nn.Module):
         self.use_deeplab_out = cfg.MODEL.RESNET.DEEPLAB_OUTPUT
         self._out_features = cfg.MODEL.RESNET.OUT_FEATURES
 
-        if cfg.MODEL.BACKBONE_ZOO:
-            self._load_pretrained_model(use_cuda=cfg.SYSTEM.CUDA)
-        elif len(cfg.MODEL.PRETRAINED) > 0:
+        if len(cfg.MODEL.PRETRAINED) > 0:
             self._load_pretrained_model(model_file=cfg.MODEL.PRETRAINED, use_cuda=cfg.SYSTEM.CUDA)
         else:
             print("Training backbone from scratch")
@@ -199,16 +197,13 @@ class DepthAwareResNet(nn.Module):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
 
-    def _load_pretrained_model(self, model_file=None, zoo_url='https://download.pytorch.org/models/resnet101-5d3b4d8f.pth', use_cuda=True):
-        if model_file:
-            print("Loading pretrained ResNet model: {}".format(model_file))
-            if use_cuda:
-                pretrain_dict = torch.load(model_file, map_location=torch.device('cuda'))
-            else:
-                pretrain_dict = torch.load(model_file, map_location=torch.device('cpu'))
+    def _load_pretrained_model(self, model_file, use_cuda=True):
+        print("Loading pretrained ResNet model: {}".format(model_file))
+        if use_cuda:
+            pretrain_dict = torch.load(model_file, map_location=torch.device('cuda'))
         else:
-            print("Loading pretrained ResNet model: {}".format(zoo_url))
-            pretrain_dict = model_zoo.load_url(zoo_url)
+            pretrain_dict = torch.load(model_file, map_location=torch.device('cpu'))
+
         model_dict = {}
         state_dict = self.state_dict()
         for k, v in pretrain_dict.items():

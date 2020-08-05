@@ -1,0 +1,16 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGBD'
+  N_CLASSES: 19
+  CITYSCAPES:
+    TRAIN_SET: 'train'
+    GT_MODE: 'gtFine'
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgbd_resnet_coco_fine'
+  EPOCHS: 200
+
+MODEL:
+  BACKBONE: 'resnet'
+  PRETRAINED: 'models/resnet_coco_rgbd_2020_04_24/checkpoint.pth.tar'

@@ -85,13 +85,18 @@ class Trainer(object):
                 self.model.load_state_dict(checkpoint['state_dict'])
             if not self.cfg.TRAIN.FINETUNE:
                 self.optimizer.load_state_dict(checkpoint['optimizer'])
+
+        if self.cfg.CHECKPOINT.RESUME:
             self.best_pred = checkpoint['best_pred']
             print("=> loaded checkpoint '{}' (epoch {})"
                   .format(model_filepath, checkpoint['epoch']))
 
-        # Clear start epoch and reduce learning rate if fine-tuning
+        # Clear start epoch if fine-tuning
         if self.cfg.TRAIN.FINETUNE:
-            self.cfg.TRAIN.START_EPOCH  = 0
+            self.cfg.TRAIN.START_EPOCH = 0
+
+        # What is the accuracy before training?
+        self.validation(0)
 
 
     def training(self, epoch):
@@ -116,11 +121,6 @@ class Trainer(object):
                     self.writer.add_scalar('train/total_loss_iter', loss.item(), i + num_img_tr * epoch)
                 except ValueError as e:
                     print("{}: {}".format(str(e), sample['id']))
-
-            # Show 10 * 3 inference results each epoch
-           # if i % (num_img_tr // 10) == 0:
-            #    global_step = i + num_img_tr * epoch
-             #   self.summary.visualize_image(self.writer, self.args.dataset, image, target, output, global_step)
 
         self.writer.add_scalar('train/total_loss_epoch', train_loss, epoch)
         print('[Epoch: %d, numImages: %5d]' % (epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0]))

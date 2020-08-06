@@ -8,7 +8,7 @@ DATASET:
     GT_MODE: 'gtFine'
 
 TRAIN:
-  CHECKNAME: 'cityscapes_depthaware_xception_fine'
+  CHECKNAME: 'cityscapes_depthaware_fine'
   EPOCHS: 200
 
 MODEL:

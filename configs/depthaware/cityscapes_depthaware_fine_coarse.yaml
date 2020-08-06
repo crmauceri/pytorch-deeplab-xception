@@ -1,0 +1,20 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGB'
+  N_CLASSES: 19
+
+TRAIN:
+  CHECKNAME: 'cityscapes_depthaware_fine_coarse'
+  EPOCHS: 200
+  FINETUNE: True
+  LR: 0.0001
+
+CHECKPOINT:
+  DIRECTORY: 'run/cityscapes/cityscapes_depthaware_fine/'
+  MODEL: 'checkpoint.pth.tar'
+
+MODEL:
+  BACKBONE: 'depthaware_resnet'
+
+

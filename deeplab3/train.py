@@ -150,10 +150,9 @@ class Trainer(object):
         max_val = min(self.cfg.TRAIN.VAL_MAX, len(self.val_loader))
         if max_val == -1:
             max_val = len(self.val_loader)
-        tbar = tqdm(range(max_val), desc='\r')
+        tbar = tqdm(self.val_loader, desc='\r')
         test_loss = 0.0
-        for i in enumerate(tbar):
-            sample = self.val_loader[i]
+        for i, sample in enumerate(tbar):
             image, target = sample['image'], sample['label']
             if self.cfg.SYSTEM.CUDA:
                 image, target = image.cuda(), target.cuda()
@@ -167,6 +166,9 @@ class Trainer(object):
             pred = np.argmax(pred, axis=1)
             # Add batch sample into evaluator
             self.evaluator.add_batch(target, pred)
+
+            if i==max_val:
+                break
 
 
         # Fast test during the training

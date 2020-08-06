@@ -80,12 +80,14 @@ class Trainer(object):
                 checkpoint = torch.load(model_filepath, map_location=torch.device('cpu'))
             self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']
 
+            strict = True
             for layer in cfg.CHECKPOINT.EXCLUDE:
                 del checkpoint['state_dict'][layer]
+                strict = False
             if self.cfg.SYSTEM.CUDA:
-                self.model.module.load_state_dict(checkpoint['state_dict'], strict=False)
+                self.model.module.load_state_dict(checkpoint['state_dict'], strict=strict)
             else:
-                self.model.load_state_dict(checkpoint['state_dict'], strict=False)
+                self.model.load_state_dict(checkpoint['state_dict'], strict=strict)
 
             # Load optimizer parameters and best previous prediction if resuming
             if self.cfg.CHECKPOINT.RESUME:
@@ -144,9 +146,14 @@ class Trainer(object):
     def validation(self, epoch):
         self.model.eval()
         self.evaluator.reset()
-        tbar = tqdm(self.val_loader, desc='\r')
+
+        max_val = min(self.cfg.TRAIN.VAL_MAX, len(self.val_loader))
+        if max_val == -1:
+            max_val = len(self.val_loader)
+        tbar = tqdm(range(max_val), desc='\r')
         test_loss = 0.0
-        for i, sample in enumerate(tbar):
+        for i in enumerate(tbar):
+            sample = self.val_loader[i]
             image, target = sample['image'], sample['label']
             if self.cfg.SYSTEM.CUDA:
                 image, target = image.cuda(), target.cuda()
@@ -160,6 +167,7 @@ class Trainer(object):
             pred = np.argmax(pred, axis=1)
             # Add batch sample into evaluator
             self.evaluator.add_batch(target, pred)
+
 
         # Fast test during the training
         Acc = self.evaluator.Pixel_Accuracy()

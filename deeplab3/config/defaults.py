@@ -38,6 +38,7 @@ _C.TRAIN.FINETUNE = False
 _C.TRAIN.EVAL_INTERVAL = 1
 # Skip validation during training
 _C.TRAIN.NO_VAL = False
+_C.TRAIN.VAL_MAX = -1
 
 ## Learning Optimizer Parameters
 # Learning rate (default: auto)

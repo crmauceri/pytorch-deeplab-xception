@@ -7,3 +7,4 @@ DATASET:
 TRAIN:
   CHECKNAME: 'scenenet_rgbd_resnet_deeplab'
   EPOCHS: 100
+  VAL_MAX: 1000

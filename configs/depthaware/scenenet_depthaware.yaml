@@ -7,6 +7,7 @@ DATASET:
 TRAIN:
   CHECKNAME: 'scenenet_depthaware'
   EPOCHS: 200
+  VAL_MAX: 1000
 
 MODEL:
   BACKBONE: 'depthaware_resnet'

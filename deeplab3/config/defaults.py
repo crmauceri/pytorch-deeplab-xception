@@ -19,6 +19,7 @@ _C.CHECKPOINT = CN()
 _C.CHECKPOINT.RESUME = False
 _C.CHECKPOINT.DIRECTORY = ''
 _C.CHECKPOINT.MODEL = 'checkpoint.pth.tar'
+_C.CHECKPOINT.EXCLUDE = []
 
 _C.TRAIN = CN()
 # number of epochs to train (default: auto)

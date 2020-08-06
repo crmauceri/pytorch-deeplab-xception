@@ -79,21 +79,25 @@ class Trainer(object):
             else:
                 checkpoint = torch.load(model_filepath, map_location=torch.device('cpu'))
             self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']
+            
+            for layer in cfg.CHECKPOINT.EXCLUDE:
+                del checkpoint['state_dict'][layer]
             if self.cfg.SYSTEM.CUDA:
                 self.model.module.load_state_dict(checkpoint['state_dict'])
             else:
                 self.model.load_state_dict(checkpoint['state_dict'])
-            if not self.cfg.TRAIN.FINETUNE:
-                self.optimizer.load_state_dict(checkpoint['optimizer'])
 
-        if self.cfg.CHECKPOINT.RESUME:
-            self.best_pred = checkpoint['best_pred']
+            # Load optimizer parameters and best previous prediction if resuming
+            if self.cfg.CHECKPOINT.RESUME:
+                self.optimizer.load_state_dict(checkpoint['optimizer'])
+                self.best_pred = checkpoint['best_pred']
+
+            # Clear start epoch if fine-tuning
+            if self.cfg.TRAIN.FINETUNE:
+                self.cfg.TRAIN.START_EPOCH = 0
+
             print("=> loaded checkpoint '{}' (epoch {})"
                   .format(model_filepath, checkpoint['epoch']))
-
-        # Clear start epoch if fine-tuning
-        if self.cfg.TRAIN.FINETUNE:
-            self.cfg.TRAIN.START_EPOCH = 0
 
         # What is the accuracy before training?
         self.validation(0)

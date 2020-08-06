@@ -1,7 +1,7 @@
 DATASET:
   NAME: 'cityscapes'
   ROOT: 'datasets/cityscapes/'
-  MODE: 'RGB'
+  MODE: 'RGBD'
   N_CLASSES: 19
 
 TRAIN:
@@ -12,7 +12,7 @@ TRAIN:
 
 CHECKPOINT:
   DIRECTORY: 'run/cityscapes/cityscapes_depthaware_fine/'
-  MODEL: 'checkpoint.pth.tar'
+  MODEL: 'model_best.pth.tar'
 
 MODEL:
   BACKBONE: 'depthaware_resnet'

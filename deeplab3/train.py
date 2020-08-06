@@ -150,7 +150,7 @@ class Trainer(object):
         max_val = min(self.cfg.TRAIN.VAL_MAX, len(self.val_loader))
         if max_val == -1:
             max_val = len(self.val_loader)
-        tbar = tqdm(self.val_loader, desc='\r')
+        tbar = tqdm(self.val_loader, desc='\r', total=max_val)
         test_loss = 0.0
         for i, sample in enumerate(tbar):
             image, target = sample['image'], sample['label']

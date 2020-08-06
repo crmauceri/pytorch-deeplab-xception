@@ -79,13 +79,13 @@ class Trainer(object):
             else:
                 checkpoint = torch.load(model_filepath, map_location=torch.device('cpu'))
             self.cfg.TRAIN.START_EPOCH = checkpoint['epoch']
-            
+
             for layer in cfg.CHECKPOINT.EXCLUDE:
                 del checkpoint['state_dict'][layer]
             if self.cfg.SYSTEM.CUDA:
-                self.model.module.load_state_dict(checkpoint['state_dict'])
+                self.model.module.load_state_dict(checkpoint['state_dict'], strict=False)
             else:
-                self.model.load_state_dict(checkpoint['state_dict'])
+                self.model.load_state_dict(checkpoint['state_dict'], strict=False)
 
             # Load optimizer parameters and best previous prediction if resuming
             if self.cfg.CHECKPOINT.RESUME:

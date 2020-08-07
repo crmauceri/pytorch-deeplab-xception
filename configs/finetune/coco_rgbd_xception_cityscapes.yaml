@@ -1,0 +1,17 @@
+DATASET:
+  NAME: 'coco'
+  ROOT: 'datasets/coco/'
+  MODE: 'RGBD'
+  SYNTHETIC: True
+
+TRAIN:
+  CHECKNAME: 'coco_rgbd_xception_cityscapes'
+  EPOCHS: 100
+  FINETUNE: True
+
+CHECKPOINT:
+  DIRECTORY: 'models/xception_cityscapes_rgbd_2020_04_26/'
+  MODEL: 'checkpoint.pth.tar'
+
+MODEL:
+  BACKBONE: 'xception'

@@ -1,0 +1,24 @@
+DATASET:
+  NAME: 'coco'
+  ROOT: 'datasets/coco/'
+  MODE: 'RGB'
+  COCO:
+    CATEGORIES: 'pascal'
+  N_CLASSES: 21
+  DARKEN: True
+
+MODEL:
+  INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+
+CHECKPOINT:
+  DIRECTORY: 'models/top_models/resnet_coco_rgb_2020_04_10'
+  MODEL: 'checkpoint.pth.tar'
+  EXCLUDE: ['decoder.last_conv.8.weight', 'decoder.last_conv.8.bias']
+
+TRAIN:
+  CHECKNAME: 'coco_rgb_pascal_low_light'
+  EPOCHS: 100
+  FINETUNE: True
+  LR: 0.0001
+

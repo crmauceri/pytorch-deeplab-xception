@@ -12,6 +12,7 @@ TRAIN:
 CHECKPOINT:
   DIRECTORY: 'models/xception_cityscapes_rgbd_2020_04_26/'
   MODEL: 'checkpoint.pth.tar'
+  EXCLUDE: ['decoder.last_conv.8.weight', 'decoder.last_conv.8.bias']
 
 MODEL:
   BACKBONE: 'xception'

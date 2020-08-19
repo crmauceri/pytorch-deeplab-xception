@@ -101,6 +101,7 @@ _C.DATASET.CROP_SIZE = 513
 # Use RGB-D input
 _C.DATASET.MODE = 'RGBD' #['RGBD', 'RGB', 'RGB_HHA']
 _C.DATASET.SYNTHETIC = False
+_C.DATASET.DARKEN = False
 
 # Variables specific to coco loader
 _C.DATASET.COCO = CN()
@@ -110,6 +111,7 @@ _C.DATASET.COCO.CATEGORIES = 'coco' #['coco', 'pascal', 'sunrgbd']
 _C.DATASET.CITYSCAPES = CN()
 _C.DATASET.CITYSCAPES.GT_MODE = 'gtCoarse' #['gtCoarse', 'gtFine']
 _C.DATASET.CITYSCAPES.TRAIN_SET = 'train_extra' #['train_extra', 'train']
+_C.DATASET.CITYSCAPES.TEST_SET = 'test' #[train] No test available for gtCoarse
 _C.DATASET.CITYSCAPES.DEPTH_DIR = 'disparity' #['disparity', 'VNL_Monocular', 'HHA']
 
 # Use Box-Cox Transform on Depth Data

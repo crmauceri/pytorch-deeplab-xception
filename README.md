@@ -24,25 +24,33 @@ The code was tested with Anaconda and Python 3.8. After installing the Anaconda 
 
     Other dependencies:
     ```Shell
-    conda install matplotlib pillow tqdm protobuf tabulate scipy numpy
+    conda install matplotlib pillow tqdm protobuf tabulate scipy numpy pandas
     pip install tensorboardX yacs
     
-    conda install -c conda-forge pycocotools
+    conda install -c conda-forge pycocotools scikit-image
+    ```
+   
+2. Compile CUDA code
+    
+    The depth-aware convolution and depth-aware average pooling operations are under folder `modeling/backbone/ops/`, to build them, simply use `python setup.py install` to compile.
+    
+    ```bash
+    cd modeling/backbone/ops/depthconv/
+    python setup.py install
+    
+    cd ../depthavgpooling/
+    python setup.py install
+    
+    cd ../../../..
     ```
     
-    For visualuzation scripts:
-    ```Shell
-    conda install pandas
-    conda install -c conda-forge tensorflow 
-    ```
-    
-2. Compile SceneNetRGBD protobuf files
+3. Compile SceneNetRGBD protobuf files
    ```bash
-   cd deeplab3/dataloaders/datasets
+   cd dataloaders/datasets
    make
    ```
     
-3. Install as module:
+4. Install as module:
    ```bash
    cd $root
    pip install -e .

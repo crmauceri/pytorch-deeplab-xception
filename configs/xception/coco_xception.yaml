@@ -1,0 +1,18 @@
+DATASET:
+  NAME: 'coco'
+  ROOT: 'datasets/coco/'
+  MODE: 'RGB'
+  COCO:
+    CATEGORIES: 'coco'
+  N_CLASSES: 21
+  DARKEN: True
+
+TRAIN:
+  CHECKNAME: 'coco_xception'
+  EPOCHS: 200
+
+MODEL:
+  INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+  BACKBONE: 'xception'
+

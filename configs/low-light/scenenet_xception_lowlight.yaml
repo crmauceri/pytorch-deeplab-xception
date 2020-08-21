@@ -1,0 +1,14 @@
+DATASET:
+  NAME: 'scenenet'
+  ROOT: 'datasets/scenenet/data'
+  MODE: 'RGBD'
+  N_CLASSES: 14
+  DARKEN: True
+
+TRAIN:
+  CHECKNAME: 'scenenet_xception'
+  EPOCHS: 200
+
+MODEL:
+  BACKBONE: 'xception'
+

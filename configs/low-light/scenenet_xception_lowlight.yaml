@@ -6,8 +6,9 @@ DATASET:
   DARKEN: True
 
 TRAIN:
-  CHECKNAME: 'scenenet_xception'
+  CHECKNAME: 'scenenet_xception_low_light'
   EPOCHS: 200
+  VAL_MAX: 1000
 
 MODEL:
   BACKBONE: 'xception'

@@ -129,7 +129,7 @@ class Trainer(object):
                 except ValueError as e:
                     print("{}: {}".format(str(e), sample['id']))
 
-            if not cfg.TRAIN.NO_VAL and self.cfg.TRAIN.EVAL_INTERVAL < 1 and i == val_interval:
+            if not self.cfg.TRAIN.NO_VAL and self.cfg.TRAIN.EVAL_INTERVAL < 1 and i == val_interval:
                 trainer.validation(epoch)
 
         self.writer.add_scalar('train/total_loss_epoch', train_loss, epoch)

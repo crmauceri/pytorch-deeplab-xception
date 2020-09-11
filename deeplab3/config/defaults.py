@@ -35,7 +35,7 @@ _C.TRAIN.CHECKNAME = 'deeplab-defaults'
 # Finetuning on a different dataset
 _C.TRAIN.FINETUNE = False
 # Evaluation interval
-_C.TRAIN.EVAL_INTERVAL = 1
+_C.TRAIN.EVAL_INTERVAL = 1.0
 # Skip validation during training
 _C.TRAIN.NO_VAL = False
 _C.TRAIN.VAL_MAX = -1

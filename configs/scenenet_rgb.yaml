@@ -5,11 +5,7 @@ DATASET:
   N_CLASSES: 14
 
 TRAIN:
-  CHECKNAME: 'scenenet_rgb_xception'
-  EPOCHS: 200
+  CHECKNAME: 'scenenet_rgb_resnet'
+  EPOCHS: 100
   VAL_MAX: 1000
   EVAL_INTERVAL: 0.2
-
-MODEL:
-  BACKBONE: 'xception'
-

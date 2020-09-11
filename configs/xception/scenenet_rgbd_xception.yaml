@@ -1,11 +1,11 @@
 DATASET:
   NAME: 'scenenet'
   ROOT: 'datasets/scenenet/data'
-  MODE: 'RGB'
+  MODE: 'RGBD'
   N_CLASSES: 14
 
 TRAIN:
-  CHECKNAME: 'scenenet_rgb_xception'
+  CHECKNAME: 'scenenet_rgbd_xception'
   EPOCHS: 200
   VAL_MAX: 1000
   EVAL_INTERVAL: 0.2

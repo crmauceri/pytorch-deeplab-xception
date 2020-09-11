@@ -223,7 +223,8 @@ def main():
 
     for epoch in range(cfg.TRAIN.START_EPOCH, cfg.TRAIN.EPOCHS):
         trainer.training(epoch)
-        if not cfg.TRAIN.NO_VAL and epoch % cfg.TRAIN.EVAL_INTERVAL == (cfg.TRAIN.EVAL_INTERVAL - 1):
+        if not cfg.TRAIN.NO_VAL and cfg.TRAIN.EVAL_INTERVAL > 1 and \
+                epoch % int(cfg.TRAIN.EVAL_INTERVAL) == int(cfg.TRAIN.EVAL_INTERVAL - 1):
             trainer.validation(epoch)
 
     trainer.writer.close()

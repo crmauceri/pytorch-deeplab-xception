@@ -12,5 +12,5 @@ TRAIN:
   EVAL_INTERVAL: 0.2
 
 MODEL:
-  BACKBONE: 'xception'
+  INPUT_CHANNELS: 3
 

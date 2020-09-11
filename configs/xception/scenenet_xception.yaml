@@ -12,4 +12,5 @@ TRAIN:
 
 MODEL:
   BACKBONE: 'xception'
+  INPUT_CHANNELS: 3
 

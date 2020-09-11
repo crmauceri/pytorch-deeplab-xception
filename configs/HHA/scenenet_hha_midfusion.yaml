@@ -1,0 +1,19 @@
+DATASET:
+  NAME: 'scenenet'
+  ROOT: 'datasets/scenenet/data'
+  MODE: 'RGB_HHA'
+  N_CLASSES: 14
+
+TRAIN:
+  CHECKNAME: 'scenenet_hha_midfusion'
+  EPOCHS: 200
+  VAL_MAX: 1000
+  EVAL_INTERVAL: 0.2
+
+MODEL:
+  NAME: 'midfusion'
+  INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+  ASPP_DOUBLE: True
+  DECODER_DOUBLE: True
+

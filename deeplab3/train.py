@@ -110,6 +110,7 @@ class Trainer(object):
         self.model.train()
         tbar = tqdm(self.train_loader)
         num_img_tr = len(self.train_loader)
+        val_interval = num_img_tr * self.cfg.TRAIN.EVAL_INTERVAL
         for i, sample in enumerate(tbar):
             if sample is not None:
                 image, target = sample['image'], sample['label']
@@ -127,6 +128,9 @@ class Trainer(object):
                     self.writer.add_scalar('train/total_loss_iter', loss.item(), i + num_img_tr * epoch)
                 except ValueError as e:
                     print("{}: {}".format(str(e), sample['id']))
+
+            if not cfg.TRAIN.NO_VAL and self.cfg.TRAIN.EVAL_INTERVAL < 1 and i == val_interval:
+                trainer.validation(epoch)
 
         self.writer.add_scalar('train/total_loss_epoch', train_loss, epoch)
         print('[Epoch: %d, numImages: %5d]' % (epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0]))

@@ -4,7 +4,6 @@ DATASET:
   MODE: 'RGB'
   COCO:
     CATEGORIES: 'coco'
-  N_CLASSES: 21
   DARKEN: True
 
 TRAIN:

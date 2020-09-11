@@ -9,6 +9,7 @@ TRAIN:
   CHECKNAME: 'scenenet_xception_low_light'
   EPOCHS: 200
   VAL_MAX: 1000
+  EVAL_INTERVAL: 0.2
 
 MODEL:
   BACKBONE: 'xception'

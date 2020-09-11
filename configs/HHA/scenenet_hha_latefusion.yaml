@@ -1,0 +1,19 @@
+DATASET:
+  NAME: 'scenenet'
+  ROOT: 'datasets/scenenet/data'
+  MODE: 'RGB_HHA'
+  N_CLASSES: 14
+
+TRAIN:
+  CHECKNAME: 'scenenet_hha_latefusion'
+  EPOCHS: 200
+  VAL_MAX: 1000
+  EVAL_INTERVAL: 0.2
+
+MODEL:
+  NAME: 'latefusion'
+  INPUT_CHANNELS: 3
+  BACKBONE_ZOO: True
+  ASPP_DOUBLE: False
+  DECODER_DOUBLE: True
+

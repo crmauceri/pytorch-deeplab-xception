@@ -13,7 +13,7 @@ from deeplab3.utils.calculate_weights import calculate_weights_labels
 from deeplab3.utils.lr_scheduler import LR_Scheduler
 from deeplab3.utils.saver import Saver
 from deeplab3.utils.summaries import TensorboardSummary
-from deeplab3.utils.metrics import BatchEvaluator
+from deeplab3.evaluators import make_evaluator
 
 class Trainer(object):
     def __init__(self, cfg):
@@ -59,7 +59,7 @@ class Trainer(object):
         self.criterion = SegmentationLosses(weight=weight, cuda=self.cfg.SYSTEM.CUDA).build_loss(mode=self.cfg.MODEL.LOSS_TYPE)
 
         # Define Evaluator
-        self.evaluator = BatchEvaluator(self.nclass)
+        self.evaluator = make_evaluator(self.cfg, self.nclass)
 
         # Using cuda
         if self.cfg.SYSTEM.CUDA:
@@ -176,21 +176,8 @@ class Trainer(object):
 
 
         # Fast test during the training
-        Acc = self.evaluator.Pixel_Accuracy()
-        Acc_class = self.evaluator.Pixel_Accuracy_Class()[0]
-        mIoU = self.evaluator.Mean_Intersection_over_Union()[0]
-        FWIoU = self.evaluator.Frequency_Weighted_Intersection_over_Union()
-        self.writer.add_scalar('val/total_loss_epoch', test_loss, epoch)
-        self.writer.add_scalar('val/mIoU', mIoU, epoch)
-        self.writer.add_scalar('val/Acc', Acc, epoch)
-        self.writer.add_scalar('val/Acc_class', Acc_class, epoch)
-        self.writer.add_scalar('val/fwIoU', FWIoU, epoch)
-        print('Validation:')
-        print('[Epoch: %d, numImages: %5d]' % (epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0]))
-        print("Acc:{}, Acc_class:{}, mIoU:{}, fwIoU: {}".format(Acc, Acc_class, mIoU, FWIoU))
-        print('Loss: %.3f' % test_loss)
+        new_pred = self.evaluator.write_metrics(self.writer, epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0])
 
-        new_pred = mIoU
         if new_pred > self.best_pred:
             is_best = True
             self.best_pred = new_pred

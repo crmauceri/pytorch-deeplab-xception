@@ -1,6 +1,6 @@
 from deeplab3.config.defaults import get_cfg_defaults
 
-from deeplab3.utils.metrics import BatchEvaluator, ImageEvaluator
+from deeplab3.evaluators.metrics import BatchEvaluator, ImageEvaluator
 import numpy as np
 import scipy.io as sio
 import torch

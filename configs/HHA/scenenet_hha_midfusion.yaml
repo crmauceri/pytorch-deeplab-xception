@@ -1,6 +1,6 @@
 DATASET:
   NAME: 'scenenet'
-  ROOT: 'datasets/scenenet/data'
+  ROOT: 'datasets/scenenet'
   MODE: 'RGB_HHA'
   N_CLASSES: 14
 

@@ -1,12 +1,12 @@
 DATASET:
   NAME: 'scenenet'
-  ROOT: 'datasets/scenenet/data'
-  MODE: 'RGBD'
+  ROOT: 'datasets/scenenet'
+  MODE: 'RGB'
   N_CLASSES: 14
   DARKEN: True
 
 TRAIN:
-  CHECKNAME: 'scenenet_xception_low_light'
+  CHECKNAME: 'scenenet_rgb_xception_low_light'
   EPOCHS: 200
   VAL_MAX: 1000
   EVAL_INTERVAL: 0.2

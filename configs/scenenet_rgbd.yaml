@@ -1,6 +1,6 @@
 DATASET:
   NAME: 'scenenet'
-  ROOT: 'datasets/scenenet/data'
+  ROOT: 'datasets/scenenet'
   MODE: 'RGBD'
   N_CLASSES: 14
 

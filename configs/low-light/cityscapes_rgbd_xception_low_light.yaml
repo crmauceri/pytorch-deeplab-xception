@@ -1,0 +1,13 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGBD'
+  N_CLASSES: 19
+  DARKEN: True
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgbd_xception_low_light'
+  EPOCHS: 200
+
+MODEL:
+  BACKBONE: 'xception'

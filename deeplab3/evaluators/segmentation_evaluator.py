@@ -33,7 +33,6 @@ class SegmentationEvaluator(Evaluator):
         mIoU = self.Mean_Intersection_over_Union()[0]
         FWIoU = self.Frequency_Weighted_Intersection_over_Union()
 
-        writer.add_scalar('val/total_loss_epoch', test_loss, epoch)
         writer.add_scalar('val/mIoU', mIoU, epoch)
         writer.add_scalar('val/Acc', Acc, epoch)
         writer.add_scalar('val/Acc_class', Acc_class, epoch)

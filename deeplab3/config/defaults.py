@@ -85,6 +85,8 @@ _C.MODEL.VGG16.BN = True
 
 _C.MODEL.INPUT_CHANNELS = 4
 
+_C.EVALUATOR = CN()
+_C.EVALUATOR.NAME = "segmentation"
 
 _C.DATASET = CN()
 # ['pascal', 'coco', 'cityscapes', 'sunrgbd']

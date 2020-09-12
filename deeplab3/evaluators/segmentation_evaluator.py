@@ -41,7 +41,6 @@ class SegmentationEvaluator(Evaluator):
         print('Validation:')
         print('[Epoch: %d, numImages: %5d]' % (epoch, n_images))
         print("Acc:{}, Acc_class:{}, mIoU:{}, fwIoU: {}".format(Acc, Acc_class, mIoU, FWIoU))
-        print('Loss: %.3f' % test_loss)
 
         return mIoU
 

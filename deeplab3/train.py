@@ -129,9 +129,6 @@ class Trainer(object):
                 except ValueError as e:
                     print("{}: {}".format(str(e), sample['id']))
 
-            if not self.cfg.TRAIN.NO_VAL and self.cfg.TRAIN.EVAL_INTERVAL < 1 and i == val_interval:
-                trainer.validation(epoch)
-
         self.writer.add_scalar('train/total_loss_epoch', train_loss, epoch)
         print('[Epoch: %d, numImages: %5d]' % (epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0]))
         print('Loss: %.3f' % train_loss)
@@ -174,7 +171,6 @@ class Trainer(object):
             if i==max_val:
                 break
 
-
         # Fast test during the training
         new_pred = self.evaluator.write_metrics(self.writer, epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0])
 
@@ -210,8 +206,7 @@ def main():
 
     for epoch in range(cfg.TRAIN.START_EPOCH, cfg.TRAIN.EPOCHS):
         trainer.training(epoch)
-        if not cfg.TRAIN.NO_VAL and cfg.TRAIN.EVAL_INTERVAL > 1 and \
-                epoch % int(cfg.TRAIN.EVAL_INTERVAL) == int(cfg.TRAIN.EVAL_INTERVAL - 1):
+        if not cfg.TRAIN.NO_VAL:
             trainer.validation(epoch)
 
     trainer.writer.close()

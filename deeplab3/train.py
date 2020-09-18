@@ -1,7 +1,5 @@
-import argparse
-import os
+import argparse, math, os, torch
 import numpy as np
-import torch
 from tqdm import tqdm
 
 from deeplab3.config.defaults import get_cfg_defaults

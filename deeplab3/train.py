@@ -102,7 +102,7 @@ class Trainer(object):
                   .format(model_filepath, checkpoint['epoch']))
 
         # What is the accuracy before training?
-        self.validation(0, 0)
+        self.validation(self.cfg.TRAIN.START_EPOCH, self.cfg.TRAIN.START_EPOCH*len(self.train_loader))
 
 
     def training(self, epoch):

@@ -47,6 +47,7 @@ _C.TRAIN.LR = 0.001
 _C.TEST = CN()
 # batch size (default: auto)
 _C.TEST.BATCH_SIZE = -1
+_C.TEST.MAX_ITER = -1
 
 _C.MODEL = CN()
 _C.MODEL.NAME = "deeplab"

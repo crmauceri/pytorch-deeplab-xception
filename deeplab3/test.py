@@ -55,7 +55,12 @@ class Tester:
     def run(self, dataloader, num_classes, class_filter=None):
         self.model.eval()
         self.evaluator.reset()
-        tbar = tqdm(dataloader, desc='\r')
+
+        max_iter = min(len(dataloader), self.cfg.TEST.MAX_ITER)
+        if max_iter == -1:
+            max_iter = len(dataloader)
+
+        tbar = tqdm(dataloader, desc='\r', total=max_iter)
 
         test_loss = 0.0
         total_pix = np.zeros((num_classes,))

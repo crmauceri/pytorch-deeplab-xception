@@ -130,7 +130,7 @@ class Trainer(object):
 
             if (i+1) % val_interval == 0:
                 if not self.cfg.TRAIN.NO_VAL:
-                    trainer.validation(epoch, iter)
+                    self.validation(epoch, iter)
 
         self.writer.add_scalar('train/total_loss_epoch', train_loss, epoch)
         print('[Epoch: %d, numImages: %5d]' % (epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0]))

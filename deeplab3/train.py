@@ -129,7 +129,7 @@ class Trainer(object):
                     print("{}: {}".format(str(e), sample['id']))
 
             if (i+1) % val_interval == 0:
-                if not cfg.TRAIN.NO_VAL:
+                if not self.cfg.TRAIN.NO_VAL:
                     trainer.validation(epoch, iter)
 
         self.writer.add_scalar('train/total_loss_epoch', train_loss, epoch)

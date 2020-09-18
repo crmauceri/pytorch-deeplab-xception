@@ -128,7 +128,7 @@ class Trainer(object):
                 except ValueError as e:
                     print("{}: {}".format(str(e), sample['id']))
 
-            if mod(i+1, val_interval) == 0:
+            if (i+1) % val_interval == 0:
                 if not cfg.TRAIN.NO_VAL:
                     trainer.validation(epoch, iter)
 

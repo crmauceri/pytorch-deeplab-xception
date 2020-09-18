@@ -110,8 +110,9 @@ class Trainer(object):
         self.model.train()
         tbar = tqdm(self.train_loader)
         num_img_tr = len(self.train_loader)
-        val_interval = num_img_tr * self.cfg.TRAIN.EVAL_INTERVAL
+        val_interval = math.floor(num_img_tr * self.cfg.TRAIN.EVAL_INTERVAL)
         for i, sample in enumerate(tbar):
+            iter = i + num_img_tr * epoch
             if sample is not None:
                 image, target = sample['image'], sample['label']
                 if self.cfg.SYSTEM.CUDA:
@@ -125,9 +126,13 @@ class Trainer(object):
                     self.optimizer.step()
                     train_loss += loss.item()
                     tbar.set_description('Train loss: %.3f' % (train_loss / (i + 1)))
-                    self.writer.add_scalar('train/total_loss_iter', loss.item(), i + num_img_tr * epoch)
+                    self.writer.add_scalar('train/total_loss_iter', loss.item(), iter)
                 except ValueError as e:
                     print("{}: {}".format(str(e), sample['id']))
+
+            if mod(i+1, val_interval) == 0:
+                if not cfg.TRAIN.NO_VAL:
+                    trainer.validation(epoch, iter)
 
         self.writer.add_scalar('train/total_loss_epoch', train_loss, epoch)
         print('[Epoch: %d, numImages: %5d]' % (epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0]))
@@ -144,7 +149,7 @@ class Trainer(object):
             }, is_best)
 
 
-    def validation(self, epoch):
+    def validation(self, epoch, iter):
         self.model.eval()
         self.evaluator.reset()
 
@@ -172,7 +177,7 @@ class Trainer(object):
                 break
 
         # Fast test during the training
-        new_pred = self.evaluator.write_metrics(self.writer, epoch, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0])
+        new_pred = self.evaluator.write_metrics(self.writer, iter, i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0])
 
         if new_pred > self.best_pred:
             is_best = True
@@ -206,8 +211,6 @@ def main():
 
     for epoch in range(cfg.TRAIN.START_EPOCH, cfg.TRAIN.EPOCHS):
         trainer.training(epoch)
-        if not cfg.TRAIN.NO_VAL:
-            trainer.validation(epoch)
 
     trainer.writer.close()
 

@@ -1,6 +1,6 @@
 from deeplab3.config.defaults import get_cfg_defaults
 
-from deeplab3.evaluators.metrics import BatchEvaluator, ImageEvaluator
+from deeplab3.evaluators.segmentation_evaluator import SegmentationEvaluator, ImageSegmentationEvaluator
 import numpy as np
 import scipy.io as sio
 import torch
@@ -48,8 +48,8 @@ class Tester:
             patch_replication_callback(self.model)
             self.model = self.model.cuda()
 
-        self.evaluator = BatchEvaluator(cfg.DATASET.N_CLASSES)
-        self.img_evaluator = ImageEvaluator(cfg.DATASET.N_CLASSES)
+        self.evaluator = SegmentationEvaluator(cfg.DATASET.N_CLASSES)
+        self.img_evaluator = ImageSegmentationEvaluator(cfg.DATASET.N_CLASSES)
 
 
     def run(self, dataloader, num_classes, class_filter=None):

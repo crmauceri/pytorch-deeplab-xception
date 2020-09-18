@@ -25,21 +25,21 @@ class SegmentationEvaluator(Evaluator):
     ##
     # Writes all the metrics to the tensorboard log file
     #   writer (TensorboardSummary)
-    #   epoch (int) current epoch
+    #   iter (int) current number of iterations completed
     #   n_images (int) number of images in epoch
-    def write_metrics(self, writer, epoch, n_images):
+    def write_metrics(self, writer, iter, n_images):
         Acc = self.Pixel_Accuracy()
         Acc_class = self.Pixel_Accuracy_Class()[0]
         mIoU = self.Mean_Intersection_over_Union()[0]
         FWIoU = self.Frequency_Weighted_Intersection_over_Union()
 
-        writer.add_scalar('val/mIoU', mIoU, epoch)
-        writer.add_scalar('val/Acc', Acc, epoch)
-        writer.add_scalar('val/Acc_class', Acc_class, epoch)
-        writer.add_scalar('val/fwIoU', FWIoU, epoch)
+        writer.add_scalar('val/mIoU', mIoU, iter)
+        writer.add_scalar('val/Acc', Acc, iter)
+        writer.add_scalar('val/Acc_class', Acc_class, iter)
+        writer.add_scalar('val/fwIoU', FWIoU, iter)
 
         print('Validation:')
-        print('[Epoch: %d, numImages: %5d]' % (epoch, n_images))
+        print('[Iter: %d, numImages: %5d]' % (iter, n_images))
         print("Acc:{}, Acc_class:{}, mIoU:{}, fwIoU: {}".format(Acc, Acc_class, mIoU, FWIoU))
 
         return mIoU

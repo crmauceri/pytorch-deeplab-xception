@@ -28,10 +28,10 @@ class SegmentationEvaluator(Evaluator):
     #   summary_metrics - dictionary of metrics with name, value pairs
     #   per_class_metrics - dictionary of metric tensors with name, tensor pairs
     def calc_metrics(self):
-        Acc = self.evaluator.Pixel_Accuracy()
-        Acc_class, acc_class_tensor = self.evaluator.Pixel_Accuracy_Class()
-        mIoU, mIOU_class_tensor = self.evaluator.Mean_Intersection_over_Union()
-        FWIoU = self.evaluator.Frequency_Weighted_Intersection_over_Union()
+        Acc = self.Pixel_Accuracy()
+        Acc_class, acc_class_tensor = self.Pixel_Accuracy_Class()
+        mIoU, mIOU_class_tensor = self.Mean_Intersection_over_Union()
+        FWIoU = self.Frequency_Weighted_Intersection_over_Union()
 
         summary_metrics = {'Acc': Acc,
                   'Acc_class': Acc_class,

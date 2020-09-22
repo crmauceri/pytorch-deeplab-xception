@@ -92,32 +92,21 @@ class Tester:
 
 
         # Fast test during the training
-        Acc = self.evaluator.Pixel_Accuracy()
-        Acc_class, acc_class_tensor = self.evaluator.Pixel_Accuracy_Class()
-        mIoU, mIOU_class_tensor = self.evaluator.Mean_Intersection_over_Union()
-        FWIoU = self.evaluator.Frequency_Weighted_Intersection_over_Union()
+        metrics, per_class = self.evaluator.calc_metrics()
 
         output = 'Results:\n'
         output += '[numImages: %5d]\n' % (i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0])
-        output += "Acc:{}, Acc_class:{}, mIoU:{}, fwIoU: {}\n".format(Acc, Acc_class, mIoU, FWIoU)
-        output += 'Loss: %.3f\n' % test_loss
+        output += str(metrics)
 
         output += 'Class breakdown:\n'
         breakdown = {"Class": dataloader.dataset.loader.class_names,
                  "N_Photos": total_photos,
-                 "% Pixels": total_pix / total_pix.sum(),
-                 "Accuracy": acc_class_tensor,
-                 "mIoU": mIOU_class_tensor}
+                 "% Pixels": total_pix / total_pix.sum()}
+        breakdown.update(per_class)
 
         output += tabulate(breakdown, headers="keys")
 
-        # plt.figure()
-        # plt.imshow(self.evaluator.confusion_matrix)
-        # plt.show()
-        #
-        # print(output)
-
-        return output, self.evaluator.confusion_matrix
+        return output, self.evaluator.confusion_matrix, metrics
 
     def rank_images(self):
         top = self.img_evaluator.top_n()
@@ -144,7 +133,7 @@ if __name__ == "__main__":
     torch.manual_seed(cfg.SYSTEM.SEED)
     train_loader, val_loader, test_loader, num_classes = make_data_loader(cfg)
     tester = Tester(cfg)
-    output, mat = tester.run(val_loader, num_classes)
+    output, mat, metrics = tester.run(val_loader, num_classes)
     tester.rank_images()
 
     with open(cfg.CHECKPOINT.DIRECTORY + 'report.txt', 'w') as f:

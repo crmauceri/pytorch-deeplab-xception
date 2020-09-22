@@ -23,26 +23,24 @@ class SegmentationEvaluator(Evaluator):
         self.confusion_matrix = np.zeros((self.num_class,) * 2)
 
     ##
-    # Writes all the metrics to the tensorboard log file
-    #   writer (TensorboardSummary)
-    #   iter (int) current number of iterations completed
-    #   n_images (int) number of images in epoch
-    def write_metrics(self, writer, iter, n_images):
-        Acc = self.Pixel_Accuracy()
-        Acc_class = self.Pixel_Accuracy_Class()[0]
-        mIoU = self.Mean_Intersection_over_Union()[0]
-        FWIoU = self.Frequency_Weighted_Intersection_over_Union()
+    # Calculates all the metrics for evaluation
+    # Return
+    #   summary_metrics - dictionary of metrics with name, value pairs
+    #   per_class_metrics - dictionary of metric tensors with name, tensor pairs
+    def calc_metrics(self):
+        Acc = self.evaluator.Pixel_Accuracy()
+        Acc_class, acc_class_tensor = self.evaluator.Pixel_Accuracy_Class()
+        mIoU, mIOU_class_tensor = self.evaluator.Mean_Intersection_over_Union()
+        FWIoU = self.evaluator.Frequency_Weighted_Intersection_over_Union()
 
-        writer.add_scalar('val/mIoU', mIoU, iter)
-        writer.add_scalar('val/Acc', Acc, iter)
-        writer.add_scalar('val/Acc_class', Acc_class, iter)
-        writer.add_scalar('val/fwIoU', FWIoU, iter)
+        summary_metrics = {'Acc': Acc,
+                  'Acc_class': Acc_class,
+                  'mIoU': mIoU,
+                  'FWIoU': FWIoU}
+        per_class_metrics = {'Acc_class': acc_class_tensor,
+                             'mIoU': mIOU_class_tensor}
 
-        print('Validation:')
-        print('[Iter: %d, numImages: %5d]' % (iter, n_images))
-        print("Acc:{}, Acc_class:{}, mIoU:{}, fwIoU: {}".format(Acc, Acc_class, mIoU, FWIoU))
-
-        return mIoU
+        return summary_metrics, per_class_metrics
 
     ##
     # Accumulate confusion matrix

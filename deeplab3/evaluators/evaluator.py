@@ -12,12 +12,28 @@ class Evaluator(object):
 
     ##
     # Writes all the metrics to the tensorboard log file
-    # Input
     #   writer (TensorboardSummary)
-    #   epoch (int) current epoch
+    #   iter (int) current number of iterations completed
     #   n_images (int) number of images in epoch
-    def write_metrics(self, writer, epoch, n_images):
-        raise NotImplementedError("Should be overwritten by child classes")
+    def write_metrics(self, writer, iter, n_images):
+        output, _temp = self.calc_metrics()
+
+        for metric, value in output.items():
+            writer.add_scalar('val/{}'.format(metric), value, iter)
+
+        print('Validation:')
+        print('[Iter: %d, numImages: %5d]' % (iter, n_images))
+        print(output)
+
+        return output
+
+    ##
+    # Calculates all the metrics for evaluation
+    # Return
+    #   summary_metrics - dictionary of metrics with name, value pairs
+    #   per_class_metrics - dictionary of metric tensors with name, tensor pairs
+    def calc_metrics(self):
+        raise NotImplementedError('Needs to be implemented by child class')
 
     ##
     # Calculates and accumulates evaluation metrics for new batch

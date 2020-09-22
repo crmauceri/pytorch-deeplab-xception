@@ -30,24 +30,26 @@ class Saver(object):
             best_pred = state['best_pred']
             with open(os.path.join(self.experiment_dir, 'best_pred.txt'), 'w') as f:
                 f.write(str(best_pred))
-            if self.runs:
-                previous_miou = [0.0]
-                for run in self.runs:
-                    path = os.path.join(self.directory, run, 'best_pred.txt')
-                    if os.path.exists(path):
-                        with open(path, 'r') as f:
-                            miou = float(f.readline())
-                            previous_miou.append(miou)
-                    else:
-                        continue
-                max_miou = max(previous_miou)
-                if best_pred > max_miou:
-                    shutil.copyfile(filename, os.path.join(self.directory, 'model_best.pth.tar'))
-            else:
-                shutil.copyfile(filename, os.path.join(self.directory, 'model_best.pth.tar'))
 
     def save_experiment_config(self):
         logfile = os.path.join(self.experiment_dir, 'parameters.yaml')
         log_file = open(logfile, 'w')
         log_file.write(self.cfg.dump())
         log_file.close()
+
+
+def find_best_checkpoint(parent_dir):
+    max_miou = 0.0
+    filepath = None
+    for run in os.path.dir(parent_dir):
+        path = os.path.join(parent_dir, run, 'best_pred.txt')
+        if os.path.exists(path):
+            with open(path, 'r') as f:
+                miou = float(f.readline())
+                if miou > max_miou:
+                    max_miou = miou
+                    filepath = run
+    if filepath is not None:
+        return os.path.join(parent_dir, filepath, 'checkpoint.pth.tar')
+    else:
+        return None

@@ -40,7 +40,7 @@ class SegmentationEvaluator(Evaluator):
         per_class_metrics = {'Acc_class': acc_class_tensor,
                              'mIoU': mIOU_class_tensor}
 
-        return summary_metrics, per_class_metrics
+        return summary_metrics, per_class_metrics, mIoU
 
     ##
     # Accumulate confusion matrix

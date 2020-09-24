@@ -16,7 +16,7 @@ class Evaluator(object):
     #   iter (int) current number of iterations completed
     #   n_images (int) number of images in epoch
     def write_metrics(self, writer, iter, n_images):
-        output, _temp = self.calc_metrics()
+        output, _temp, top_metric = self.calc_metrics()
 
         for metric, value in output.items():
             writer.add_scalar('val/{}'.format(metric), value, iter)
@@ -25,13 +25,14 @@ class Evaluator(object):
         print('[Iter: %d, numImages: %5d]' % (iter, n_images))
         print(output)
 
-        return output
+        return top_metric
 
     ##
     # Calculates all the metrics for evaluation
     # Return
     #   summary_metrics - dictionary of metrics with name, value pairs
     #   per_class_metrics - dictionary of metric tensors with name, tensor pairs
+    #   top_metric - a single summary metric that will used to decide whether to save a checkpoint
     def calc_metrics(self):
         raise NotImplementedError('Needs to be implemented by child class')
 

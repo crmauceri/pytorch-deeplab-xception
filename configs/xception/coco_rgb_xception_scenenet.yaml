@@ -15,7 +15,7 @@ MODEL:
   BACKBONE: 'xception'
 
 CHECKPOINT:
-  DIRECTORY: 'models/run/scenenet/scenenet_xception/2020_09_17-22_14_43/'
+  DIRECTORY: 'models/run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/'
   MODEL: 'checkpoint.pth.tar'
   EXCLUDE: ['decoder.last_conv.8.weight', 'decoder.last_conv.8.bias']
 

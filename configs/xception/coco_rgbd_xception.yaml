@@ -1,0 +1,12 @@
+DATASET:
+  NAME: 'coco'
+  ROOT: 'datasets/coco/'
+  MODE: 'RGBD'
+  SYNTHETIC: True
+
+TRAIN:
+  CHECKNAME: 'coco_rgbd_xception'
+  EPOCHS: 100
+
+MODEL:
+  BACKBONE: 'xception'

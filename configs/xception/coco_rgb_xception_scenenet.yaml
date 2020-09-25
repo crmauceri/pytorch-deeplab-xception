@@ -1,0 +1,21 @@
+DATASET:
+  NAME: 'coco'
+  ROOT: 'datasets/coco/'
+  MODE: 'RGB'
+  COCO:
+    CATEGORIES: 'coco'
+
+TRAIN:
+  CHECKNAME: 'coco_rgb_xception'
+  EPOCHS: 200
+  FINETUNE: True
+
+MODEL:
+  INPUT_CHANNELS: 3
+  BACKBONE: 'xception'
+
+CHECKPOINT:
+  DIRECTORY: 'models/run/scenenet/scenenet_xception/2020_09_17-22_14_43/'
+  MODEL: 'checkpoint.pth.tar'
+  EXCLUDE: ['decoder.last_conv.8.weight', 'decoder.last_conv.8.bias']
+

@@ -4,10 +4,9 @@ DATASET:
   MODE: 'RGB'
   COCO:
     CATEGORIES: 'coco'
-  DARKEN: True
 
 TRAIN:
-  CHECKNAME: 'coco_xception'
+  CHECKNAME: 'coco_rgb_xception_imagenet'
   EPOCHS: 200
 
 MODEL:

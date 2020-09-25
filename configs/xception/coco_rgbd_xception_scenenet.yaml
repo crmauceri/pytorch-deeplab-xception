@@ -1,0 +1,18 @@
+DATASET:
+  NAME: 'coco'
+  ROOT: 'datasets/coco/'
+  MODE: 'RGBD'
+  SYNTHETIC: True
+
+TRAIN:
+  CHECKNAME: 'coco_rgbd_xception'
+  EPOCHS: 100
+  FINETUNE: True
+
+MODEL:
+  BACKBONE: 'xception'
+
+CHECKPOINT:
+  DIRECTORY: 'models/run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/'
+  MODEL: 'checkpoint.pth.tar'
+  EXCLUDE: ['decoder.last_conv.8.weight', 'decoder.last_conv.8.bias']

@@ -1,17 +1,15 @@
 DATASET:
-  NAME: 'coco'
-  ROOT: 'datasets/coco/'
-  MODE: 'RGB'
-  COCO:
-    CATEGORIES: 'coco'
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGBD'
+  N_CLASSES: 19
 
 TRAIN:
-  CHECKNAME: 'coco_rgb_xception_scenenet'
+  CHECKNAME: 'cityscapes_rgbd_xception_scenenet'
   EPOCHS: 200
   FINETUNE: True
 
 MODEL:
-  INPUT_CHANNELS: 3
   BACKBONE: 'xception'
 
 CHECKPOINT:

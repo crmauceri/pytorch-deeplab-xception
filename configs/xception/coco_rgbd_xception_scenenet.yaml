@@ -5,7 +5,7 @@ DATASET:
   SYNTHETIC: True
 
 TRAIN:
-  CHECKNAME: 'coco_rgbd_xception'
+  CHECKNAME: 'coco_rgbd_xception_scenenet'
   EPOCHS: 100
   FINETUNE: True
 

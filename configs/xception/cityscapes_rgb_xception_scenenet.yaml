@@ -1,12 +1,11 @@
 DATASET:
-  NAME: 'coco'
-  ROOT: 'datasets/coco/'
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
   MODE: 'RGB'
-  COCO:
-    CATEGORIES: 'coco'
+  N_CLASSES: 19
 
 TRAIN:
-  CHECKNAME: 'coco_rgb_xception_scenenet'
+  CHECKNAME: 'cityscapes_rgb_xception_scenenet'
   EPOCHS: 200
   FINETUNE: True
 
@@ -15,7 +14,7 @@ MODEL:
   BACKBONE: 'xception'
 
 CHECKPOINT:
-  DIRECTORY: 'models/run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/'
+  DIRECTORY: 'models/run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/'
   MODEL: 'checkpoint.pth.tar'
   EXCLUDE: ['decoder.last_conv.8.weight', 'decoder.last_conv.8.bias']
 

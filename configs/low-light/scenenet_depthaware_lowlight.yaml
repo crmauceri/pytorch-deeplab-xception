@@ -1,0 +1,14 @@
+DATASET:
+  NAME: 'scenenet'
+  ROOT: 'datasets/scenenet'
+  MODE: 'RGBD'
+  N_CLASSES: 14
+
+TRAIN:
+  CHECKNAME: 'scenenet_depthaware'
+  EPOCHS: 200
+  VAL_MAX: 1000
+  EVAL_INTERVAL: 0.2
+
+MODEL:
+  BACKBONE: 'depthaware_resnet'

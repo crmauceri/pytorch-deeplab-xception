@@ -92,7 +92,7 @@ class Tester:
 
 
         # Fast test during the training
-        metrics, per_class = self.evaluator.calc_metrics()
+        metrics, per_class, _temp = self.evaluator.calc_metrics()
 
         output = 'Results:\n'
         output += '[numImages: %5d]\n' % (i * self.cfg.TRAIN.BATCH_SIZE + image.data.shape[0])

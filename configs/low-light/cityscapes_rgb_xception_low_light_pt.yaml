@@ -1,0 +1,15 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGB'
+  N_CLASSES: 19
+  DARKEN: True
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgb_xception_low_light_pt'
+  EPOCHS: 200
+
+MODEL:
+  BACKBONE_ZOO: True
+  BACKBONE: 'xception'
+  INPUT_CHANNELS: 3

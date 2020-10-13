@@ -51,7 +51,7 @@ def match_cfg_versions(cfg_filepath):
                         value = "RGB"
                 if key == "DATASET.CHANNELS":
                     key = "MODEL.INPUT_CHANNELS"
-                if key == "DATASET.DARKEN" and isinstance(value, boolean):
+                if key == "DATASET.DARKEN" and isinstance(value, bool):
                     key = "DATASET.DARKEN.DARKEN"
 
                 cfg.merge_from_list([key, value])

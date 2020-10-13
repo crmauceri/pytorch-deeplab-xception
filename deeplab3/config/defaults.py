@@ -110,7 +110,7 @@ _C.DATASET.DARKEN = CN()
 _C.DATASET.DARKEN.DARKEN = False
 # Parameters for darkening filter include gamma correction, gain, and gaussian noise
 _C.DATASET.DARKEN.GAMMA = 2.0
-_C.DATASET.DARKEN.GAIN = 1.5
+_C.DATASET.DARKEN.GAIN = 0.5
 _C.DATASET.DARKEN.GAUSSIAN_M = 5./255.
 
 # Variables specific to coco loader

@@ -104,7 +104,14 @@ _C.DATASET.CROP_SIZE = 513
 # Use RGB-D input
 _C.DATASET.MODE = 'RGBD' #['RGBD', 'RGB', 'RGB_HHA']
 _C.DATASET.SYNTHETIC = False
-_C.DATASET.DARKEN = False
+
+# Artifially darken input images
+_C.DATASET.DARKEN = CN()
+_C.DATASET.DARKEN.DARKEN = False
+# Parameters for darkening filter include gamma correction, gain, and gaussian noise
+_C.DATASET.DARKEN.GAMMA = 2.0
+_C.DATASET.DARKEN.GAIN = 1.5
+_C.DATASET.DARKEN.GAUSSIAN_M = 5./255.
 
 # Variables specific to coco loader
 _C.DATASET.COCO = CN()

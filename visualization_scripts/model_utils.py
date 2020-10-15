@@ -70,15 +70,16 @@ def match_cfg_versions(cfg_filepath):
     return cfg
 
 
-def test_model(cfg):
+def test_model(cfg, report_file, confusion_file=None):
     torch.manual_seed(cfg.SYSTEM.SEED)
     train_loader, val_loader, test_loader, num_classes = make_data_loader(cfg)
     tester = Tester(cfg)
     output, mat, metrics = tester.run(val_loader, num_classes)
 
-    with open(cfg.CHECKPOINT.DIRECTORY + '/validation_report.txt', 'w') as f:
+    with open(report_file, 'w') as f:
         f.write(output)
 
-    sio.savemat(cfg.CHECKPOINT.DIRECTORY + '/confusion.mat', {'confusion': mat})
+    if confusion_file is None:
+        sio.savemat(confusion_file, {'confusion': mat})
 
     return metrics

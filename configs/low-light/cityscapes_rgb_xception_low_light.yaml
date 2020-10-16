@@ -3,7 +3,8 @@ DATASET:
   ROOT: 'datasets/cityscapes/'
   MODE: 'RGB'
   N_CLASSES: 19
-  DARKEN: True
+  DARKEN:
+    DARKEN: True
 
 TRAIN:
   CHECKNAME: 'cityscapes_rgb_xception_low_light'

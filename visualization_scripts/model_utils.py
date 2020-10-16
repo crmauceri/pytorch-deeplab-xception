@@ -12,7 +12,7 @@ from deeplab3.test import Tester
 def get_all_models(directory):
     # traverse root directory, and list directories as dirs and files as files
     model_configs = []
-    for root, dirs, files in os.walk("../run/"):
+    for root, dirs, files in os.walk(directory):
         path = root.split(os.sep)
         for file in files:
             if file == "parameters.txt.yaml" or file == "parameters.yaml":

@@ -1,16 +1,8 @@
-from deeplab3.dataloaders import make_data_loader
-from deeplab3.dataloaders import custom_transforms as tr
-from deeplab3.dataloaders.utils import decode_segmap
-from torch.utils.data import DataLoader
-from torchvision import transforms
-import matplotlib.pyplot as plt
 import numpy as np
-import math
 import os
-import torch
-import pickle
-import datetime
 import model_utils
+import json
+import traceback
 
 
 def run_low_light_models(low_light_models, gain, gamma):
@@ -57,6 +49,7 @@ def run_low_light_models(low_light_models, gain, gamma):
                 except Exception as e:
                     print("Error on {}, gain: {}, gamma: {}".format(cfg_filepath, i, j))
                     print(e)
+                    traceback.print_exc()
                     failed.append(cfg_filepath)
 
         return metric_dict, failed

@@ -44,6 +44,7 @@ class Tester:
 
         # Using cuda
         if self.cfg.SYSTEM.CUDA:
+            print("Using CUDA")
             self.model = torch.nn.DataParallel(self.model, device_ids=self.cfg.SYSTEM.GPU_IDS)
             patch_replication_callback(self.model)
             self.model = self.model.cuda()

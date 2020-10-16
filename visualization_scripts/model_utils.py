@@ -79,7 +79,7 @@ def test_model(cfg, report_file, confusion_file=None):
     with open(report_file, 'w') as f:
         f.write(output)
 
-    if confusion_file is None:
+    if confusion_file is not None:
         sio.savemat(confusion_file, {'confusion': mat})
 
     return metrics

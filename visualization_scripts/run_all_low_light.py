@@ -44,7 +44,7 @@ def run_low_light_models(low_light_models, gain, gamma):
                         metrics = model_utils.test_model(cfg, result_file)
 
                     metric_dict[cfg.DATASET.MODE][low][cfg.DATASET.NAME][i][j] = metrics['mIoU']
-                    print("Success on {}".format(result_file))
+                    print("Success on {}: {:3.2f}".format(result_file, metrics['mIoU']))
 
                 except Exception as e:
                     print("Error on {}, gain: {}, gamma: {}".format(cfg_filepath, i, j))

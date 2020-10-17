@@ -13,12 +13,15 @@ def run_model(cfg, cfg_filepath, result_file, rerun=False):
                              'SYSTEM.GPU_IDS', [0]])
 
         checkpoint_file = os.path.join(cfg.CHECKPOINT.DIRECTORY, 'checkpoint.pth.tar')
-        if rerun or (os.path.exists(result_file) and (os.path.getmtime(result_file) > os.path.getmtime(checkpoint_file))):
+
+        # Model had been updated since the result_file was generated
+        model_updated = os.path.getmtime(result_file) < os.path.getmtime(checkpoint_file)
+        if rerun or model_updated or not os.path.exists(result_file):
+            metrics = model_utils.test_model(cfg, result_file)
+        else:
             with open(result_file, 'r') as fp:
                 metric_str = fp.read().split('{')[1].split('}')[0].replace("'", '"')
                 metrics = json.loads('{' + metric_str + '}')
-        else:
-            metrics = model_utils.test_model(cfg, result_file)
 
         print("Success on {}: {:3.2f}".format(result_file, metrics['mIoU']))
         return True

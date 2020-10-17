@@ -37,7 +37,8 @@ def run_all_models(models, rerun=False):
 
     for cfg_filepath in models:
         cfg = model_utils.match_cfg_versions(cfg_filepath)
-        result_file = os.path.join(cfg.CHECKPOINT.DIRECTORY, 'validation_report.txt')
+        checkpoint_dir = os.path.dirname(cfg_filepath)
+        result_file = os.path.join(checkpoint_dir, 'validation_report.txt')
         if not run_model(cfg, cfg_filepath, result_file, rerun):
             failed.append(cfg_filepath)
 
@@ -55,7 +56,8 @@ def run_low_light_models(low_light_models, gain, gamma, rerun=False):
                                      'DATASET.DARKEN.GAIN', float(i),
                                      'DATASET.DARKEN.GAMMA', float(j)])
 
-                result_file = os.path.join(cfg.CHECKPOINT.DIRECTORY,
+                checkpoint_dir = os.path.dirname(cfg_filepath)
+                result_file = os.path.join(checkpoint_dir,
                                            'validation_report_gain{:3.2f}_gamma{:3.2f}.txt'.format(float(i), float(j)))
 
                 if not run_model(cfg, cfg_filepath, result_file, rerun):

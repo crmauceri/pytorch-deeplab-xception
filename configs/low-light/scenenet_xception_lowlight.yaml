@@ -3,7 +3,8 @@ DATASET:
   ROOT: 'datasets/scenenet'
   MODE: 'RGB'
   N_CLASSES: 14
-  DARKEN: True
+  DARKEN:
+    DARKEN: True
 
 TRAIN:
   CHECKNAME: 'scenenet_rgb_xception_low_light'

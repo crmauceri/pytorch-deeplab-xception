@@ -5,7 +5,8 @@ DATASET:
   COCO:
     CATEGORIES: 'pascal'
   N_CLASSES: 21
-  DARKEN: True
+  DARKEN:
+    DARKEN: True
   SYNTHETIC: True
 
 MODEL:

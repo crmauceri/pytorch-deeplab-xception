@@ -1,0 +1,20 @@
+DATASET:
+  NAME: 'cityscapes'
+  ROOT: 'datasets/cityscapes/'
+  MODE: 'RGBD'
+  N_CLASSES: 19
+  DARKEN:
+    DARKEN: True
+
+TRAIN:
+  CHECKNAME: 'cityscapes_rgbd_xception_scenenet_low_light'
+  EPOCHS: 200
+  FINETUNE: True
+
+MODEL:
+  BACKBONE: 'xception'
+
+CHECKPOINT:
+  DIRECTORY: 'run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/'
+  MODEL: 'checkpoint.pth.tar'
+  EXCLUDE: ['decoder.last_conv.8.weight', 'decoder.last_conv.8.bias']

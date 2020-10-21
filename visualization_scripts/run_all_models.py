@@ -14,9 +14,8 @@ def run_model(cfg, cfg_filepath, result_file, rerun=False):
 
         checkpoint_file = os.path.join(cfg.CHECKPOINT.DIRECTORY, 'checkpoint.pth.tar')
 
-        # Model had been updated since the result_file was generated
-        model_updated = os.path.getmtime(result_file) < os.path.getmtime(checkpoint_file)
-        if rerun or model_updated or not os.path.exists(result_file):
+        # If result_file doesnt exist, or manual rerun flag or model had been updated since the result_file was generated
+        if not os.path.exists(result_file) or rerun or os.path.getmtime(result_file) < os.path.getmtime(checkpoint_file):
             metrics = model_utils.test_model(cfg, result_file)
         else:
             with open(result_file, 'r') as fp:
@@ -91,7 +90,7 @@ if __name__ == "__main__":
                         '../run/cityscapes/cityscapes_rgbd_xception_low_light/2020_09_25-19_32_43/parameters.yaml',
                         '../run/cityscapes/cityscapes_rgb_xception_low_light/2020_09_25-19_36_53/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/parameters.yaml',
-                        '../run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/parameters.yaml',
+                        '../ls parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
 

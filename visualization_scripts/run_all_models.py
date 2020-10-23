@@ -99,7 +99,7 @@ def run_scrambled_models(models, rerun=False):
     for cfg_filepath in models:
         try:
             cfg = match_cfg_versions(cfg_filepath)
-            cfg.merge_from_list(['DATASET.SCRAMBLED', True])
+            cfg.merge_from_list(['DATASET.SCRAMBLE_LABELS', True])
 
             checkpoint_dir = os.path.dirname(cfg_filepath)
             result_file = os.path.join(checkpoint_dir, 'validation_report_scrambled.txt')

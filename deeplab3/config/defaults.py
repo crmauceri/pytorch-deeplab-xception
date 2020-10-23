@@ -115,7 +115,7 @@ _C.DATASET.DARKEN.GAUSSIAN_M = 5./255.
 
 # Mixes the labels and images randomly to generate baseline educated guess about the pixel classes
 # i.e. road at the bottom, sky at the top
-_C.DATASET.SCRAMBLE = False
+_C.DATASET.SCRAMBLE_LABELS = False
 
 # Variables specific to coco loader
 _C.DATASET.COCO = CN()

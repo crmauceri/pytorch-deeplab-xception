@@ -9,6 +9,11 @@ import json
 import torch
 import traceback
 
+from deeplab3.config.defaults import get_cfg_defaults
+from deeplab3.dataloaders.utils import decode_segmap
+import matplotlib.pyplot as plt
+import os.path
+
 def test_model(cfg, report_file, confusion_file=None):
     torch.manual_seed(cfg.SYSTEM.SEED)
     train_loader, val_loader, test_loader, num_classes = make_data_loader(cfg)
@@ -92,10 +97,6 @@ def run_low_light_models(low_light_models, gain, gamma, rerun=False):
                     failed.append(cfg_filepath)
 
     print("Failed models: ".format("\n".join(failed)))
-
-from deeplab3.dataloaders.utils import decode_segmap
-import matplotlib.pyplot as plt
-import os.path
 
 def run_image(cfg, image, model):
     if cfg.SYSTEM.CUDA:

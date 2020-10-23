@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 from deeplab3.dataloaders import make_data_loader
-from deeplab3.utils.model_utils import match_cfg_versions
+from deeplab3.utils.model_utils import match_cfg_versions, get_all_models, match_cfg_versions
 from deeplab3.test import Tester
 
 import json
@@ -121,7 +121,7 @@ def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
     for cfg_filepath in models:
         try:
             os.path.mkdir(os.path.join(model_dir, 'imgs'))
-            cfg = model_utils.match_cfg_versions(model_dir + "parameters.yaml")
+            cfg = match_cfg_versions(model_dir + "parameters.yaml")
             cfg.merge_from_list(['SYSTEM.GPU_IDS', [0],
                                  'CHECKPOINT.RESUME', True,
                                  'CHECKPOINT.DIRECTORY', model_dir,
@@ -144,18 +144,18 @@ def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
 
 
 if __name__ == "__main__":
-    model_configs = model_utils.get_all_models("../run/cityscapes/")
+    model_configs = get_all_models("../run/cityscapes/")
     # run_all_models(model_configs, False)
     generate_seg_vis('../configs/cityscapes_rgbd.yaml', model_configs,
                      cfg_options=['DATASET.ROOT', '../datasets/cityscapes/', 'DATASET.CITYSCAPES.GT_MODE', 'gtFine'])
 
     #
-    # model_configs = model_utils.get_all_models("../run/scenenet/")
+    # model_configs = get_all_models("../run/scenenet/")
     # run_all_models(model_configs, False)
     # generate_seg_vis('../configs/scenenet_rgbd.yaml', model_configs,
     #                   cfg_options=['DATASET.ROOT', '../datasets/scenenet/'])
     #
-    # model_configs = model_utils.get_all_models("../run/coco/")
+    # model_configs = get_all_models("../run/coco/")
     # run_all_models(model_configs, False)
     # generate_seg_vis(dataset_cfg, model_configs, cfg_options=[])
 

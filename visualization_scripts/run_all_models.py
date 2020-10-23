@@ -1,6 +1,6 @@
 import numpy as np
 import os
-import deeplab3.utils.model_utils
+from deeplab3.utils.model_utils import match_cfg_versions
 from deeplab3.test import Tester
 import json
 import traceback
@@ -31,7 +31,7 @@ def run_model(cfg, cfg_filepath, result_file, rerun=False):
 
         # If result_file doesnt exist, or manual rerun flag or model had been updated since the result_file was generated
         if not os.path.exists(result_file) or rerun or os.path.getmtime(result_file) < os.path.getmtime(checkpoint_file):
-            metrics = model_utils.test_model(cfg, result_file)
+            metrics = test_model(cfg, result_file)
         else:
             with open(result_file, 'r') as fp:
                 metric_str = fp.read().split('{')[1].split('}')[0].replace("'", '"')
@@ -51,7 +51,7 @@ def run_all_models(models, rerun=False):
 
     for cfg_filepath in models:
         try:
-            cfg = model_utils.match_cfg_versions(cfg_filepath)
+            cfg = match_cfg_versions(cfg_filepath)
             checkpoint_dir = os.path.dirname(cfg_filepath)
             result_file = os.path.join(checkpoint_dir, 'validation_report.txt')
             if not run_model(cfg, cfg_filepath, result_file, rerun):
@@ -71,7 +71,7 @@ def run_low_light_models(low_light_models, gain, gamma, rerun=False):
         for i in gain:
             for j in gamma:
                 try:
-                    cfg = model_utils.match_cfg_versions(cfg_filepath)
+                    cfg = match_cfg_versions(cfg_filepath)
                     cfg.merge_from_list(['DATASET.DARKEN.DARKEN', True,
                                          'DATASET.DARKEN.GAIN', float(i),
                                          'DATASET.DARKEN.GAMMA', float(j)])

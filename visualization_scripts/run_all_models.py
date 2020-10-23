@@ -1,8 +1,12 @@
 import numpy as np
 import os
+
+from deeplab3.dataloaders import make_data_loader
 from deeplab3.utils.model_utils import match_cfg_versions
 from deeplab3.test import Tester
+
 import json
+import torch
 import traceback
 
 def test_model(cfg, report_file, confusion_file=None):

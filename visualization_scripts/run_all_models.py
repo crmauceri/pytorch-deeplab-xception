@@ -93,30 +93,85 @@ def run_low_light_models(low_light_models, gain, gamma, rerun=False):
 
     print("Failed models: ".format("\n".join(failed)))
 
+from deeplab3.dataloaders.utils import decode_segmap
+import matplotlib.pyplot as plt
+import os.path
+
+def run_image(cfg, image, model):
+    if cfg.SYSTEM.CUDA:
+        image = image.cuda()
+    with torch.no_grad():
+        output = model(image)
+
+    pred = output.data.cpu().numpy()
+    pred = np.argmax(pred, axis=1)
+    return pred
+
+def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
+    failed = []
+
+    dataset_cfg = get_cfg_defaults()
+    dataset_cfg.merge_from_file(dataset_cfg_path)
+    dataset_cfg.merge_from_list(cfg_options)
+    dataloader = make_data_loader(dataset_cfg)
+    for ii, sample in enumerate(dataloader):
+        images, targets, ids = sample['image'], sample['label'], sample['id']
+        break
+
+    for cfg_filepath in models:
+        try:
+            os.path.mkdir(os.path.join(model_dir, 'imgs'))
+            cfg = model_utils.match_cfg_versions(model_dir + "parameters.yaml")
+            cfg.merge_from_list(['SYSTEM.GPU_IDS', [0],
+                                 'CHECKPOINT.RESUME', True,
+                                 'CHECKPOINT.DIRECTORY', model_dir,
+                                 ])
+            cfg.merge_from_list(cfg_options)
+            m = load_model(cfg)
+            m.eval()
+
+            preds = run_image(cfg, images, model)
+            for ii, id in enumerate(ids):
+                segmap = decode_segmap(preds[ii, :, :, :].squeeze(), dataset=cfg.DATASET.NAME)
+                plt.imsave('{}/imgs/{}.png'.format(model_dir, id), segmap)
+
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            failed.append(cfg_filepath)
+
+    print("Failed models: ".format("\n".join(failed)))
+
 
 if __name__ == "__main__":
-    # model_configs = model_utils.get_all_models("../run/cityscapes/")
+    model_configs = model_utils.get_all_models("../run/cityscapes/")
     # run_all_models(model_configs, False)
+    generate_seg_vis('../configs/cityscapes_rgbd.yaml', model_configs,
+                     cfg_options=['DATASET.ROOT', '../datasets/cityscapes/', 'DATASET.CITYSCAPES.GT_MODE', 'gtFine'])
+
     #
     # model_configs = model_utils.get_all_models("../run/scenenet/")
     # run_all_models(model_configs, False)
+    # generate_seg_vis('../configs/scenenet_rgbd.yaml', model_configs,
+    #                   cfg_options=['DATASET.ROOT', '../datasets/scenenet/'])
     #
     # model_configs = model_utils.get_all_models("../run/coco/")
     # run_all_models(model_configs, False)
+    # generate_seg_vis(dataset_cfg, model_configs, cfg_options=[])
 
-    low_light_models = ['../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.yaml',
-                       '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.yaml',
-                        '../run/cityscapes/cityscapes_rgbd_xception_low_light/2020_09_25-19_32_43/parameters.yaml',
-                        '../run/cityscapes/cityscapes_rgb_xception_low_light/2020_09_25-19_36_53/parameters.yaml',
-                        '../run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/parameters.yaml',
-                        '../run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/parameters.yaml',
-                        '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
-                        '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
+    # low_light_models = ['../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.yaml',
+    #                    '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.yaml',
+    #                     '../run/cityscapes/cityscapes_rgbd_xception_low_light/2020_09_25-19_32_43/parameters.yaml',
+    #                     '../run/cityscapes/cityscapes_rgb_xception_low_light/2020_09_25-19_36_53/parameters.yaml',
+    #                     '../run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/parameters.yaml',
+    #                     '../run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/parameters.yaml',
+    #                     '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
+    #                     '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
     #
     # gain = [0.33, 0.66, 1.0]
     # gamma = [1.0, 2.0, 3.0]
     # run_low_light_models(low_light_models, gain, gamma, False)
 
-    run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
-    run_all_models(low_light_models, 'validation_report_depth_only.txt', True, ['TEST.DEPTH_ONLY', True])
-    run_all_models(low_light_models, 'validation_report_no_depth.txt', True, ['TEST.CHANNEL_ABLATION', 3])
+    # run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
+    # run_all_models(low_light_models, 'validation_report_depth_only.txt', True, ['TEST.DEPTH_ONLY', True])
+    # run_all_models(low_light_models, 'validation_report_no_depth.txt', True, ['TEST.CHANNEL_ABLATION', 3])

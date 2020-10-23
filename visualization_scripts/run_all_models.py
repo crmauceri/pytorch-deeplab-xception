@@ -132,7 +132,9 @@ if __name__ == "__main__":
                         '../run/scenenet/scenenet_rgb_xception/2020_09_17-14_43/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
+    #
+    # gain = [0.33, 0.66, 1.0]
+    # gamma = [1.0, 2.0, 3.0]
+    # run_low_light_models(low_light_models, gain, gamma, True)
 
-    gain = [0.33, 0.66, 1.0]
-    gamma = [1.0, 2.0, 3.0]
-    run_low_light_models(low_light_models, gain, gamma, True)
+    run_scrambled_models(low_light_models, True)

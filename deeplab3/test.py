@@ -137,7 +137,10 @@ if __name__ == "__main__":
     output, mat, metrics = tester.run(val_loader, num_classes)
     tester.rank_images()
 
-    with open(cfg.CHECKPOINT.DIRECTORY + 'report.txt', 'w') as f:
+    print(output)
+    outfile = cfg.CHECKPOINT.DIRECTORY + 'report.txt'
+    with open(outfile, 'w') as f:
         f.write(output)
+    print("Report written to: " +  outfile)
 
     sio.savemat(cfg.CHECKPOINT.DIRECTORY + 'confusion.mat', {'confusion': mat})

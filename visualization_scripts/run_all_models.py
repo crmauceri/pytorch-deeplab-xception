@@ -93,6 +93,26 @@ def run_low_light_models(low_light_models, gain, gamma, rerun=False):
 
     print("Failed models: ".format("\n".join(failed)))
 
+def run_scrambled_models(models, rerun=False):
+    failed = []
+
+    for cfg_filepath in models:
+        try:
+            cfg = match_cfg_versions(cfg_filepath)
+            cfg.merge_from_list(['DATASET.SCRAMBLED', True])
+
+            checkpoint_dir = os.path.dirname(cfg_filepath)
+            result_file = os.path.join(checkpoint_dir, 'validation_report_scrambled.txt')
+
+            if not run_model(cfg, cfg_filepath, result_file, rerun):
+                failed.append(cfg_filepath)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            failed.append(cfg_filepath)
+
+    print("Failed models: ".format("\n".join(failed)))
+
 
 if __name__ == "__main__":
     # model_configs = model_utils.get_all_models("../run/cityscapes/")

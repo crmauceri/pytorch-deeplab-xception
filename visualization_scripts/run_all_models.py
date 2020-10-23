@@ -109,7 +109,7 @@ def run_image(cfg, image, model):
     pred = np.argmax(pred, axis=1)
     return pred
 
-def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
+def generate_seg_vis(dataset_cfg_path, model_cfg_paths, cfg_options=[]):
     failed = []
 
     dataset_cfg = get_cfg_defaults()
@@ -120,7 +120,7 @@ def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
         images, targets, ids = sample['image'], sample['label'], sample['id']
         break
 
-    for cfg_filepath in models:
+    for cfg_filepath in model_cfg_paths:
         try:
             model_dir = os.path.dirname(cfg_filepath)
             img_dir = os.path.join(model_dir, 'imgs')
@@ -132,8 +132,8 @@ def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
                                  'CHECKPOINT.DIRECTORY', model_dir,
                                  ])
             cfg.merge_from_list(cfg_options)
-            m = load_model(cfg)
-            m.eval()
+            model = load_model(cfg)
+            model.eval()
 
             preds = run_image(cfg, images, model)
             for ii, id in enumerate(ids):

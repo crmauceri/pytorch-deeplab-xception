@@ -4,7 +4,7 @@ import os
 from deeplab3.modeling import load_model
 from deeplab3.config.defaults import get_cfg_defaults
 from deeplab3.dataloaders.utils import decode_segmap
-from deeplab3.dataloaders import make_data_loader
+from deeplab3.dataloaders import make_dataset
 from deeplab3.utils.model_utils import match_cfg_versions, get_all_models, match_cfg_versions
 from deeplab3.test import Tester
 

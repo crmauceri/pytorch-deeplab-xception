@@ -69,18 +69,3 @@ def match_cfg_versions(cfg_filepath):
         cfg.DATASET.ROOT = "../datasets/scenenet/"
 
     return cfg
-
-
-def test_model(cfg, report_file, confusion_file=None):
-    torch.manual_seed(cfg.SYSTEM.SEED)
-    train_loader, val_loader, test_loader, num_classes = make_data_loader(cfg)
-    tester = Tester(cfg)
-    output, mat, metrics = tester.run(val_loader, num_classes)
-
-    with open(report_file, 'w') as f:
-        f.write(output)
-
-    if confusion_file is not None:
-        sio.savemat(confusion_file, {'confusion': mat})
-
-    return metrics

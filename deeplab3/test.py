@@ -71,6 +71,12 @@ class Tester:
             image, target = sample['image'], sample['label']
             if self.cfg.SYSTEM.CUDA:
                 image, target = image.cuda(), target.cuda()
+
+            if self.cfg.TEST.CHANNEL_ABLATION > -1:
+                image[:, self.cfg.TEST.CHANNEL_ABLATION, :, :] = 0
+            elif self.cfg.TEST.DEPTH_ONLY:
+                image[:, 0:3, :, :] = 0
+
             with torch.no_grad():
                 output = self.model(image)
             loss = self.criterion(output, target)

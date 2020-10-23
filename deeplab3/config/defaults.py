@@ -49,6 +49,14 @@ _C.TEST = CN()
 _C.TEST.BATCH_SIZE = -1
 _C.TEST.MAX_ITER = -1
 
+# Mixes the labels and images randomly to generate baseline educated guess about the pixel classes
+# i.e. road at the bottom, sky at the top
+_C.TEST.SCRAMBLE_LABELS = False
+
+# Sets channel > -1 to 0 to test importance to prediction
+_C.TEST.CHANNEL_ABLATION = -1 # [0, 3]
+_C.TEST.DEPTH_ONLY = False
+
 _C.MODEL = CN()
 _C.MODEL.NAME = "deeplab"
 # Backbone name : ['resnet', 'xception', 'drn', 'mobilenet']
@@ -112,10 +120,6 @@ _C.DATASET.DARKEN.DARKEN = False
 _C.DATASET.DARKEN.GAMMA = 2.0
 _C.DATASET.DARKEN.GAIN = 0.5
 _C.DATASET.DARKEN.GAUSSIAN_M = 5./255.
-
-# Mixes the labels and images randomly to generate baseline educated guess about the pixel classes
-# i.e. road at the bottom, sky at the top
-_C.DATASET.SCRAMBLE_LABELS = False
 
 # Variables specific to coco loader
 _C.DATASET.COCO = CN()

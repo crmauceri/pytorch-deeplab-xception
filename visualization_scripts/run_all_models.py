@@ -123,7 +123,9 @@ def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
     for cfg_filepath in models:
         try:
             model_dir = os.path.dirname(cfg_filepath)
-            os.mkdir(os.path.join(model_dir, 'imgs'))
+            img_dir = os.path.join(model_dir, 'imgs')
+            if not os.path.exists(img_dir):
+                os.mkdir(img_dir)
             cfg = match_cfg_versions(cfg_filepath)
             cfg.merge_from_list(['SYSTEM.GPU_IDS', [0],
                                  'CHECKPOINT.RESUME', True,
@@ -136,7 +138,7 @@ def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
             preds = run_image(cfg, images, model)
             for ii, id in enumerate(ids):
                 segmap = decode_segmap(preds[ii, :, :, :].squeeze(), dataset=cfg.DATASET.NAME)
-                plt.imsave('{}/imgs/{}.png'.format(model_dir, id), segmap)
+                plt.imsave('{}/{}.png'.format(img_dir, id), segmap)
 
         except Exception as e:
             print(e)

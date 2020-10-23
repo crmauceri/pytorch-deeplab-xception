@@ -130,12 +130,11 @@ def generate_seg_vis(model_cfg_paths, cfg_options=[]):
             dataset = make_dataset(cfg, 'val')
             for ii in range(0, 10):
                 sample = dataset[ii]
-                images, targets, ids = sample['image'], sample['label'], sample['id']
+                image, target, id = sample['image'], sample['label'], sample['id']
 
-                preds = run_image(cfg, images, model)
-                for ii, id in enumerate(ids):
-                    segmap = decode_segmap(preds[ii, :, :, :].squeeze(), dataset=cfg.DATASET.NAME)
-                    plt.imsave('{}/{}.png'.format(img_dir, id), segmap)
+                pred = run_image(cfg, image.unsqueeze(0), model)
+                segmap = decode_segmap(pred.squeeze(), dataset=cfg.DATASET.NAME)
+                plt.imsave('{}/{}.png'.format(img_dir, id), segmap)
 
         except Exception as e:
             print(e)

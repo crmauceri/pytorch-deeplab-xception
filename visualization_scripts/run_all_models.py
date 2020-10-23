@@ -121,7 +121,7 @@ def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
 
     for cfg_filepath in models:
         try:
-            os.path.mkdir(os.path.join(model_dir, 'imgs'))
+            os.mkdir(os.path.join(model_dir, 'imgs'))
             cfg = match_cfg_versions(model_dir + "parameters.yaml")
             cfg.merge_from_list(['SYSTEM.GPU_IDS', [0],
                                  'CHECKPOINT.RESUME', True,

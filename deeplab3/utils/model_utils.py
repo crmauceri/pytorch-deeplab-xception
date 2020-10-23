@@ -7,7 +7,6 @@ import json
 
 from deeplab3.dataloaders import make_data_loader
 from deeplab3.config.defaults import get_cfg_defaults
-from deeplab3.test import Tester
 
 def get_all_models(directory):
     # traverse root directory, and list directories as dirs and files as files

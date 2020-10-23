@@ -109,16 +109,8 @@ def run_image(cfg, image, model):
     pred = np.argmax(pred, axis=1)
     return pred
 
-def generate_seg_vis(dataset_cfg_path, model_cfg_paths, cfg_options=[]):
+def generate_seg_vis(model_cfg_paths, cfg_options=[]):
     failed = []
-
-    dataset_cfg = get_cfg_defaults()
-    dataset_cfg.merge_from_file(dataset_cfg_path)
-    dataset_cfg.merge_from_list(cfg_options)
-    train_loader, val_loader, test_loader, num_class = make_data_loader(dataset_cfg)
-    for ii, sample in enumerate(val_loader):
-        images, targets, ids = sample['image'], sample['label'], sample['id']
-        break
 
     for cfg_filepath in model_cfg_paths:
         try:
@@ -135,10 +127,15 @@ def generate_seg_vis(dataset_cfg_path, model_cfg_paths, cfg_options=[]):
             model = load_model(cfg)
             model.eval()
 
-            preds = run_image(cfg, images, model)
-            for ii, id in enumerate(ids):
-                segmap = decode_segmap(preds[ii, :, :, :].squeeze(), dataset=cfg.DATASET.NAME)
-                plt.imsave('{}/{}.png'.format(img_dir, id), segmap)
+            dataset = make_dataset(cfg, 'val')
+            for ii in range(0, 10):
+                sample = dataset[ii]
+                images, targets, ids = sample['image'], sample['label'], sample['id']
+
+                preds = run_image(cfg, images, model)
+                for ii, id in enumerate(ids):
+                    segmap = decode_segmap(preds[ii, :, :, :].squeeze(), dataset=cfg.DATASET.NAME)
+                    plt.imsave('{}/{}.png'.format(img_dir, id), segmap)
 
         except Exception as e:
             print(e)
@@ -151,8 +148,7 @@ def generate_seg_vis(dataset_cfg_path, model_cfg_paths, cfg_options=[]):
 if __name__ == "__main__":
     model_configs = get_all_models("../run/cityscapes/")
     # run_all_models(model_configs, False)
-    generate_seg_vis('../configs/cityscapes_rgbd.yaml', model_configs,
-                     cfg_options=['DATASET.ROOT', '../datasets/cityscapes/', 'DATASET.CITYSCAPES.GT_MODE', 'gtFine'])
+    generate_seg_vis(model_configs)
 
     #
     # model_configs = get_all_models("../run/scenenet/")

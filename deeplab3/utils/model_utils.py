@@ -33,6 +33,7 @@ def flatten_cfg(cfg_dict, prefix=None):
             flattened.update(flatten_cfg(value, prefixed_key))
     return flattened
 
+# Throws FileNotFoundException
 def match_cfg_versions(cfg_filepath):
     cfg = get_cfg_defaults()
     with open(cfg_filepath, 'r') as f:

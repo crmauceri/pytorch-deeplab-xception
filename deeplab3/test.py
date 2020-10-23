@@ -11,6 +11,7 @@ from deeplab3.modeling.sync_batchnorm.replicate import patch_replication_callbac
 from deeplab3.utils.loss import SegmentationLosses
 from deeplab3.utils.calculate_weights import calculate_weights_labels
 from deeplab3.modeling import load_model
+from deeplab3.utils.model_utils import match_cfg_versions
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
@@ -126,8 +127,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    cfg = get_cfg_defaults()
-    cfg.merge_from_file(args.config_file)
+    cfg = match_cfg_versions(args.config_file)
     cfg.merge_from_list(args.opts)
     print(cfg)
 

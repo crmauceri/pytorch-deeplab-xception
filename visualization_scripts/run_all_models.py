@@ -76,21 +76,21 @@ def run_low_light_models(low_light_models, gain, gamma, rerun=False):
 
 
 if __name__ == "__main__":
-    model_configs = model_utils.get_all_models("../run/cityscapes/")
-    run_all_models(model_configs, True)
+    # model_configs = model_utils.get_all_models("../run/cityscapes/")
+    # run_all_models(model_configs, True)
+    #
+    # model_configs = model_utils.get_all_models("../run/scenenet/")
+    # run_all_models(model_configs, True)
+    #
+    # model_configs = model_utils.get_all_models("../run/coco/")
+    # run_all_models(model_configs, True)
 
-    model_configs = model_utils.get_all_models("../run/scenenet/")
-    run_all_models(model_configs, True)
-
-    model_configs = model_utils.get_all_models("../run/coco/")
-    run_all_models(model_configs, True)
-
-    low_light_models = ['../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.txt.yaml',
-                       '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.txt.yaml',
+    low_light_models = ['../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.yaml',
+                       '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.yaml',
                         '../run/cityscapes/cityscapes_rgbd_xception_low_light/2020_09_25-19_32_43/parameters.yaml',
                         '../run/cityscapes/cityscapes_rgb_xception_low_light/2020_09_25-19_36_53/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/parameters.yaml',
-                        '../ls parameters.yaml',
+                        '../run/scenenet/scenenet_rgb_xception/2020_09_17-14_43/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
 

@@ -114,8 +114,8 @@ def generate_seg_vis(dataset_cfg_path, models, cfg_options=[]):
     dataset_cfg = get_cfg_defaults()
     dataset_cfg.merge_from_file(dataset_cfg_path)
     dataset_cfg.merge_from_list(cfg_options)
-    dataloader = make_data_loader(dataset_cfg)
-    for ii, sample in enumerate(dataloader):
+    train_loader, val_loader, test_loader, num_class = make_data_loader(dataset_cfg)
+    for ii, sample in enumerate(val_loader):
         images, targets, ids = sample['image'], sample['label'], sample['id']
         break
 

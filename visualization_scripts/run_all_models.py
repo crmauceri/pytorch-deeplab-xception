@@ -134,7 +134,7 @@ def generate_seg_vis(model_cfg_paths, cfg_options=[]):
 
                 pred = run_image(cfg, image.unsqueeze(0), model)
                 segmap = decode_segmap(pred.squeeze(), dataset=cfg.DATASET.NAME)
-                plt.imsave('{}/{}.png'.format(img_dir, id), segmap)
+                plt.imsave('{}/{}.png'.format(img_dir, ii), segmap)
 
         except Exception as e:
             print(e)
@@ -145,19 +145,17 @@ def generate_seg_vis(model_cfg_paths, cfg_options=[]):
 
 
 if __name__ == "__main__":
-    model_configs = get_all_models("../run/cityscapes/")
+    # model_configs = get_all_models("../run/cityscapes/")
     # run_all_models(model_configs, False)
+    # generate_seg_vis(model_configs)
+
+    model_configs = get_all_models("../run/scenenet/")
+    run_all_models(model_configs, False)
     generate_seg_vis(model_configs)
 
-    #
-    # model_configs = get_all_models("../run/scenenet/")
-    # run_all_models(model_configs, False)
-    # generate_seg_vis('../configs/scenenet_rgbd.yaml', model_configs,
-    #                   cfg_options=['DATASET.ROOT', '../datasets/scenenet/'])
-    #
-    # model_configs = get_all_models("../run/coco/")
-    # run_all_models(model_configs, False)
-    # generate_seg_vis(dataset_cfg, model_configs, cfg_options=[])
+    model_configs = get_all_models("../run/coco/")
+    run_all_models(model_configs, False)
+    generate_seg_vis(model_configs)
 
     # low_light_models = ['../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.yaml',
     #                    '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.yaml',

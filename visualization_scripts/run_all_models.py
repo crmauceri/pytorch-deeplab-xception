@@ -131,10 +131,10 @@ def generate_seg_vis(model_cfg_paths, dir='imgs', cfg_options=[]):
             for ii in range(0, 10):
                 sample = dataset[ii]
                 image, target, id = sample['image'], sample['label'], sample['id']
-                img_tmp = dataset.loader.invert_normalization(sample['image'].squeeze())
+                img_tmp = dataset.loader.invert_normalization(sample['image'].squeeze()).continuous()
                 gt = sample['label'].numpy()
                 tmp = np.array(gt).astype(np.uint8)
-                gt_segmap = decode_segmap(tmp, dataset='cityscapes')
+                gt_segmap = decode_segmap(tmp, dataset=cfg.DATASET.NAME)
 
                 print(id)
 

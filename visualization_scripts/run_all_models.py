@@ -109,13 +109,13 @@ def run_image(cfg, image, model):
     pred = np.argmax(pred, axis=1)
     return pred
 
-def generate_seg_vis(model_cfg_paths, cfg_options=[]):
+def generate_seg_vis(model_cfg_paths, dir='imgs', cfg_options=[]):
     failed = []
 
     for cfg_filepath in model_cfg_paths:
         try:
             model_dir = os.path.dirname(cfg_filepath)
-            img_dir = os.path.join(model_dir, 'imgs')
+            img_dir = os.path.join(model_dir, dir)
             if not os.path.exists(img_dir):
                 os.mkdir(img_dir)
             cfg = match_cfg_versions(cfg_filepath)
@@ -131,10 +131,18 @@ def generate_seg_vis(model_cfg_paths, cfg_options=[]):
             for ii in range(0, 10):
                 sample = dataset[ii]
                 image, target, id = sample['image'], sample['label'], sample['id']
+                img_tmp = dataset.loader.invert_normalization(sample['image'].squeeze())
+                gt = sample['label'].numpy()
+                tmp = np.array(gt[jj]).astype(np.uint8)
+                gt_segmap = decode_segmap(tmp, dataset='cityscapes')
+
+                print(id)
 
                 pred = run_image(cfg, image.unsqueeze(0), model)
                 segmap = decode_segmap(pred.squeeze(), dataset=cfg.DATASET.NAME)
                 plt.imsave('{}/{}.png'.format(img_dir, ii), segmap)
+                plt.imsave('{}/{}_original.png'.format(img_dir, ii), img_tmp)
+                plt.imsave('{}/{}_gt.png'.format(img_dir, ii), gt_segmap)
 
         except Exception as e:
             print(e)
@@ -145,30 +153,41 @@ def generate_seg_vis(model_cfg_paths, cfg_options=[]):
 
 
 if __name__ == "__main__":
-    # model_configs = get_all_models("../run/cityscapes/")
+    model_configs = get_all_models("../models/run/cityscapes/")
     # run_all_models(model_configs, False)
+    generate_seg_vis(model_configs)
+
+    # model_configs = get_all_models("../run/scenenet/")
+    # # run_all_models(model_configs, False)
+    # generate_seg_vis(model_configs)
+    #
+    # model_configs = get_all_models("../run/coco/")
+    # # run_all_models(model_configs, False)
     # generate_seg_vis(model_configs)
 
-    model_configs = get_all_models("../run/scenenet/")
-    run_all_models(model_configs, False)
-    generate_seg_vis(model_configs)
+    low_light_models = ['../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.yaml',
+                       '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.yaml',
+                        '../run/cityscapes/cityscapes_rgbd_xception_low_light/2020_09_25-19_32_43/parameters.yaml',
+                        '../run/cityscapes/cityscapes_rgb_xception_low_light/2020_09_25-19_36_53/parameters.yaml',
+                        '../run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/parameters.yaml',
+                        '../run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/parameters.yaml',
+                        '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
+                        '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
 
-    model_configs = get_all_models("../run/coco/")
-    run_all_models(model_configs, False)
-    generate_seg_vis(model_configs)
-
-    # low_light_models = ['../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.yaml',
-    #                    '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.yaml',
-    #                     '../run/cityscapes/cityscapes_rgbd_xception_low_light/2020_09_25-19_32_43/parameters.yaml',
-    #                     '../run/cityscapes/cityscapes_rgb_xception_low_light/2020_09_25-19_36_53/parameters.yaml',
-    #                     '../run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/parameters.yaml',
-    #                     '../run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/parameters.yaml',
-    #                     '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
-    #                     '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
-    #
-    # gain = [0.33, 0.66, 1.0]
-    # gamma = [1.0, 2.0, 3.0]
+    gain = [0.33, 0.66, 1.0]
+    gamma = [1.0, 2.0, 3.0]
     # run_low_light_models(low_light_models, gain, gamma, False)
+
+    for i in gain:
+        for j in gamma:
+            try:
+                cfg_options = ['DATASET.DARKEN.DARKEN', True,
+                               'DATASET.DARKEN.GAIN', float(i),
+                               'DATASET.DARKEN.GAMMA', float(j)]
+                generate_seg_vis(low_light_models, dir='imgs_{}_{}'.format(i, j), cfg_options=cfg_options)
+            except Exception as e:
+                print(e)
+                traceback.print_exc()
 
     # run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
     # run_all_models(low_light_models, 'validation_report_depth_only.txt', True, ['TEST.DEPTH_ONLY', True])

@@ -165,7 +165,7 @@ if __name__ == "__main__":
     #             print(e)
     #             traceback.print_exc()
 
-    sigma = np.linspace(0.0, 0.0036, 5)
+    sigma = np.linspace(0.00072, 0.0036, 4)
     for i in sigma:
         try:
             cfg_options = ['DATASET.DARKEN.DARKEN', True,
@@ -174,7 +174,7 @@ if __name__ == "__main__":
                            'DATASET.DARKEN.GAUSSIAN_SIGMA', float(i),
                            'DATASET.DARKEN.POISSON', False]
             run_all_models(low_light_models,
-                           'validation_report_sigma{:3.2f}.txt'.format(float(i)),
+                           'validation_report_sigma{:f}.txt'.format(float(i)),
                            False, cfg_options)
         except Exception as e:
             print(e)
@@ -192,7 +192,35 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
         traceback.print_exc()
-    #
+
+    for i in gain:
+        try:
+            cfg_options = ['DATASET.DARKEN.DARKEN', True,
+                           'DATASET.DARKEN.GAIN', float(i),
+                           'DATASET.DARKEN.GAMMA', 1.0,
+                           'DATASET.DARKEN.GAUSSIAN_SIGMA', 0.0,
+                           'DATASET.DARKEN.POISSON', False]
+            generate_seg_vis(low_light_models, dir='imgs_{}_{}'.format(i, j), cfg_options=cfg_options)
+            run_all_models(low_light_models, 'validation_report_gain{:3.2f}_no_noise.txt'.format(float(i), float(j)),
+                           False, cfg_options)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+
+    for j in gamma:
+        try:
+            cfg_options = ['DATASET.DARKEN.DARKEN', True,
+                           'DATASET.DARKEN.GAIN', 1.0,
+                           'DATASET.DARKEN.GAMMA', float(j),
+                           'DATASET.DARKEN.GAUSSIAN_SIGMA', 0.0,
+                           'DATASET.DARKEN.POISSON', False]
+            generate_seg_vis(low_light_models, dir='imgs_{}_{}'.format(i, j), cfg_options=cfg_options)
+            run_all_models(low_light_models, 'validation_report_gamma{:3.2f}_no_noise.txt'.format(float(i), float(j)),
+                           False, cfg_options)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+
     # run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
     # run_all_models(low_light_models, 'validation_report_depth_only.txt', False, ['TEST.DEPTH_ONLY', True])
     # run_all_models(low_light_models, 'validation_report_no_depth.txt', False, ['TEST.CHANNEL_ABLATION', 3])

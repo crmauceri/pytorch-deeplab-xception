@@ -176,7 +176,7 @@ if __name__ == "__main__":
 
     gain = [0.33, 0.66, 1.0]
     gamma = [1.0, 2.0, 3.0]
-    # run_low_light_models(low_light_models, gain, gamma, False)
+    run_low_light_models(low_light_models, gain, gamma, True)
 
     for i in gain:
         for j in gamma:

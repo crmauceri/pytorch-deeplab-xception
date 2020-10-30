@@ -33,7 +33,7 @@ def run_model(cfg_filepath, result_file, rerun=False, cfg_options=[]):
     try:
         cfg = match_cfg_versions(cfg_filepath)
         cfg.merge_from_list(['CHECKPOINT.DIRECTORY', os.path.dirname(cfg_filepath),
-                             'TEST.MAX_ITER', 2000,
+                             'TEST.MAX_ITER', 500,
                              'MODEL.PRETRAINED', "",
                              # Since we're using saved models, pretrained weights will be overwritten anyway.
                              'SYSTEM.GPU_IDS', [0]])
@@ -71,31 +71,6 @@ def run_all_models(models, report_name='validation_report.txt', rerun=False, cfg
             print(e)
             traceback.print_exc()
             failed.append(cfg_filepath)
-
-    print("Failed models: ".format("\n".join(failed)))
-
-
-def run_low_light_models(low_light_models, gain, gamma, rerun=False):
-    failed = []
-
-    for cfg_filepath in low_light_models:
-        for i in gain:
-            for j in gamma:
-                try:
-                    cfg_options = ['DATASET.DARKEN.DARKEN', True,
-                                     'DATASET.DARKEN.GAIN', float(i),
-                                     'DATASET.DARKEN.GAMMA', float(j)]
-
-                    checkpoint_dir = os.path.dirname(cfg_filepath)
-                    result_file = os.path.join(checkpoint_dir,
-                                               'validation_report_gain{:3.2f}_gamma{:3.2f}.txt'.format(float(i), float(j)))
-
-                    if not run_model(cfg_filepath, result_file, rerun, cfg_options):
-                        failed.append(cfg_filepath)
-                except Exception as e:
-                    print(e)
-                    traceback.print_exc()
-                    failed.append(cfg_filepath)
 
     print("Failed models: ".format("\n".join(failed)))
 
@@ -153,13 +128,13 @@ def generate_seg_vis(model_cfg_paths, dir='imgs', cfg_options=[]):
 
 
 if __name__ == "__main__":
-    model_configs = get_all_models("../models/run/cityscapes/")
-    run_all_models(model_configs, rerun=False)
-    generate_seg_vis(model_configs)
-
-    model_configs = get_all_models("../run/scenenet/")
-    run_all_models(model_configs, rerun=False)
-    generate_seg_vis(model_configs)
+    # model_configs = get_all_models("../models/run/cityscapes/")
+    # run_all_models(model_configs, rerun=False)
+    # generate_seg_vis(model_configs)
+    #
+    # model_configs = get_all_models("../run/scenenet/")
+    # run_all_models(model_configs, rerun=False)
+    # generate_seg_vis(model_configs)
     #
     # model_configs = get_all_models("../run/coco/")
     # # run_all_models(model_configs, False)
@@ -174,21 +149,50 @@ if __name__ == "__main__":
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
 
-    gain = [0.33, 0.66, 1.0]
-    gamma = [1.0, 2.0, 3.0]
-    run_low_light_models(low_light_models, gain, gamma, True)
+    # gain = [0.33, 0.66, 1.0]
+    # gamma = [1.0, 2.0, 3.0]
+    #
+    # for i in gain:
+    #     for j in gamma:
+    #         try:
+    #             cfg_options = ['DATASET.DARKEN.DARKEN', True,
+    #                            'DATASET.DARKEN.GAIN', float(i),
+    #                            'DATASET.DARKEN.GAMMA', float(j)]
+    #             generate_seg_vis(low_light_models, dir='imgs_{}_{}'.format(i, j), cfg_options=cfg_options)
+    #             run_all_models(low_light_models, 'validation_report_gain{:3.2f}_gamma{:3.2f}.txt'.format(float(i), float(j)),
+    #                            False, cfg_options)
+    #         except Exception as e:
+    #             print(e)
+    #             traceback.print_exc()
 
-    for i in gain:
-        for j in gamma:
-            try:
-                cfg_options = ['DATASET.DARKEN.DARKEN', True,
-                               'DATASET.DARKEN.GAIN', float(i),
-                               'DATASET.DARKEN.GAMMA', float(j)]
-                generate_seg_vis(low_light_models, dir='imgs_{}_{}'.format(i, j), cfg_options=cfg_options)
-            except Exception as e:
-                print(e)
-                traceback.print_exc()
+    sigma = np.linspace(0.0, 0.0036, 5)
+    for i in sigma:
+        try:
+            cfg_options = ['DATASET.DARKEN.DARKEN', True,
+                           'DATASET.DARKEN.GAIN', 1,
+                           'DATASET.DARKEN.GAMMA', 1,
+                           'DATASET.DARKEN.GAUSSIAN_SIGMA', float(i),
+                           'DATASET.DARKEN.POISSON', False]
+            run_all_models(low_light_models,
+                           'validation_report_sigma{:3.2f}.txt'.format(float(i)),
+                           False, cfg_options)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
 
-    run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
-    run_all_models(low_light_models, 'validation_report_depth_only.txt', True, ['TEST.DEPTH_ONLY', True])
-    run_all_models(low_light_models, 'validation_report_no_depth.txt', True, ['TEST.CHANNEL_ABLATION', 3])
+    try:
+        cfg_options = ['DATASET.DARKEN.DARKEN', True,
+                       'DATASET.DARKEN.GAIN', 1,
+                       'DATASET.DARKEN.GAMMA', 1,
+                       'DATASET.DARKEN.GAUSSIAN_SIGMA', 0.0,
+                       'DATASET.DARKEN.POISSON', True]
+        run_all_models(low_light_models,
+                       'validation_report_poisson_only.txt',
+                       False, cfg_options)
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+    #
+    # run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
+    # run_all_models(low_light_models, 'validation_report_depth_only.txt', False, ['TEST.DEPTH_ONLY', True])
+    # run_all_models(low_light_models, 'validation_report_no_depth.txt', False, ['TEST.CHANNEL_ABLATION', 3])

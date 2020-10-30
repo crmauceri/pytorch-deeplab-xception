@@ -149,8 +149,8 @@ if __name__ == "__main__":
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
 
-    # gain = [0.33, 0.66, 1.0]
-    # gamma = [1.0, 2.0, 3.0]
+    gain = [0.33, 0.66, 1.0]
+    gamma = [1.0, 2.0, 3.0]
     #
     # for i in gain:
     #     for j in gamma:
@@ -165,12 +165,12 @@ if __name__ == "__main__":
     #             print(e)
     #             traceback.print_exc()
 
-    sigma = np.linspace(0.00072, 0.0036, 4)
+    sigma = np.linspace(0.01, 0.06, 5)
     for i in sigma:
         try:
             cfg_options = ['DATASET.DARKEN.DARKEN', True,
-                           'DATASET.DARKEN.GAIN', 1,
-                           'DATASET.DARKEN.GAMMA', 1,
+                           'DATASET.DARKEN.GAIN', 1.0,
+                           'DATASET.DARKEN.GAMMA', 1.0,
                            'DATASET.DARKEN.GAUSSIAN_SIGMA', float(i),
                            'DATASET.DARKEN.POISSON', False]
             run_all_models(low_light_models,
@@ -182,8 +182,8 @@ if __name__ == "__main__":
 
     try:
         cfg_options = ['DATASET.DARKEN.DARKEN', True,
-                       'DATASET.DARKEN.GAIN', 1,
-                       'DATASET.DARKEN.GAMMA', 1,
+                       'DATASET.DARKEN.GAIN', 1.0,
+                       'DATASET.DARKEN.GAMMA', 1.0,
                        'DATASET.DARKEN.GAUSSIAN_SIGMA', 0.0,
                        'DATASET.DARKEN.POISSON', True]
         run_all_models(low_light_models,
@@ -200,8 +200,7 @@ if __name__ == "__main__":
                            'DATASET.DARKEN.GAMMA', 1.0,
                            'DATASET.DARKEN.GAUSSIAN_SIGMA', 0.0,
                            'DATASET.DARKEN.POISSON', False]
-            generate_seg_vis(low_light_models, dir='imgs_{}_{}'.format(i, j), cfg_options=cfg_options)
-            run_all_models(low_light_models, 'validation_report_gain{:3.2f}_no_noise.txt'.format(float(i), float(j)),
+            run_all_models(low_light_models, 'validation_report_gain{:3.2f}_no_noise.txt'.format(float(i)),
                            False, cfg_options)
         except Exception as e:
             print(e)
@@ -214,8 +213,7 @@ if __name__ == "__main__":
                            'DATASET.DARKEN.GAMMA', float(j),
                            'DATASET.DARKEN.GAUSSIAN_SIGMA', 0.0,
                            'DATASET.DARKEN.POISSON', False]
-            generate_seg_vis(low_light_models, dir='imgs_{}_{}'.format(i, j), cfg_options=cfg_options)
-            run_all_models(low_light_models, 'validation_report_gamma{:3.2f}_no_noise.txt'.format(float(i), float(j)),
+            run_all_models(low_light_models, 'validation_report_gamma{:3.2f}_no_noise.txt'.format(float(j)),
                            False, cfg_options)
         except Exception as e:
             print(e)

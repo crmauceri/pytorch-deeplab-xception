@@ -4,7 +4,7 @@ import os
 from deeplab3.modeling import load_model
 from deeplab3.config.defaults import get_cfg_defaults
 from deeplab3.dataloaders.utils import decode_segmap
-from deeplab3.dataloaders import make_dataset
+from deeplab3.dataloaders import make_dataset, make_data_loader
 from deeplab3.utils.model_utils import match_cfg_versions, get_all_models, match_cfg_versions
 from deeplab3.test import Tester
 
@@ -33,7 +33,7 @@ def run_model(cfg_filepath, result_file, rerun=False, cfg_options=[]):
     try:
         cfg = match_cfg_versions(cfg_filepath)
         cfg.merge_from_list(['CHECKPOINT.DIRECTORY', os.path.dirname(cfg_filepath),
-                             'TEST.MAX_ITER', 1000,
+                             'TEST.MAX_ITER', 2000,
                              'MODEL.PRETRAINED', "",
                              # Since we're using saved models, pretrained weights will be overwritten anyway.
                              'SYSTEM.GPU_IDS', [0]])
@@ -90,7 +90,7 @@ def run_low_light_models(low_light_models, gain, gamma, rerun=False):
                     result_file = os.path.join(checkpoint_dir,
                                                'validation_report_gain{:3.2f}_gamma{:3.2f}.txt'.format(float(i), float(j)))
 
-                    if not run_model(cfg, cfg_filepath, result_file, rerun, cfg_options):
+                    if not run_model(cfg_filepath, result_file, rerun, cfg_options):
                         failed.append(cfg_filepath)
                 except Exception as e:
                     print(e)
@@ -154,12 +154,12 @@ def generate_seg_vis(model_cfg_paths, dir='imgs', cfg_options=[]):
 
 if __name__ == "__main__":
     model_configs = get_all_models("../models/run/cityscapes/")
-    # run_all_models(model_configs, False)
+    run_all_models(model_configs, rerun=False)
     generate_seg_vis(model_configs)
 
-    # model_configs = get_all_models("../run/scenenet/")
-    # # run_all_models(model_configs, False)
-    # generate_seg_vis(model_configs)
+    model_configs = get_all_models("../run/scenenet/")
+    run_all_models(model_configs, rerun=False)
+    generate_seg_vis(model_configs)
     #
     # model_configs = get_all_models("../run/coco/")
     # # run_all_models(model_configs, False)
@@ -189,6 +189,6 @@ if __name__ == "__main__":
                 print(e)
                 traceback.print_exc()
 
-    # run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
-    # run_all_models(low_light_models, 'validation_report_depth_only.txt', True, ['TEST.DEPTH_ONLY', True])
-    # run_all_models(low_light_models, 'validation_report_no_depth.txt', True, ['TEST.CHANNEL_ABLATION', 3])
+    run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
+    run_all_models(low_light_models, 'validation_report_depth_only.txt', True, ['TEST.DEPTH_ONLY', True])
+    run_all_models(low_light_models, 'validation_report_no_depth.txt', True, ['TEST.CHANNEL_ABLATION', 3])

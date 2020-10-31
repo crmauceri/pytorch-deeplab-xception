@@ -149,21 +149,20 @@ if __name__ == "__main__":
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
                         '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
 
-    gain = [0.33, 0.66, 1.0]
-    gamma = [1.0, 2.0, 3.0]
-    #
-    # for i in gain:
-    #     for j in gamma:
-    #         try:
-    #             cfg_options = ['DATASET.DARKEN.DARKEN', True,
-    #                            'DATASET.DARKEN.GAIN', float(i),
-    #                            'DATASET.DARKEN.GAMMA', float(j)]
-    #             generate_seg_vis(low_light_models, dir='imgs_{}_{}'.format(i, j), cfg_options=cfg_options)
-    #             run_all_models(low_light_models, 'validation_report_gain{:3.2f}_gamma{:3.2f}.txt'.format(float(i), float(j)),
-    #                            False, cfg_options)
-    #         except Exception as e:
-    #             print(e)
-    #             traceback.print_exc()
+    gain = [0.5, 0.75, 1.0]
+    gamma = [1.0, 1.6, 2.2]
+    
+    for i in gain:
+        for j in gamma:
+            try:
+                cfg_options = ['DATASET.DARKEN.DARKEN', True,
+                                'DATASET.DARKEN.GAIN', float(i),
+                                'DATASET.DARKEN.GAMMA', float(j)]
+                run_all_models(low_light_models, 'validation_report_gain{:3.2f}_gamma{:3.2f}.txt'.format(float(i), float(j)),
+                                False, cfg_options)
+            except Exception as e:
+                print(e)
+                traceback.print_exc()
 
     sigma = np.linspace(0.01, 0.06, 5)
     for i in sigma:
@@ -219,6 +218,6 @@ if __name__ == "__main__":
             print(e)
             traceback.print_exc()
 
-    # run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
-    # run_all_models(low_light_models, 'validation_report_depth_only.txt', False, ['TEST.DEPTH_ONLY', True])
-    # run_all_models(low_light_models, 'validation_report_no_depth.txt', False, ['TEST.CHANNEL_ABLATION', 3])
+    run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
+    run_all_models(low_light_models, 'validation_report_depth_only.txt', False, ['TEST.DEPTH_ONLY', True])
+    run_all_models(low_light_models, 'validation_report_no_depth.txt', False, ['TEST.CHANNEL_ABLATION', 3])

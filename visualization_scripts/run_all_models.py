@@ -140,29 +140,32 @@ if __name__ == "__main__":
     # # run_all_models(model_configs, False)
     # generate_seg_vis(model_configs)
 
-    low_light_models = ['../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.yaml',
-                       '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.yaml',
-                        '../run/cityscapes/cityscapes_rgbd_xception_low_light/2020_09_25-19_32_43/parameters.yaml',
-                        '../run/cityscapes/cityscapes_rgb_xception_low_light/2020_09_25-19_36_53/parameters.yaml',
-                        '../run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/parameters.yaml',
-                        '../run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/parameters.yaml',
-                        '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
-                        '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml']
+    low_light_models = [ \
+            # '../run/cityscapes/cityscapes_rgbd_xception_fine_coarse/2020_08_20-15_58_16/parameters.yaml',
+            '../run/cityscapes/cityscapes_rgb_xception_pt_fine_coarse/2020_08_03-15_41_22/parameters.yaml',
+            # '../run/cityscapes/cityscapes_rgbd_xception_low_light/2020_09_25-19_32_43/parameters.yaml',
+            # '../run/cityscapes/cityscapes_rgb_xception_low_light/2020_09_25-19_36_53/parameters.yaml',
+            # '../run/scenenet/scenenet_rgbd_xception/2020_09_17-22_10_19/parameters.yaml',
+            # '../run/scenenet/scenenet_rgb_xception/2020_09_17-22_14_43/parameters.yaml',
+            # '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_25-23_11_51/parameters.yaml',
+            # '../run/scenenet/scenenet_rgbd_xception_low_light/2020_09_28-08_36_05/parameters.yaml' ]
 
-    gain = [0.5, 0.75, 1.0]
-    gamma = [1.0, 1.6, 2.2]
-    
-    for i in gain:
-        for j in gamma:
-            try:
-                cfg_options = ['DATASET.DARKEN.DARKEN', True,
-                                'DATASET.DARKEN.GAIN', float(i),
-                                'DATASET.DARKEN.GAMMA', float(j)]
-                run_all_models(low_light_models, 'validation_report_gain{:3.2f}_gamma{:3.2f}.txt'.format(float(i), float(j)),
-                                False, cfg_options)
-            except Exception as e:
-                print(e)
-                traceback.print_exc()
+            ]
+
+    # gain = [0.5, 0.75, 1.0]
+    # gamma = [1.0, 1.6, 2.2]
+    #
+    # for i in gain:
+    #     for j in gamma:
+    #         try:
+    #             cfg_options = ['DATASET.DARKEN.DARKEN', True,
+    #                             'DATASET.DARKEN.GAIN', float(i),
+    #                             'DATASET.DARKEN.GAMMA', float(j)]
+    #             run_all_models(low_light_models, 'validation_report_gain{:3.2f}_gamma{:3.2f}.txt'.format(float(i), float(j)),
+    #                             False, cfg_options)
+    #         except Exception as e:
+    #             print(e)
+    #             traceback.print_exc()
 
     sigma = np.linspace(0.01, 0.06, 5)
     for i in sigma:
@@ -192,6 +195,9 @@ if __name__ == "__main__":
         print(e)
         traceback.print_exc()
 
+    gain = [0.33, 0.66, 1.0]
+    gamma = [1.0, 2.0, 3.0]
+
     for i in gain:
         try:
             cfg_options = ['DATASET.DARKEN.DARKEN', True,
@@ -218,6 +224,6 @@ if __name__ == "__main__":
             print(e)
             traceback.print_exc()
 
-    run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
-    run_all_models(low_light_models, 'validation_report_depth_only.txt', False, ['TEST.DEPTH_ONLY', True])
-    run_all_models(low_light_models, 'validation_report_no_depth.txt', False, ['TEST.CHANNEL_ABLATION', 3])
+    # run_all_models(low_light_models, 'validation_report_scrambled.txt', False, ['TEST.SCRAMBLE_LABELS', True])
+    # run_all_models(low_light_models, 'validation_report_depth_only.txt', False, ['TEST.DEPTH_ONLY', True])
+    # run_all_models(low_light_models, 'validation_report_no_depth.txt', False, ['TEST.CHANNEL_ABLATION', 3])

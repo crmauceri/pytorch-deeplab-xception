@@ -122,6 +122,11 @@ _C.DATASET.DARKEN.GAIN = 0.5
 _C.DATASET.DARKEN.GAUSSIAN_SIGMA = 0.01
 _C.DATASET.DARKEN.POISSON = True
 
+# Use Box-Cox Transform on Depth Data
+_C.DATASET.POWER_TRANSFORM = False
+# Box-Cox Lambda
+_C.DATASET.PT_LAMBDA = -0.5
+
 # Variables specific to coco loader
 _C.DATASET.COCO = CN()
 _C.DATASET.COCO.CATEGORIES = 'coco' #['coco', 'pascal', 'sunrgbd']
@@ -130,12 +135,7 @@ _C.DATASET.COCO.CATEGORIES = 'coco' #['coco', 'pascal', 'sunrgbd']
 _C.DATASET.CITYSCAPES = CN()
 _C.DATASET.CITYSCAPES.GT_MODE = 'gtCoarse' #['gtCoarse', 'gtFine']
 _C.DATASET.CITYSCAPES.TRAIN_SET = 'train_extra' #['train_extra', 'train']
-_C.DATASET.CITYSCAPES.DEPTH_DIR = 'disparity' #['disparity', 'VNL_Monocular', 'HHA']
-
-# Use Box-Cox Transform on Depth Data
-_C.DATASET.POWER_TRANSFORM = False
-# Box-Cox Lambda
-_C.DATASET.PT_LAMBDA = -0.5
+_C.DATASET.CITYSCAPES.DEPTH_DIR = 'disparity' #['disparity', 'VNL_Monocular', 'HHA', 'completed_depth']
 
 def get_cfg_defaults():
   """Get a yacs CfgNode object with default values for my_project."""

@@ -26,9 +26,11 @@ The code was tested with Anaconda and Python 3.8. After installing the Anaconda 
     ```Shell
     conda install matplotlib pillow tqdm protobuf tabulate scipy numpy pandas
     pip install tensorboardX yacs
-    
-    conda install -c conda-forge pycocotools scikit-image
     ```
+   Coco tools
+   ```bash
+   conda install -c conda-forge pycocotools scikit-image
+   ```
    
 2. Compile CUDA code
     
@@ -48,8 +50,8 @@ The code was tested with Anaconda and Python 3.8. After installing the Anaconda 
    ```bash
    cd dataloaders/datasets
    make
-   ```
-    
+   ```  
+
 4. Install as module:
    ```bash
    cd $root

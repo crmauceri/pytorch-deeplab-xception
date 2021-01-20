@@ -112,6 +112,10 @@ _C.DATASET.CROP_SIZE = 513
 # Use RGB-D input
 _C.DATASET.MODE = 'RGBD' #['RGBD', 'RGB', 'RGB_HHA']
 _C.DATASET.SYNTHETIC = False
+# What kind of annotations to use
+_C.DATASET.ANNOTATION_TYPE = 'semantic' #['instance', 'bbox']
+# Don't use any transformations including normalization. This flag is used for data statistics.
+_C.DATASET.NO_TRANSFORMS = False
 
 # Artifially darken input images
 _C.DATASET.DARKEN = CN()

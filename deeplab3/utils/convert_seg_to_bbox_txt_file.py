@@ -15,7 +15,7 @@ def main(cfg):
 
                     if not os.path.exists(dir):
                         os.makedirs(dir)
-
+                    # if not os.path.exists(filepath):
                     np.savetxt(filepath, sample['label'][jj], delimiter=",", fmt=['%d', '%10.8f', '%10.8f', '%10.8f', '%10.8f'])
 
 if __name__ == "__main__":

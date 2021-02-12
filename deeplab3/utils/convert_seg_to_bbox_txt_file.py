@@ -15,8 +15,8 @@ def main(cfg):
 
                     if not os.path.exists(dir):
                         os.makedirs(dir)
-                    # if not os.path.exists(filepath):
-                    np.savetxt(filepath, sample['label'][jj], delimiter=",", fmt=['%d', '%10.8f', '%10.8f', '%10.8f', '%10.8f'])
+                    if not os.path.exists(filepath):
+                        np.savetxt(filepath, sample['label'][jj], delimiter=",", fmt=['%d', '%10.8f', '%10.8f', '%10.8f', '%10.8f'])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert instance segmentation annotation to yolo txt files")

@@ -1,6 +1,6 @@
 from deeplab3.dataloaders import make_data_loader
 from deeplab3.utils.model_utils import match_cfg_versions
-import argparse, glob, os
+import argparse, os.path, os
 import numpy as np
 from tqdm import tqdm
 
@@ -10,9 +10,14 @@ def main(cfg):
         if dataset is not None:
             for ii, sample in enumerate(tqdm(dataset)):
                 for jj in range(len(sample["id"])):
-                    filepath = sample['id'][jj].replace('leftImg8bit', 'bbox').replace('png', 'txt')
-                    dir = os.path.dirname(filepath)
+                    if cfg.DATASET.NAME == 'cityscapes':
+                        filepath = sample['id'][jj].replace('leftImg8bit', 'bbox').replace('png', 'txt')
+                    elif cfg.DATASET.NAME in ['sunrgbd', 'coco']:
+                        img_path, depth_path, img_id = dataset.dataset.get_path(dataset.dataset.coco_id_index[sample['id'][jj].item()])
+                        assert img_id == sample['id'][jj].item()
+                        filepath = os.path.splitext(img_path.replace('image', 'bbox'))[0] + '.txt'
 
+                    dir = os.path.dirname(filepath)
                     if not os.path.exists(dir):
                         os.makedirs(dir)
                     if not os.path.exists(filepath):

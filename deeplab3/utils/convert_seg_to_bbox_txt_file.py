@@ -7,21 +7,28 @@ from tqdm import tqdm
 def main(cfg):
     datasets = make_data_loader(cfg)
     for dataset in datasets[:3]:
+        img_list = []
         if dataset is not None:
             for ii, sample in enumerate(tqdm(dataset)):
                 for jj in range(len(sample["id"])):
                     if cfg.DATASET.NAME == 'cityscapes':
                         filepath = sample['id'][jj].replace('leftImg8bit', 'bbox').replace('png', 'txt')
+                        img_list.append(sample['id'][jj])
                     elif cfg.DATASET.NAME in ['sunrgbd', 'coco']:
                         img_path, depth_path, img_id = dataset.dataset.get_path(dataset.dataset.coco_id_index[sample['id'][jj].item()])
                         assert img_id == sample['id'][jj].item()
                         filepath = os.path.splitext(img_path.replace('image', 'bbox'))[0] + '.txt'
+                        img_list.append(img_path)
 
                     dir = os.path.dirname(filepath)
                     if not os.path.exists(dir):
                         os.makedirs(dir)
-                    if not os.path.exists(filepath):
-                        np.savetxt(filepath, sample['label'][jj], delimiter=",", fmt=['%d', '%10.8f', '%10.8f', '%10.8f', '%10.8f'])
+                    #if not os.path.exists(filepath):
+                    np.savetxt(filepath, sample['label'][jj], delimiter=",", fmt=['%d', '%10.8f', '%10.8f', '%10.8f', '%10.8f'])
+
+        f = '{}/image_list_{}.txt'.format(cfg.DATASET.ROOT, dataset.dataset.split)
+        with open(f, 'w') as fp:
+            fp.write('\n'.join(img_list))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert instance segmentation annotation to yolo txt files")

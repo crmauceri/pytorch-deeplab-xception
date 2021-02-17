@@ -26,9 +26,9 @@ def main(cfg):
                     #if not os.path.exists(filepath):
                     np.savetxt(filepath, sample['label'][jj], delimiter=",", fmt=['%d', '%10.8f', '%10.8f', '%10.8f', '%10.8f'])
 
-        f = '{}/image_list_{}.txt'.format(cfg.DATASET.ROOT, dataset.dataset.split)
-        with open(f, 'w') as fp:
-            fp.write('\n'.join(img_list))
+            f = '{}/image_list_{}.txt'.format(cfg.DATASET.ROOT, dataset.dataset.split)
+            with open(f, 'w') as fp:
+                fp.write('\n'.join(img_list))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert instance segmentation annotation to yolo txt files")

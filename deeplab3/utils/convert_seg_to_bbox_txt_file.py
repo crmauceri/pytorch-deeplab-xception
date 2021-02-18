@@ -15,11 +15,12 @@ def main(cfg):
                         filepath = sample['id'][jj].replace('leftImg8bit', 'bbox').replace('png', 'txt')
                         img_list.append(sample['id'][jj])
                     elif cfg.DATASET.NAME in ['sunrgbd', 'coco']:
-                        img_path, depth_path, img_id = dataset.dataset.get_path(dataset.dataset.coco_id_index[sample['id'][jj].item()])
+                        id = dataset.dataset.coco_id_index[sample['id'][jj].item()]
+                        img_path, depth_path, img_id = dataset.dataset.get_path(id)
                         assert img_id == sample['id'][jj].item()
                         filepath = 'bbox'.join(img_path.rsplit('image', 1))
                         filepath = os.path.splitext(filepath)[0] + '.txt'
-                        img_list.append(img_path)
+                        img_list.append(dataset.dataset.coco.loadImgs(img_id)[0]['file_name'])
 
                     dir = os.path.dirname(filepath)
                     if not os.path.exists(dir):

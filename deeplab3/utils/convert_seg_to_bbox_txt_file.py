@@ -17,7 +17,8 @@ def main(cfg):
                     elif cfg.DATASET.NAME in ['sunrgbd', 'coco']:
                         img_path, depth_path, img_id = dataset.dataset.get_path(dataset.dataset.coco_id_index[sample['id'][jj].item()])
                         assert img_id == sample['id'][jj].item()
-                        filepath = os.path.splitext(img_path.replace('image', 'bbox'))[0] + '.txt'
+                        filepath = 'bbox'.join(img_path.rsplit('image', 1))
+                        filepath = os.path.splitext(filepath)[0] + '.txt'
                         img_list.append(img_path)
 
                     dir = os.path.dirname(filepath)

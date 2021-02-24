@@ -6,17 +6,18 @@ from tqdm import tqdm
 from PIL import Image
 
 from deeplab3.config.defaults import get_cfg_defaults
-from deeplab3.dataloaders.utils import sample_distribution
+from dataloaders.utils import sample_distribution
 
-from deeplab3.dataloaders.datasets.cityscapes import CityscapesSegmentation
-from deeplab3.dataloaders.datasets.coco import COCOSegmentation
-from deeplab3.dataloaders.datasets.sunrgbd import RGBDSegmentation
+from dataloaders.datasets.cityscapes import CityscapesSegmentation
+from dataloaders.datasets.coco import COCOSegmentation
+from dataloaders.datasets.sunrgbd import RGBDSegmentation
 
-from deeplab3.dataloaders.SampleLoader import SampleLoader
+from dataloaders.SampleLoader import SampleLoader
 
 city_rgbd = get_cfg_defaults()
 city_rgbd.merge_from_file('configs/cityscapes_rgbd.yaml')
-city_rgbd.merge_from_list(['DATASET.ROOT', 'datasets/cityscapes/'])
+city_rgbd.merge_from_list(['DATASET.ROOT', 'datasets/cityscapes/',
+                           'DATASET.CITYSCAPES.DEPTH_DIR', 'completed_depth'])
 
 sunrgbd_rgbd = get_cfg_defaults()
 sunrgbd_rgbd.merge_from_file('configs/sunrgbd.yaml')

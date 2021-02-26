@@ -31,6 +31,17 @@ The code was tested with Anaconda and Python 3.8. After installing the Anaconda 
    ```bash
    conda install -c conda-forge pycocotools scikit-image
    ```
+
+2. Install dataloader repo
+
+   This is a seperate repo for use in different projects. For more details, see the repo [README](https://github.com/crmauceri/dataset_loaders)
+    ```Shell
+    git clone https://github.com/crmauceri/dataset_loaders.git
+    cd dataset_loaders/datasets
+    make
+    cd ../..
+    pip install -e .
+    ``` 
    
 2. Compile CUDA code
     

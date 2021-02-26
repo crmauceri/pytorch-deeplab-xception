@@ -5,7 +5,7 @@ import yaml
 import scipy.io as sio
 import json
 
-from deeplab3.dataloaders import make_data_loader
+from dataloaders import make_data_loader
 from deeplab3.config.defaults import get_cfg_defaults
 
 def get_all_models(directory):

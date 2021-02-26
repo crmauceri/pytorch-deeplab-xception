@@ -3,7 +3,7 @@ import numpy as np
 from tqdm import tqdm
 
 from deeplab3.config.defaults import get_cfg_defaults
-from deeplab3.dataloaders import make_data_loader
+from dataloaders import make_data_loader
 from deeplab3.modeling.sync_batchnorm.replicate import patch_replication_callback
 from deeplab3.modeling import make_model
 from deeplab3.utils.loss import SegmentationLosses

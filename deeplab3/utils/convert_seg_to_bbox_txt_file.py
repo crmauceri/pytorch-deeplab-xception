@@ -1,4 +1,4 @@
-from deeplab3.dataloaders import make_data_loader
+from dataloaders import make_data_loader
 from deeplab3.utils.model_utils import match_cfg_versions
 import argparse, os.path, os
 import numpy as np

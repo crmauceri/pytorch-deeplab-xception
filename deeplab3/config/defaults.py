@@ -49,10 +49,6 @@ _C.TEST = CN()
 _C.TEST.BATCH_SIZE = -1
 _C.TEST.MAX_ITER = -1
 
-# Mixes the labels and images randomly to generate baseline educated guess about the pixel classes
-# i.e. road at the bottom, sky at the top
-_C.TEST.SCRAMBLE_LABELS = False
-
 # Sets channel > -1 to 0 to test importance to prediction
 _C.TEST.CHANNEL_ABLATION = -1 # [0, 3]
 _C.TEST.DEPTH_ONLY = False
@@ -140,6 +136,10 @@ _C.DATASET.CITYSCAPES = CN()
 _C.DATASET.CITYSCAPES.GT_MODE = 'gtCoarse' #['gtCoarse', 'gtFine']
 _C.DATASET.CITYSCAPES.TRAIN_SET = 'train_extra' #['train_extra', 'train']
 _C.DATASET.CITYSCAPES.DEPTH_DIR = 'disparity' #['disparity', 'VNL_Monocular', 'HHA', 'completed_depth']
+
+# Mixes the labels and images randomly to generate baseline educated guess about the pixel classes
+# i.e. road at the bottom, sky at the top
+_C.DATASET.SCRAMBLE_LABELS = False
 
 def get_cfg_defaults():
   """Get a yacs CfgNode object with default values for my_project."""

@@ -6,7 +6,7 @@ import scipy.io as sio
 import torch
 import argparse
 import os
-from deeplab3.dataloaders import make_data_loader
+from dataloaders import make_data_loader
 from deeplab3.modeling.sync_batchnorm.replicate import patch_replication_callback
 from deeplab3.utils.loss import SegmentationLosses
 from deeplab3.utils.calculate_weights import calculate_weights_labels

@@ -134,7 +134,7 @@ class LateFusion(nn.Module):
 
 if __name__ == "__main__":
     from deeplab3.config.defaults import get_cfg_defaults
-    from deeplab3.dataloaders.datasets.cityscapes import CityscapesSegmentation
+    from dataloaders.datasets.cityscapes import CityscapesSegmentation
     from torch.utils.data import DataLoader
 
     cfg = get_cfg_defaults()

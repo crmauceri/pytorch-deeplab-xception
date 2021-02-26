@@ -1,4 +1,4 @@
-from deeplab3.dataloaders.utils import decode_segmap
+from dataloaders.utils import decode_segmap
 import matplotlib.pyplot as plt
 import numpy as np
 import torch

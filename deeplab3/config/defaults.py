@@ -140,6 +140,7 @@ _C.DATASET.CITYSCAPES.DEPTH_DIR = 'disparity' #['disparity', 'VNL_Monocular', 'H
 # Mixes the labels and images randomly to generate baseline educated guess about the pixel classes
 # i.e. road at the bottom, sky at the top
 _C.DATASET.SCRAMBLE_LABELS = False
+_C.DATASET.NORMALIZE_ONLY = False
 
 def get_cfg_defaults():
   """Get a yacs CfgNode object with default values for my_project."""
